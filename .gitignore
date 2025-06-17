@@ -1,0 +1,4 @@
+backend/config.php
+**/confi*.php
+backend/scripts/insertar_user.php
+**/scripts/*.php
