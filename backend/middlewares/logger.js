@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 const logger = (req, res, next) => {
-    
+
     const fecha = new Date().toISOString().split('T')[0];
     const string = `[${new Date().toISOString()}] ${req.method} - ${req.url} - ${req.ip}`;
 
@@ -26,7 +26,8 @@ const logger = (req, res, next) => {
                 console.log("Error al escribir el archivo log:",error);
             }
         }
-    )
+    );
+    next();
 
 };
 
