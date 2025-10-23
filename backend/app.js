@@ -1,5 +1,4 @@
 import express from "express";
-
 import logger from './middlewares/logger.js'
 
 const PORT = process.env.PORT || 3000;

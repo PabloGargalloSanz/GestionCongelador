@@ -7,7 +7,7 @@ const logger = (req, res, next) => {
     const string = `[${new Date().toISOString()}] ${req.method} - ${req.url} - ${req.ip}`;
 
     const direccion = path.join(process.cwd(), 'logs');
-    const nombreArchivo = path.join(direccion, fecha + 'log');
+    const nombreArchivo = path.join(direccion, fecha + '.log');
 
     console.log(string);
 
