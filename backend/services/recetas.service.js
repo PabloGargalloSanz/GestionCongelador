@@ -6,6 +6,16 @@ export const getAllRecetas = async () => {
     return result.rows;
 }
 
+export const getOneReceta = async ( id ) => {
+    const result = await pool.query(
+        'SELECT * FROM recetas WHERE id_receta = $1',
+    [id]
+    );
+    
+    console.log(result.rows);
+    return result.rows;
+}
+
 export const newRecetaService = async (data) => {
     // descomponer un json en variables
     const { receta_nombre, descripcion } = data;

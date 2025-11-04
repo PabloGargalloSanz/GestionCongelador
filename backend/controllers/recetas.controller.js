@@ -1,11 +1,24 @@
-import { getAllRecetas, newRecetaService, updateRecetaService } from '../services/recetas.service.js';
+import { getAllRecetas, getOneReceta, newRecetaService, updateRecetaService } from '../services/recetas.service.js';
 
-export const getReceta = (req, res) => {
+export const getTodasRecetas = (req, res) => {
     getAllRecetas()
         .then((recetas) => {
             res.send(recetas);
         });
     
+}
+
+export const getRecetaById = (req, res) => {
+    const id = req.params.id; 
+    
+    getOneReceta(id) 
+        .then((receta) => {
+            res.status(200).send(receta);
+        })
+        .catch((error) => {
+            
+            res.status(404).send({ error: error.message });
+        });
 }
 
 export const createReceta = (req, res) => {

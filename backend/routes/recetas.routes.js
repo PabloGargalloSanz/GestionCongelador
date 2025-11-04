@@ -1,10 +1,11 @@
 import { Router } from 'express';
 
-import { getReceta, createReceta, updateReceta } from '../controllers/recetas.controller.js';
+import { getTodasRecetas, getRecetaById, createReceta, updateReceta } from '../controllers/recetas.controller.js';
 
 const router = Router();
 
-router.get('/recetas', getReceta);
+router.get('/recetas', getTodasRecetas);
+router.get('/recetas/:id', getRecetaById);
 router.post('/recetas',createReceta);
 router.put('/recetas/:id', updateReceta);
 
