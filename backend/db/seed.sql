@@ -2,7 +2,7 @@ CREATE DATABASE gestion_congeladores;
 
 \c gestion_congeladores;
 
-DROP TABLE IF EXISTS recetas_favoritas, receta_alimentos, cajon_alimentos, cajones, almacenamientos, recetas, alimentos, usuarios CASCADE;
+DROP TABLE IF EXISTS logs, recetas_favoritas, receta_alimentos, cajon_alimentos, cajones, almacenamientos, recetas, alimentos, usuarios CASCADE;
 
 
 CREATE TABLE usuarios (
@@ -59,4 +59,13 @@ CREATE TABLE recetas_favoritas(
     id_receta_favorita SERIAL PRIMARY KEY,
     id_usuario INT NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     id_receta INT NOT NULL REFERENCES recetas(id_receta) ON DELETE CASCADE
+);
+
+CREATE TABLE logs (
+	id_log SERIAL PRIMARY KEY,
+	fecha_log DATE NOT NULL,
+	hora_log TIME NOT NULL,
+	metodo VARCHAR,
+	ip VARCHAR,
+	direccion VARCHAR
 );
