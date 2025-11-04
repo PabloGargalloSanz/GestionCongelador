@@ -2,6 +2,7 @@ import express from 'express';
 import logger from './middlewares/logger.js';
 import ENV from './utils/envLoader.js';
 import pool from './db/db.js';
+import mainRouter from './routes/mainRouter.js';
 
 
 const app = express();
@@ -23,6 +24,8 @@ pool.connect()
     }).catch((error) =>{
         console.log('❌ Error al conectarse a la base de datos ', error);
 })
+
+app.use('/api', mainRouter);
 
 //Escuchar en el puerto
 app.listen(ENV.PORT, () => {
