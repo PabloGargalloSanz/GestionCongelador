@@ -1,34 +1,23 @@
-import fs from "fs";
-import path from "path";
+import newLog from '../services/logs.service.js';
 
-const logger = (req, res, next) => {
+const logger = async (req, res, next) => {
+    
+    const data = {
+        fecha_log: new Date().toISOString().split('T')[0],
+        hora_log: new Date().toTimeString().split(' ')[0],
+        metodo: req.method,
+        ip: req.ip,
+        direccion: req.url 
+    };
 
-    const fecha = new Date().toISOString().split('T')[0];
-    const string = `[${new Date().toISOString()}] ${req.method} - ${req.url} - ${req.ip}`;
-
-    const direccion = path.join(process.cwd(), 'logs');
-    const nombreArchivo = path.join(direccion, fecha + '.log');
-
-    console.log(string);
-
-    //Crear carpeta logs si no esta creada
+    //Guarda en la Base de Datos
     try {
-        fs.mkdirSync(direccion, { recursive: true});
+        await newLog(data); 
     } catch (error) {
-        console.error("Error al crear la carpeta logs: ", error);
-        return next();
+        console.error("Error al guardar el log en la base de datos:", error);
     }
-
-    //Escribe en el archivo log, nombreado por fecha, el log del server
-    fs.appendFile(nombreArchivo, string + '\n',
-        (error) => {
-            if(error) {
-                console.log("Error al escribir el archivo log:",error);
-            }
-        }
-    );
+    
     next();
-
 };
 
 export default logger;
