@@ -1,5 +1,6 @@
 import { getAllRecetas, getOneReceta, newRecetaService, updateRecetaService } from '../services/recetas.service.js';
 
+//Obtener todas las recetas
 export const getTodasRecetas = (req, res) => {
     getAllRecetas()
         .then((recetas) => {
@@ -8,6 +9,7 @@ export const getTodasRecetas = (req, res) => {
     
 }
 
+//Obtener receta por id
 export const getRecetaById = (req, res) => {
     const id = req.params.id; 
     
@@ -21,6 +23,7 @@ export const getRecetaById = (req, res) => {
         });
 }
 
+//Crear receta
 export const createReceta = (req, res) => {
     const data = req.body;
 
@@ -37,6 +40,7 @@ export const createReceta = (req, res) => {
     }
 }
 
+//Actualizar receta
 export const updateReceta = ( req, res) => {
     const id = req.params.id;
     const data = req.body;

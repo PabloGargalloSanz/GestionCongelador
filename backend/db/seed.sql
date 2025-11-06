@@ -14,7 +14,8 @@ CREATE TABLE usuarios (
 
 CREATE TABLE alimentos (
     id_alimento SERIAL PRIMARY KEY,
-    alimento_nombre VARCHAR (50) NOT NULL
+    alimento_nombre VARCHAR (50) NOT NULL,
+    alimento_tipo VARCHAR (50) NOT NULL
 );
 
 CREATE TABLE recetas (
