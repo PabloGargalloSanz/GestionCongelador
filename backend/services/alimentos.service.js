@@ -38,7 +38,7 @@ export const updateAlimentoService = async (data) => {
 
     const result = await pool.query(
         'UPDATE alimentos SET alimento_nombre = $1, alimento_tipo = $2 WHERE id_alimento =$3 RETURNING *',
-        [alimento_nombre, alimento_tipo, id]
+        [alimento_nombre, alimento_tipo, id_alimento]
     )
     if(result.rows.length ===0 ) {
         throw new Error('Alimento no encontrado');

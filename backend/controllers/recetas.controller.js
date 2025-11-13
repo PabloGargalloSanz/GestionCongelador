@@ -19,7 +19,7 @@ export const getRecetaById = (req, res) => {
         })
         .catch((error) => {
             
-            res.status(404).send({ error: error.message });
+            res.status(400).send({ error: error.message });
         });
 }
 
