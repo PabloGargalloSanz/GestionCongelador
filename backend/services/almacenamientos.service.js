@@ -21,3 +21,16 @@ export const newAlmacenamientoService = async (data) => {
     );
     return result.rows[0];
 }
+
+//Actualizar almacenamiento (nombre)
+export const updateAlmacenamientoService = async (id_almacenamiento, data) => {
+    const { almacenamiento_nombre} = data;
+    const result = await pool.query(
+        'UPDATE almacenamientos SET almacenamiento_nombre = $1 WHERE id_almacenamiento = $2 RETURNING *',
+        [almacenamiento_nombre, id_almacenamiento]
+    )
+    if(result.rows.length ===0 ) {
+        throw new Error('Receta no encontrada');
+    }
+    return result.rows[0];
+}
