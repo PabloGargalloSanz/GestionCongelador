@@ -1,4 +1,4 @@
-import {getAllAlmacenamientoUsuario, newAlmacenamientoService} from '../services/almacenamientos.service.js';
+import {getAllAlmacenamientoUsuario, newAlmacenamientoService, updateAlmacenamientoService} from '../services/almacenamientos.service.js';
 
 //Obtener almacenamiento por usuario
 export const getTodosAlmacenamientosByIdUsuario = (req, res) => {
@@ -27,5 +27,23 @@ export const createAlmacenamiento = (req, res) => {
             });
     } else {
         res.status(400).send({ error: 'Faltan datos obligatorios'});
+    }
+}
+
+//Actualizar almacenamiento
+export const updateAlmacenamiento = (req, res) => {
+    const data = req.body;
+    const id_almacenamiento = req.body.id_almacenamiento;
+
+    if(data.almacenamiento_nombre) {
+        updateAlmacenamientoService(id_almacenamiento, data)
+        .then((updatedAlmacenamiento) => {
+            res.status(200).send(updatedAlmacenamiento);
+        })
+        .catch((error) => {
+            res.status(400).send({error: error.message});
+        });
+    }else {
+        res.status(400).send({error: 'Faltan datos obligatorios'});
     }
 }
