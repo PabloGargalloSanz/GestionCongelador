@@ -1,7 +1,11 @@
 import fs from "fs";
 
 const REQUIRED_ENV_VARS = [
-    "PORT"
+    "PORT",
+    "DB_USER",
+    "DB_HOST",
+    "DB_PASSWORD",
+    "DB_PORT"
 ];
 
 // Funcion mostrar cque variables faltan

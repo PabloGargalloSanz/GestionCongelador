@@ -30,7 +30,7 @@ export const updateAlmacenamientoService = async (id_almacenamiento, data) => {
         [almacenamiento_nombre, id_almacenamiento]
     )
     if(result.rows.length ===0 ) {
-        throw new Error('Receta no encontrada');
+        throw new Error('Almacenamiento no encontrado');
     }
     return result.rows[0];
 }
