@@ -1,7 +1,20 @@
-import {} from '../services/cajones.js';
+import {getAllCajonesAlmacenamientoService} from '../services/cajones.js';
 
 //Obtener cajones por usuario y almacenamiento
 export const getCajonesAlmacenamiento = (req, res) => {
+    const idAlmacenamiento = req.body.idAlamcenamiento;
+    
+    getAllCajonesAlmacenamientoService(idAlmacenamiento)
+        .then((cajones) =>{
+            res.status(200).send(cajones);
+        })
+        .catch((error) => {
+            res.status(400).send({error: error.message});
+        });
+}
+
+//Obtener cajon por usuario y almacenamiento
+export const getCajonAlmacenamiento = (req, res) => {
     const idAlmacenamiento = req.body.idAlamcenamiento;
     const idCajon = req.boyd.idCajon;
 

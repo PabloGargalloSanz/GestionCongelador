@@ -7,7 +7,6 @@ export const getAllAlmacenamientoUsuario = async (id_usuario) => {
         [id_usuario]
     );
 
-    console.log(result.rows);
     return result.rows;
 }
 
