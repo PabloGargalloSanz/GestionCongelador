@@ -4,7 +4,7 @@ import { createCajonAlmacenamiento, getCajonAlmacenamiento, getCajonesAlmacenami
 
 const router = Router();
 
-router.get('/cajones', getCajonesAlmacenamiento);
+router.get('/cajones/:id', getCajonesAlmacenamiento);
 router.get('/cajones', getCajonAlmacenamiento);
 router.post('/cajones', createCajonAlmacenamiento);
 
