@@ -45,6 +45,7 @@ CREATE TABLE cajon_alimentos(
     cantidad INT NOT NULL CHECK (cantidad > 0),
     unidad_medida VARCHAR(20) NOT NULL,
     fecha_introducido DATE NOT NULL DEFAULT CURRENT_DATE,
+    fecha_caducidad DATE NOT NULL,
     fecha_sacado DATE CHECK (fecha_sacado IS NULL OR fecha_sacado >= fecha_introducido)
 );
 
