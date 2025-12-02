@@ -1,4 +1,4 @@
-import {} from '../services/alimentosCajon.controller.js';
+import {getAllAlimentosCajonService, getCantidadAlimentoService, newAlimentoCajonService, modifyAlimentoCajonService  } from '../services/alimentosCajon.service.js';
 
 //Obtener alimentos por cajon
 export const getAllAlimentosCajon = (req,res) => {
@@ -17,7 +17,7 @@ export const getAllAlimentosCajon = (req,res) => {
 export const getCantidadAlimento = (req,res) => {
     const id_alimento = req.body.id_alimento;
 
-    getCantidadAlimento(id_alimento)
+    getCantidadAlimentoService(id_alimento)
         .then((cantidad) => {
             res.status(200).send(cantidad);
         })
@@ -29,10 +29,9 @@ export const getCantidadAlimento = (req,res) => {
 // Añadir alimento
 export const createAlimentoCajon = (req,res) => {
     const data = req.body;
-    const id_cajon = req.body.id_cajon;
 
     if(data.id_alimento){
-        createAlimentoCajonService(data, id_cajon)
+        newAlimentoCajonService(data)
             .then((alimento) => {
                 res.status(201).send(alimento);
             })
