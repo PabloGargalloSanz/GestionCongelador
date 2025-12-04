@@ -38,17 +38,24 @@ CREATE TABLE cajones(
     tamano NUMERIC(10, 2) DEFAULT 100 CHECK (tamano > 0)
 );
 
-CREATE TABLE cajon_alimentos(
-    id_cajon_alimentos SERIAL PRIMARY KEY,
+CREATE TABLE cajon_lotes(
+    id_cajon_lote SERIAL PRIMARY KEY,
     id_cajon INT NOT NULL REFERENCES cajones(id_cajon) ON DELETE CASCADE,
+    id_lote INT NOT NULL REFERENCES lotes(id_lote) ON DELETE CASCADE,
+    fecha_introducido DATE NOT NULL DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE lotes(
+    id_lote SERIAL PRIMARY KEY,
     id_alimento INT NOT NULL REFERENCES alimentos(id_alimento) ON DELETE CASCADE,
     cantidad INT NOT NULL CHECK (cantidad > 0),
     unidad_medida VARCHAR(20) NOT NULL,
-    fecha_introducido DATE NOT NULL DEFAULT CURRENT_DATE,
-    fecha_caducidad DATE NOT NULL,
-    fecha_sacado DATE CHECK (fecha_sacado IS NULL OR fecha_sacado >= fecha_introducido)
+    alimento_tamano INT NOT NULL,
+    fecha_caducidad DATE NOT NULL
 );
 
+
+---------------------------------------------------------------------------------------------------------
 CREATE TABLE receta_alimentos(
     id_receta_alimento SERIAL PRIMARY KEY,
     id_receta INT NOT NULL REFERENCES recetas(id_receta) ON DELETE CASCADE,
