@@ -54,6 +54,37 @@ CREATE TABLE lotes(
     fecha_caducidad DATE NOT NULL
 );
 
+-----
+/*TRANSACCIONES*/
+/*funcion insertar datos en lotes e insertar el lote en cajon_lotes*/
+CREATE FUNCTION insertar_lote_cajon(
+    p_id_cajon INT,
+    p_id_alimento INT,
+    p_cantidad INT,
+    p_unidad_medida VARCHAR,
+    p_alimento_tamano INT,
+    p_fecha_caducidad DATE
+)
+RETURNS SETOF cajon_lotes AS $$
+DECLARE
+    v_id_lote INT;
+BEGIN
+    INSERT INTO lotes (id_alimento, cantidad, unidad_medida, alimento_tamano, fecha_caducidad)
+    VALUES (p_id_alimento, p_cantidad, p_unidad_medida, p_alimento_tamano, p_fecha_caducidad)
+    RETURNING id_lote INTO v_id_lote;
+
+    RETURN QUERY 
+    INSERT INTO cajon_lotes (id_cajon, id_lote)
+    VALUES (p_id_cajon, v_id_lote)
+    RETURNING *;
+    
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
 
 ---------------------------------------------------------------------------------------------------------
 CREATE TABLE receta_alimentos(
