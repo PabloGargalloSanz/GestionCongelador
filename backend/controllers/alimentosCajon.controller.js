@@ -1,4 +1,4 @@
-import {getAllAlimentosCajonService, getCantidadAlimentoService, newAlimentoCajonService, modifyAlimentoCajonService  } from '../services/alimentosCajon.service.js';
+import {getAllAlimentosCajonService, getCantidadAlimentoService, newAlimentoCajonService, deleteAlimentoCajonService  } from '../services/alimentosCajon.service.js';
 
 //Obtener alimentos por cajon
 export const getAllAlimentosCajon = (req,res) => {
@@ -9,7 +9,7 @@ export const getAllAlimentosCajon = (req,res) => {
             res.status(200).send(alimentos);
         })
         .catch((error) => {
-            res.status(400).send({error: error.mesage});
+            res.status(400).send({error: error.message});
         });
 }
 
@@ -22,7 +22,7 @@ export const getCantidadAlimento = (req,res) => {
             res.status(200).send(cantidad);
         })
         .catch((error) => {
-            res.status(400).send({error: error.mesage});
+            res.status(400).send({error: error.message});
         });
 }
 
@@ -36,26 +36,24 @@ export const createAlimentoCajon = (req,res) => {
                 res.status(201).send(alimento);
             })
             .catch((error) => {
-                res.status(400).send({error: error.mesage});
+                res.status(400).send({error: error.message});
             });
     } else {
         res.status(400).send({error: 'Faltan datos obligatorios'});
     }
 }
 
-//Modificar cantidad
-export const modifyAlimentoCajon = (req,res) => {
-    const id_cajon = req.body.id_cajon;
-    const id_alimento = req.body.id_alimento;
-    const cantidad = req.body.cantidad;
+//Eliminar lote
+export const deleteAlimentoCajon = (req,res) => {
+    const id_lote = req.body.id_lote;
 
-    if(id_alimento){
-        modifyAlimentoCajonService(id_alimento, cantidad, id_cajon)
+    if(id_lote){
+        deleteAlimentoCajonService(id_lote)
             .then((alimento) =>{
                 res.status(200).send(alimento);
             })
             .catch((error) =>{
-                res.status(400).send({error: error.mesage});
+                res.status(400).send({error: error.message});
             });
     } else{
         res.status(400).send({error: 'Faltan datos obligatorios'});

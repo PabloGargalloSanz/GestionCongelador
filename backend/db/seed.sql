@@ -2,7 +2,7 @@ CREATE DATABASE gestion_congeladores;
 
 \c gestion_congeladores;
 
-DROP TABLE IF EXISTS logs, recetas_favoritas, receta_alimentos, cajon_alimentos, cajones, almacenamientos, recetas, alimentos, usuarios CASCADE;
+DROP TABLE IF EXISTS logs, recetas_favoritas, receta_alimentos, cajon_lotes, lotes, cajones, almacenamientos, recetas, alimentos, usuarios CASCADE;
 
 
 CREATE TABLE usuarios (
@@ -38,13 +38,6 @@ CREATE TABLE cajones(
     tamano NUMERIC(10, 2) DEFAULT 100 CHECK (tamano > 0)
 );
 
-CREATE TABLE cajon_lotes(
-    id_cajon_lote SERIAL PRIMARY KEY,
-    id_cajon INT NOT NULL REFERENCES cajones(id_cajon) ON DELETE CASCADE,
-    id_lote INT NOT NULL REFERENCES lotes(id_lote) ON DELETE CASCADE,
-    fecha_introducido DATE NOT NULL DEFAULT CURRENT_DATE
-);
-
 CREATE TABLE lotes(
     id_lote SERIAL PRIMARY KEY,
     id_alimento INT NOT NULL REFERENCES alimentos(id_alimento) ON DELETE CASCADE,
@@ -54,9 +47,77 @@ CREATE TABLE lotes(
     fecha_caducidad DATE NOT NULL
 );
 
+CREATE TABLE cajon_lotes(
+    id_cajon_lote SERIAL PRIMARY KEY,
+    id_cajon INT NOT NULL REFERENCES cajones(id_cajon) ON DELETE CASCADE,
+    id_lote INT NOT NULL REFERENCES lotes(id_lote) ON DELETE CASCADE,
+    fecha_introducido DATE NOT NULL DEFAULT CURRENT_DATE
+);
+
 -----
-/*TRANSACCIONES*/
-/*funcion insertar datos en lotes e insertar el lote en cajon_lotes*/
+/*VISTAS*/
+/*inventario usuario*/
+CREATE VIEW vista_inventario_usuario AS
+SELECT 
+    u.id_usuario,
+    alm.almacenamiento_nombre,
+    c.id_cajon,
+    c.posicion AS cajon_posicion,
+    a.alimento_nombre,
+    l.cantidad,
+    l.unidad_medida
+FROM usuarios u
+JOIN almacenamientos alm ON u.id_usuario = alm.id_usuario
+JOIN cajones c ON alm.id_almacenamiento = c.id_almacenamiento
+JOIN cajon_lotes cl ON c.id_cajon = cl.id_cajon
+JOIN lotes l ON cl.id_lote = l.id_lote
+JOIN alimentos a ON l.id_alimento = a.id_alimento;
+
+/*capcidad cajon*/
+CREATE VIEW vista_estado_cajones AS
+SELECT 
+    c.id_cajon,
+    c.tamano AS capacidad_maxima,
+    COALESCE(SUM(l.alimento_tamano), 0) AS ocupacion_actual,
+    (c.tamano - COALESCE(SUM(l.alimento_tamano), 0)) AS espacio_disponible
+FROM cajones c
+LEFT JOIN cajon_lotes cl ON c.id_cajon = cl.id_cajon
+LEFT JOIN lotes l ON cl.id_lote = l.id_lote
+GROUP BY c.id_cajon, c.tamano;
+
+/*TRIGGER*/
+/*comprobar capacidad*/
+CREATE FUNCTION verificar_capacidad_cajon()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_ocupacion_actual INT;
+    v_capacidad_maxima INT;
+    v_nuevo_tamano INT;
+BEGIN
+    SELECT tamano INTO v_capacidad_maxima FROM cajones WHERE id_cajon = NEW.id_cajon;
+    
+    SELECT alimento_tamano INTO v_nuevo_tamano FROM lotes WHERE id_lote = NEW.id_lote;
+
+    SELECT COALESCE(SUM(l.alimento_tamano), 0) INTO v_ocupacion_actual
+    FROM cajon_lotes cl
+    JOIN lotes l ON cl.id_lote = l.id_lote
+    WHERE cl.id_cajon = NEW.id_cajon;
+
+    IF (v_ocupacion_actual + v_nuevo_tamano) > v_capacidad_maxima THEN
+        RAISE EXCEPTION 'El cajón no tiene espacio suficiente.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_check_capacidad
+BEFORE INSERT ON cajon_lotes
+FOR EACH ROW
+EXECUTE FUNCTION verificar_capacidad_cajon();
+
+
+/*insertar datos en lotes e insertar el lote en cajon_lotes*/
 CREATE FUNCTION insertar_lote_cajon(
     p_id_cajon INT,
     p_id_alimento INT,
