@@ -83,8 +83,22 @@ $$ LANGUAGE plpgsql;
 
 
 
+/*eliminar lote completo*/
+CREATE FUNCTION eliminar_lote(
+    p_id_lote INT
+)
+RETURNS TABLE (id_lote_eliminado INT) AS $$
+BEGIN
+    DELETE FROM lotes
+    WHERE id_lote = p_id_lote;
 
-
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Lote no encontrado.', p_id_lote;
+    END IF;
+    
+    RETURN QUERY SELECT p_id_lote;
+END;
+$$ LANGUAGE plpgsql;
 
 ---------------------------------------------------------------------------------------------------------
 CREATE TABLE receta_alimentos(

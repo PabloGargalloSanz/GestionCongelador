@@ -38,7 +38,26 @@ export const newAlimentoCajonService = async (data) => {
     return result.rows[0];
 }
 
+//Eliminar lote o lotes con aray
+export const deleteAlimentoCajonService = async (data) => {
+    const {lotes} = data;
+    const resultados = [];
 
-export const modifyAlimentoCajonService = async (id_alimento) => {
+    for (const id_lote of lotes) {
+        try {
+            const result = await pool.query(
+                'SELECT * FROM eliminar_lote($1)',
+                [id_lote]
+            );
+            
+            const id_eliminado = result.rows[0].id_lote_eliminado;
+            resultados.push({ id_lote,id_eliminado, estado: "ELIMINADO" });
+            
+        } catch (error) {
+            resultados.push({ id_lote, estado: "ERROR", mensaje: error.message });
+        }
+    }
+
+    return resultados;
 }
 
