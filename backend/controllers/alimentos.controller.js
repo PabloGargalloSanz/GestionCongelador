@@ -44,7 +44,7 @@ export const createAlimento = (req, res) => {
 
 //Actualizar alimento
 export const updateAlimento = ( req, res) => {
-    const id = req.params.id;
+    const id = req.body.id_alimento;
     const data = req.body;
 
     updateAlimentoService(id, data)

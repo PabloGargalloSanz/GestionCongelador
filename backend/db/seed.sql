@@ -2,7 +2,11 @@ CREATE DATABASE gestion_congeladores;
 
 \c gestion_congeladores;
 
+/* LIMPIEZA INICIAL  */
+DROP VIEW IF EXISTS vista_inventario_usuario CASCADE;
+DROP VIEW IF EXISTS vista_estado_cajones CASCADE;
 DROP TABLE IF EXISTS logs, recetas_favoritas, receta_alimentos, cajon_lotes, lotes, cajones, almacenamientos, recetas, alimentos, usuarios CASCADE;
+
 
 
 CREATE TABLE usuarios (
@@ -87,7 +91,7 @@ GROUP BY c.id_cajon, c.tamano;
 
 /*TRIGGER*/
 /*comprobar capacidad*/
-CREATE FUNCTION verificar_capacidad_cajon()
+CREATE OR REPLACE FUNCTION verificar_capacidad_cajon()
 RETURNS TRIGGER AS $$
 DECLARE
     v_ocupacion_actual INT;
@@ -118,7 +122,7 @@ EXECUTE FUNCTION verificar_capacidad_cajon();
 
 
 /*insertar datos en lotes e insertar el lote en cajon_lotes*/
-CREATE FUNCTION insertar_lote_cajon(
+CREATE OR REPLACE FUNCTION insertar_lote_cajon(
     p_id_cajon INT,
     p_id_alimento INT,
     p_cantidad INT,
@@ -145,7 +149,7 @@ $$ LANGUAGE plpgsql;
 
 
 /*eliminar lote completo*/
-CREATE FUNCTION eliminar_lote(
+CREATE OR REPLACE FUNCTION eliminar_lote(
     p_id_lote INT
 )
 RETURNS TABLE (id_lote_eliminado INT) AS $$
@@ -154,7 +158,7 @@ BEGIN
     WHERE id_lote = p_id_lote;
 
     IF NOT FOUND THEN
-        RAISE EXCEPTION 'Lote no encontrado.', p_id_lote;
+        RAISE EXCEPTION 'Lote % no encontrado.', p_id_lote;
     END IF;
     
     RETURN QUERY SELECT p_id_lote;

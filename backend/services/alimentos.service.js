@@ -33,7 +33,7 @@ export const newAlimentoService = async (data) => {
 }
 
 //Actualizar un alimento
-export const updateAlimentoService = async (data) => {
+export const updateAlimentoService = async (id_alimento, data) => {
     const { alimento_nombre, alimento_tipo} = data;
 
     const result = await pool.query(

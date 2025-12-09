@@ -1,4 +1,4 @@
-import {getAllAlimentosCajonService, getCantidadAlimentoService, newAlimentoCajonService, deleteAlimentoCajonService  } from '../services/alimentosCajon.service.js';
+import {getAllAlimentosCajonService, newAlimentoCajonService, deleteAlimentoCajonService  } from '../services/alimentosCajon.service.js';
 
 //Obtener alimentos por cajon
 export const getAllAlimentosCajon = (req,res) => {

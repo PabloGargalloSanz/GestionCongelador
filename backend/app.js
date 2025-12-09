@@ -1,14 +1,16 @@
 import express from 'express';
+import cors from 'cors';    
 import logger from './middlewares/logger.js';
 import ENV from './utils/envLoader.js';
 import pool from './db/db.js';
 import mainRouter from './routes/mainRouter.js';
 
-
+const PORT = ENV.PORT || 3000;
 const app = express();
 
-app.use(express.json());
+app.use(cors());
 app.use(logger);
+app.use(express.json());
 
 //Endpoint raiz
 app.get('/', (req,res) => {
@@ -29,5 +31,5 @@ app.use('/api', mainRouter);
 
 //Escuchar en el puerto
 app.listen(ENV.PORT, () => {
-    console.log('Servidor escuchando en el puerto ' + process.env.DB_PORT);
+    console.log('Servidor escuchando en el puerto ' + process.env.PORT);
 });
