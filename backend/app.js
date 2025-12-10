@@ -5,7 +5,6 @@ import ENV from './utils/envLoader.js';
 import pool from './db/db.js';
 import mainRouter from './routes/mainRouter.js';
 
-const PORT = ENV.PORT || 3000;
 const app = express();
 
 app.use(cors());

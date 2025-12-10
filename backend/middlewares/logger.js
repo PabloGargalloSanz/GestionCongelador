@@ -13,6 +13,7 @@ const logger = async (req, res, next) => {
     //Guarda en la Base de Datos
     try {
         await newLog(data); 
+        console.log("Log guardado en la base de datos");
     } catch (error) {
         console.error("Error al guardar el log en la base de datos:", error);
     }
