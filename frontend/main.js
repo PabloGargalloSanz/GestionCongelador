@@ -1,10 +1,9 @@
-// 1. Referencias al DOM
 const vistaLogin = document.getElementById('vista-login');
 const vistaDashboard = document.getElementById('vista-dashboard');
 const formLogin = document.getElementById('form-login');
 const btnLogout = document.getElementById('btn-logout');
 
-// 2. Comprobar si ya estamos logueados al cargar la página
+// Comprobar si ya estamos logueados
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -12,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 3. Lógica de Login
+//Login
 formLogin.addEventListener('submit', async (e) => {
     e.preventDefault();
     
@@ -20,8 +19,10 @@ formLogin.addEventListener('submit', async (e) => {
     const password = document.getElementById('password').value;
 
     try {
-        // Petición a tu Backend
-        const response = await fetch('http://127.0.0.1:3000/api/login', {
+////////////////////////////////////////////////////////////////
+// Cambiar la URL a la correcta del backend cuando abra servidor
+//////////////////////////////////////////////////////////////
+        const response = await fetch('http://127.0.0.1/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, pass: password }) 
@@ -30,8 +31,8 @@ formLogin.addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (response.ok) {
-            // GUARDAR EL TOKEN (Importante para mantener sesión)
-            localStorage.setItem('token', data.token); // O data.id_usuario
+            // guardar token
+            localStorage.setItem('token', data.token); 
             mostrarDashboard();
         } else {
             alert(data.error || 'Error al entrar');
@@ -42,11 +43,11 @@ formLogin.addEventListener('submit', async (e) => {
     }
 });
 
-// 4. Funciones de Cambio de Vista
+//Cambio de Vista
 function mostrarDashboard() {
-    vistaLogin.classList.add('hidden');      // Ocultar Login
-    vistaDashboard.classList.remove('hidden'); // Mostrar Dashboard
-    cargarCajones(); // Llamar a la función que pide los datos al backend
+    vistaLogin.classList.add('hidden');      
+    vistaDashboard.classList.remove('hidden'); 
+    cargarCajones(); 
 }
 
 function cerrarSesion() {
@@ -59,8 +60,7 @@ function cerrarSesion() {
 
 btnLogout.addEventListener('click', cerrarSesion);
 
-// 5. Función para cargar datos (ejemplo)
+// cargar datos 
 async function cargarCajones() {
     console.log("Cargando cajones del backend...");
-    // Aquí harías el fetch a /api/cajones usando el token si es necesario
 }
