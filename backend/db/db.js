@@ -8,6 +8,7 @@ const config = {
     database: 'gestion_congeladores',
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT
+    
 }
 
 const pool = new Pool(config);

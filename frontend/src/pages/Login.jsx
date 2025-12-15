@@ -1,13 +1,29 @@
 import { useState } from 'react';
 import styles from './Login.module.css'; 
+import { loginUser } from '../services/authService.js';
 
 function Login() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [pass, setPass] = useState('');
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login:", email, password);
+    setError(null); // Limpiamos errores viejos
+
+    try {
+      console.log("Enviando datos...", { email, pass });
+      
+      const data = await loginUser({ email, pass });
+      
+      console.log("¡Login exitoso!", data);
+      
+      // REEDIRECCION AQUI
+      
+    } catch (err) {
+      console.error("Error en login:", err);
+      setError('Email o contraseña incorrectos');
+    }
   };
 
   return (
@@ -16,29 +32,32 @@ function Login() {
       
       <form onSubmit={handleSubmit}>
         <div className={styles.grupoInput}>
-          <label className={styles.partes}>Email:</label>
+          <label className={styles.etiqueta}>Email:</label>
           <input 
             type="email" 
             className={styles.input}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="usuario@ejemplo.com"
             required 
           />
         </div>
         
         <div className={styles.grupoInput}>
-          <label className={styles.partes}>Contraseña:</label>
+          <label className={styles.etiqueta}>Contraseña:</label>
           <input 
             type="password" 
             className={styles.input}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
             required 
           />
         </div>
 
-        <button type="submit" className={styles.enviar}> Entrar </button>
+        {error && <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>}
+
+        <button type="submit" className={styles.boton}>
+          Entrar
+        </button>
       </form>
     </div>
   );
