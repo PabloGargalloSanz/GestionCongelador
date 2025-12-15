@@ -1,0 +1,49 @@
+
+.contenedorLogin {
+  padding: 20px;
+  border: 1px solid #024fa2;
+  border-radius: 10px; 
+  max-width: 350px;
+  margin: 50px auto;
+  font-family: Arial, sans-serif;
+}
+
+.titulo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.grupoInput {
+  margin-bottom: 15px;
+}
+
+.partes {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555555;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cecaca;
+  border-radius: 4px;
+  box-sizing: border-box; 
+}
+
+.enviar {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff; 
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.enviar:hover {
+  background-color: #0056b3; 
+}
