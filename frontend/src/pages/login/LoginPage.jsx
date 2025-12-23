@@ -20,8 +20,8 @@ function LoginPage() {
       const data = await loginUser({ email, pass });
       console.log("¡Login exitoso!", data);
       
-      // Guardamos el usuario o token (opcional)
-      localStorage.setItem('user', JSON.stringify(data));
+      // guardar token
+      //localStorage.setItem('user', JSON.stringify(data));
       
       // Navegamos al Dashboard
       navigate('/dashboard'); 

@@ -1,0 +1,28 @@
+.grupoInput {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  
+  .label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #64748b;
+  }
+  
+  .input {
+    width: 100%;         
+    padding: 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    box-sizing: border-box; 
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+  
+  .input:focus {
+    outline: none;
+    border-color: #007bff;
+  }
