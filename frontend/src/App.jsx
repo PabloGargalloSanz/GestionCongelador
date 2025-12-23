@@ -1,10 +1,15 @@
-import Login from './components/Login.jsx'; 
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/login/LoginPage';
+// import DashboardPage from './pages/dashboard/DashboardPage'; 
 
 function App() {
   return (
-    <div>
-      <Login />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/dashboard" element={<div> Dashboard</div>} />
+      </Routes>
+    </Router>
   );
 }
 
