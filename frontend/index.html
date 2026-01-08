@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Gestión Congelador</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Gestión Congelador</title>
+        <link rel="stylesheet" href="./styles/styles.css">
+    </head>
+    <body>
 
-    <section id="vista-login">
-        <div class="login-box">
-            <h2>Iniciar Sesión</h2>
-            <form id="form-login">
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Contraseña" required>
-                <button type="submit">Entrar</button>
-            </form>
-            <p id="mensaje-error" class="error"></p>
-        </div>
-    </section>
+        <section id="vista-login">
+            <div class="login-box">
+                <h2>Iniciar Sesión</h2>
+                <form id="form-login">
+                    <input type="email" id="email" placeholder="Email" required>
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                    <button type="submit">Entrar</button>
+                </form>
+                <p id="mensaje-error" class="error"></p>
+            </div>
+        </section>
 
-    <section id="vista-dashboard" class="hidden">
-        <nav>
-            <h1>Mi Congelador</h1>
-            <button id="btn-logout">Salir</button>
-        </nav>
+        <section id="vista-dashboard" class="hidden">
+            <nav>
+                <h1>Mi Congelador</h1>
+                <button id="btn-logout">Salir</button>
+            </nav>
 
-        <main>
-            <div id="contenedor-cajones"></div>
-            
-            <button id="btn-abrir-modal-add">Añadir Alimento</button>
-        </main>
-    </section>
+            <main>
+                <div id="contenedor-cajones"></div>
+                
+                <button id="btn-abrir-modal-add">Añadir Alimento</button>
+            </main>
+        </section>
 
-    <script src="main.js"></script>
-</body>
+        <script type="module" src="./js/main.js"></script>
+    </body>
 </html>

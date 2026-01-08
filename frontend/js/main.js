@@ -4,12 +4,14 @@ const formLogin = document.getElementById('form-login');
 const btnLogout = document.getElementById('btn-logout');
 
 // Comprobar si ya estamos logueados
+/*
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token');
     if (token) {
         mostrarDashboard();
     }
 });
+*/
 
 //Login
 formLogin.addEventListener('submit', async (e) => {
