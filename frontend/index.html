@@ -2,34 +2,34 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Gestión Congelador</title>
+        <title>FreezerManager</title>
+        <meta name="TFG Pablo Gargallo">
+        <link rel="icon" type="image" href="./img/copo.png">
         <link rel="stylesheet" href="./styles/styles.css">
     </head>
     <body>
 
-        <section id="vista-login">
-            <div class="login-box">
-                <h2>Iniciar Sesión</h2>
-                <form id="form-login">
-                    <input type="email" id="email" placeholder="Email" required>
-                    <input type="password" id="password" placeholder="Contraseña" required>
-                    <button type="submit">Entrar</button>
-                </form>
-                <p id="mensaje-error" class="error"></p>
-            </div>
-        </section>
-
-        <section id="vista-dashboard" class="hidden">
-            <nav>
-                <h1>Mi Congelador</h1>
-                <button id="btn-logout">Salir</button>
-            </nav>
-
-            <main>
-                <div id="contenedor-cajones"></div>
+        <!-- loggin -->
+        <section id="login-page">
+            <div class="login-card">
+                <div class="logo-circle">
+                    <img src="./img/copo.png" alt="Logo" id="logo">
+                </div>
+                <h2 class="login-title">FreezerManager</h2>
+                <p class="login-subtitle">Bienvenido al sistema de gestión</p>
                 
-                <button id="btn-abrir-modal-add">Añadir Alimento</button>
-            </main>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label">Correo Electrónico</label>
+                        <input type="email" id="email" class="form-input" placeholder="Correo Electrónico">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" id="pass" class="form-input" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="login-btn">Entrar al Sistema</button>
+                </form>
+            </div>
         </section>
 
         <script type="module" src="./js/main.js"></script>
