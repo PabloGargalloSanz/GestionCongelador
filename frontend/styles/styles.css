@@ -7,8 +7,12 @@
     --bg-body: #f8fafc;
     --blanco: #ffffff;
     --texto-oscuro: #1e293b;
-    --texto-medio: #64748b;
+    --texto-claro: #64748b;
     --border-color: #e2e8f0;        
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 25px rgba(2, 79, 162, 0.2);
+    --radius-lg: 24px;
+    --radius-sm: 12px;
 }
 
 * {
@@ -29,11 +33,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(to bottom right, var(--primary), var(--primario-oscuro));
+    background: linear-gradient(to bottom right, var(--primario), var(--primario-oscuro));
 }
 
 .login-card {
-    background: var(--white);
+    background: var(--blanco);
     padding: 40px;
     border-radius: var(--radius-lg);
     width: 100%;
@@ -43,7 +47,7 @@ body {
 }
 
 .logo-circle {
-    background: var(--primary-light);
+    background: var(--primario-claro);
     width: 80px;
     height: 80px;
     border-radius: 20px;
@@ -51,10 +55,69 @@ body {
     align-items: center;
     justify-content: center;
     margin: 0 auto 15px;
-    color: var(--primary);
+    color: var(--primario);
 }
 
 #logo {
     width: 40px;
     height: 40px;
+}
+
+.login-title {
+    font-size: 28px;
+    font-weight: 800px;
+    margin: 0px;
+}
+
+.login-subtitle {
+    color: var(--texto-claro);
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600px;
+    margin-bottom: 8px;
+    color: var(--texto-claro);
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+.login-btn:hover {
+    background: var(--primario-oscuro);
+    transform: translateY(-2px);
 }
