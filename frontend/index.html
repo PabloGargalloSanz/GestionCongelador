@@ -10,7 +10,7 @@
     <body>
 
         <!-- loggin -->
-        <div id="login-page">
+        <section id="login-page" >
             <div class="login-card">
                 <div class="logo-circle">
                     <img src="./img/copo.png" alt="Logo" id="logo">
@@ -25,12 +25,19 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Contraseña:</label>
-                        <input type="password" id="pass" class="form-input" placeholder="••••••••">
+                        <input type="password" id="password" class="form-input" placeholder="••••••••">
                     </div>
-                    <button type="submit" class="login-btn">Entrar al Sistema</button>
+                    <button type="submit" id="login-btn">Entrar al Sistema</button>
                 </form>
             </div>
-        </div>
+        </section>
+        
+        <!-- dashboard -->
+        <section id="dashboard-page" class="hidden">
+            <p>Dashboard - Contenido protegido</p>
+            <button id="logout-btn">Cerrar Sesión</button>
+        </section>
+
 
         <script type="module" src="./js/main.js"></script>
     </body>
