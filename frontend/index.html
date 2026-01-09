@@ -33,10 +33,14 @@
         </section>
         
         <!-- dashboard -->
-        <section id="dashboard-page" class="hidden">
-            <p>Dashboard - Contenido protegido</p>
-            <button id="logout-btn">Cerrar Sesión</button>
-        </section>
+        <template id="dashboard-page" >
+            <header>
+                <h1>Mis Cajones</h1>
+                <button id="logout-btn">Cerrar Sesión</button>
+            </header>
+            <div id="lista-cajones" class="grid-cajones">
+            </div>
+        </template>
 
 
         <script type="module" src="./js/main.js"></script>
