@@ -9,9 +9,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
     if (token) {
         mostrarDashboard();
+    } else {
+        mostrarLogin();
     }
 });
 */
+
+function mostrarLogin() {
+    vistaDashboard.style.display = "none";
+    vistaLogin.style.display = "flex";
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+}
+
+function mostrarDashboard() {
+    vistaLogin.style.display = "none";
+    vistaDashboard.style.display = "flex"; 
+    cargarCajones();
+}
+
+
+
+
+
+
 
 //Login
 /*
@@ -51,28 +72,15 @@ const loginForm = document.getElementById('login-form');
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const emailValue = document.getElementById('email').value || 'test@test.com';
-    
-    document.getElementById('login-page').classList.add('hidden');
-    
+        
     mostrarDashboard();
 });
 
-//Cambio de Vista
-function mostrarDashboard() {
-    vistaLogin.classList.add("hidden");      
-    vistaDashboard.classList.remove("hidden"); 
-    cargarCajones(); 
-}
-
-function cerrarSesion() {
-    localStorage.removeItem("token"); // Borrar token
-    vistaDashboard.classList.add("hidden");
-    vistaLogin.classList.remove("hidden");
-    document.getElementById("email").value = "";
-    document.getElementById("password").value = "";
-}
-
-btnLogout.addEventListener("click", cerrarSesion);
+// Logout
+btnLogout.addEventListener("click", () => {
+    localStorage.removeItem("token");
+    mostrarLogin();
+});
 
 // cargar datos 
 async function cargarCajones() {
