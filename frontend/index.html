@@ -34,13 +34,83 @@
         
         <!-- dashboard -->
         <section id="dashboard-page" >
-            <header>
-                <h1>Mis Cajones</h1>
-                <button id="logout-btn">Cerrar Sesión</button>
-            </header>
-            <div id="lista-cajones" class="grid-cajones">
-                <p>sqadadasd</p>
-            </div>
+
+            <!-- BARRA LATERAL -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h2 style="margin: 0;">FreezerManager</h2>
+                </div>
+
+                <nav class="nav-menu">
+                    <button class="nav-item active" onclick="navigate('dashboard')">
+                        Dashboard
+                    </button>
+                    <button class="nav-item" onclick="navigate('inventory')">
+                        Inventario
+                    </button>
+                    <button class="nav-item" onclick="navigate('recipes')">
+                        Recetas
+                    </button>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="user-info">
+                        <div class="user-avatar">U</div>
+                        <span id="display-email" >usuario@tfg.com</span>
+                    </div>
+                    <button class="nav-item" onclick="logout()">
+                        Salir
+                    </button>
+                </div>
+            </aside>
+
+            <!-- CONTENIDO DINÁMICO -->
+            <main class="content-area">
+
+                <!-- Vista Dashboard -->
+                <div id="dashboard-view" class="view">
+                    <header>
+                        <h1>Panel de Control</h1>
+                        <p>Estado general de tus unidades de almacenamiento.</p>
+                    </header>
+
+                    <div class="grid" >
+                        <!-- tarjetas  -->
+                    </div>
+                </div>
+
+                <!-- Vista Inventario -->
+                <div id="inventario-view" class="hidden">
+                    <header>
+                        <h1>Inventario de Alimentos</h1>
+                        <p>Listado lotes guardados.</p>
+                    </header>
+                    <table class="inventory-table">
+                        <thead>
+                            <tr>
+                                <th>Alimento</th>
+                                <th>Tipo</th>
+                                <th>Cantidad</th>
+                                <th>Ubicación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-list">
+                            <!-- generar elementos -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Vista Recetas -->
+                <div id="recetas-view" >
+                    <header>
+                        <h1>Recetas</h1>
+                        <p>Sugerencias</p>
+                    </header>
+                    <div class="card" >
+                        
+                    </div>
+                </div>
+            </main>
         </section>
 
 

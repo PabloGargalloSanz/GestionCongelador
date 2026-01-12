@@ -33,9 +33,9 @@ function mostrarDashboard() {
 
 
 
-
-//Login
 /*
+//Login
+
 formLogin.addEventListener("submit", async (e) => {
     e.preventDefault();
     
@@ -67,7 +67,13 @@ formLogin.addEventListener("submit", async (e) => {
         alert("Error de conexión");
     }
 });
+
 */
+
+////////////////////////////////////////////////////////////////
+// Código antiguo de login sin backend
+//////////////////////////////////////////////////////////////
+
 const loginForm = document.getElementById('login-form');
 loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -75,6 +81,7 @@ loginForm.addEventListener('submit', (e) => {
         
     mostrarDashboard();
 });
+
 
 // Logout
 btnLogout.addEventListener("click", () => {
