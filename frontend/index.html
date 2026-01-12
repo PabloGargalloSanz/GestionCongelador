@@ -33,7 +33,7 @@
         </section>
         
         <!-- dashboard -->
-        <section id="dashboard-page" >
+        <section id="dashboard-page">
 
             <!-- BARRA LATERAL -->
             <aside class="sidebar">
@@ -58,7 +58,7 @@
                         <div class="user-avatar">U</div>
                         <span id="display-email" >usuario@tfg.com</span>
                     </div>
-                    <button class="nav-item" onclick="logout()">
+                    <button class="nav-item" id="logout-btn">
                         Salir
                     </button>
                 </div>
@@ -74,8 +74,8 @@
                         <p>Estado general de tus unidades de almacenamiento.</p>
                     </header>
 
-                    <div class="grid" >
-                        <!-- tarjetas  -->
+                    <div class="grid" id="freezer-grid">
+                        <!-- almacenes  -->
                     </div>
                 </div>
 
@@ -101,7 +101,7 @@
                 </div>
 
                 <!-- Vista Recetas -->
-                <div id="recetas-view" >
+                <div id="recetas-view" class="hidden">
                     <header>
                         <h1>Recetas</h1>
                         <p>Sugerencias</p>
