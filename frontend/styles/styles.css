@@ -108,7 +108,7 @@ body {
 
 .form-input:focus {
     outline: none;
-    fondo-gris: var(--primario-oscuro);
+    border-color: var(--primario-oscuro);
 }
 
 #login-btn {
@@ -221,7 +221,7 @@ header p {
 /* Tabla de Inventario */
 /***********************************/
 
-.inventory-table {
+.inventario-table {
     width: 100%;
     border-collapse: collapse;
     background: white;
@@ -230,7 +230,7 @@ header p {
     box-shadow: var(--shadow-sm);
 }
 
-.inventory-table th {
+.inventario-table th {
     text-align: left;
     padding: 15px;
     background: #f8fafc;
@@ -240,7 +240,7 @@ header p {
     border-bottom: 2px solid var(--fondo-gris);
 }
 
-.inventory-table td {
+.inventario-table td {
     padding: 15px;
     border-bottom: 1px solid var(--fondo-gris);
 }
