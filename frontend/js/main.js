@@ -20,17 +20,17 @@ function loadTemplate(templateId, container) {
 function renderLogin() {
     loadTemplate('tpl-login', app);
     const loginForm = document.getElementById('login-form');
-
-    
+/*
+//Si no funciona conexion db
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const emailValue = document.getElementById('email').value || 'test@test.com';
         
         rendermenu();
     });   
-     
+     */
     //Login
-/*
+
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         
@@ -50,7 +50,14 @@ function renderLogin() {
 
             const data = await response.json();
 
-            if (response.ok) {
+        ///////////////////////////////////////////////////////////
+            e.preventDefault();
+            const entrar = true;
+
+        ///////////////////////////////////////////////////////////
+            //if (response.ok) { poner esto y quitar entrar y e.preventDefault
+            
+            if (entrar || response.ok) {
                 // guardar token
                 localStorage.setItem("token", data.token); 
                 rendermenu();
@@ -62,7 +69,7 @@ function renderLogin() {
             alert("Error de conexión");
         }
     });
-*/
+
 
 }
 
