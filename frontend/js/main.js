@@ -1,6 +1,6 @@
 // --- Datos de prueba ---
 const almacenamientos = [
-    { id: 1, nombre: 'Congelador Cocina', localizacion: 'Cocina', ocupacion: 65 },
+    { id: 1, nombre: 'Congelador Cocina', localizacion: 'Cocina', ocupacion: 95 },
     { id: 2, nombre: 'Arcón Garaje', localizacion: 'Garaje', ocupacion: 22 }
 ];
 
@@ -56,7 +56,7 @@ function renderLogin() {
 
         ///////////////////////////////////////////////////////////
             //if (response.ok) { poner esto y quitar entrar y e.preventDefault
-            
+
             if (entrar || response.ok) {
                 // guardar token
                 localStorage.setItem("token", data.token); 
@@ -128,14 +128,16 @@ function renderAlmacenes() {
         card.className = 'card';
         card.innerHTML = `
             <div class="almacen-contenedor">
+                <div class="card-icon"></div>
                 <span class="almacen-localizacion">${alm.localizacion}</span>
             </div>
-            <h3>${alm.nombre}</h3>
+            <h3 class="almacen-nombre">${alm.nombre}</h3>
+            <p class="almacen-ocupacion">Ocupación actual</p>
             <div class="progress-container">
-                <div class="progress-bar" style="width: ${alm.ocupacion}%"></div>
+                <div class="progress-bar" style="width: ${alm.ocupacion}% "></div>
             </div>
             <div class="status-row">
-                <span>${alm.ocupacion}% lleno</span>
+                <span style="color: ${alm.ocupacion > 80 ? 'var(--accent)' : 'var(--primario-oscuro)'}">${alm.ocupacion}% </span>
                 <button class="btn-detail">Gestionar →</button>
             </div>
         `;

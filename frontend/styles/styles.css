@@ -6,11 +6,12 @@
     --primario: #024fa2;
     --primario-claro: #eef6ff;
     --primario-oscuro: #003366;
+    --fondo-gris: #e2e8f0;
     --bg-body: #f8fafc;
     --blanco: #ffffff;
+    --accent: #ff5722;
     --texto-oscuro: #1e293b;
-    --texto-claro: #64748b;
-    --border-color: #e2e8f0;        
+    --texto-claro: #64748b;      
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
     --shadow-lg: 0 10px 25px rgba(2, 79, 162, 0.2);
     --radius-lg: 24px;
@@ -98,16 +99,16 @@ body {
 .form-input {
     width: 100%;
     padding: 14px;
-    border: 2px solid var(--border-color);
+    border: 2px solid var(--fondo-gris);
     border-radius: var(--radius-sm);
     box-sizing: border-box;
     font-size: 14px;
-    transition: border-color 0.3s;
+    transition: fondo-gris 0.3s;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: var(--primario-oscuro);
+    fondo-gris: var(--primario-oscuro);
 }
 
 #login-btn {
@@ -236,12 +237,12 @@ header p {
     color: var(--texto-claro);
     font-size: 13px;
     text-transform: uppercase;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--fondo-gris);
 }
 
 .inventory-table td {
     padding: 15px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--fondo-gris);
 }
 
 /***********************************/
@@ -266,7 +267,7 @@ header p {
     width: 35px;
     height: 35px;
     border-radius: 10px;
-    background: var(--accent);
+    background: var(--primario);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -288,7 +289,7 @@ header p {
     padding: 25px;
     border-radius: 20px;
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--fondo-gris);
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -310,7 +311,7 @@ header p {
 .btn-detail {
     background: none;
     border: none;
-    color: var(--accent);
+    color: var(--primario-oscuro);
     font-weight: 600;
     cursor: pointer;
     padding: 0;
@@ -325,9 +326,9 @@ header p {
     align-items: flex-start;
 }
 .almacen-localizacion{
-    font-size: 11px;
+    font-size: 15px;
     font-weight: bold; 
-    background: #e2e8f0; 
+    background: var(--fondo-gris); 
     padding: 4px 10px; 
     border-radius: 20px;
 }
@@ -344,7 +345,7 @@ header p {
 
 .progress-container {
     height: 10px;
-    background: #f1f5f9;
+    background: var(--fondo-gris);
     border-radius: 5px;
     margin: 15px 0 8px;
     overflow: hidden;
@@ -352,9 +353,6 @@ header p {
 
 .progress-bar {
     height: 100%;
-    /*
-    background: #0265c8;
-    */
     background: var(--primario);
     border-radius: 5px;
     width: 0%; 
