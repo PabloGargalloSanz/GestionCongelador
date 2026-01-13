@@ -9,110 +9,114 @@
     </head>
     <body>
 
+        <div id="app"></div>
+
         <!-- loggin -->
-        <section id="login-page" >
-            <div class="login-card">
-                <div class="logo-circle">
-                    <img src="./img/copo.png" alt="Logo" id="logo">
+        <template id="tpl-login">
+            <section id="login-page" >
+                <div class="login-card">
+                    <div class="logo-circle">
+                        <img src="./img/copo.png" alt="Logo" id="logo">
+                    </div>
+                    <h2 class="login-title">FreezerManager</h2>
+                    <p class="login-subtitle">Bienvenido al sistema de gestión</p>
+                    
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label class="form-label">Correo Electrónico:</label>
+                            <input type="email" id="email" class="form-input" placeholder="ejemplo@dominio.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contraseña:</label>
+                            <input type="password" id="password" class="form-input" placeholder="••••••••">
+                        </div>
+                        <button type="submit" id="login-btn">Entrar al Sistema</button>
+                    </form>
                 </div>
-                <h2 class="login-title">FreezerManager</h2>
-                <p class="login-subtitle">Bienvenido al sistema de gestión</p>
-                
-                <form id="login-form">
-                    <div class="form-group">
-                        <label class="form-label">Correo Electrónico:</label>
-                        <input type="email" id="email" class="form-input" placeholder="ejemplo@dominio.com">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Contraseña:</label>
-                        <input type="password" id="password" class="form-input" placeholder="••••••••">
-                    </div>
-                    <button type="submit" id="login-btn">Entrar al Sistema</button>
-                </form>
-            </div>
-        </section>
+            </section>
+        </template>
         
         <!-- dashboard -->
-        <section id="dashboard-page">
-
-            <!-- BARRA LATERAL -->
-            <aside class="sidebar">
-                <div class="sidebar-header">
-                    <h2 style="margin: 0;">FreezerManager</h2>
-                </div>
-
-                <nav class="nav-menu">
-                    <button class="nav-item active" onclick="navigate('dashboard')">
-                        Dashboard
-                    </button>
-                    <button class="nav-item" onclick="navigate('inventory')">
-                        Inventario
-                    </button>
-                    <button class="nav-item" onclick="navigate('recipes')">
-                        Recetas
-                    </button>
-                </nav>
-
-                <div class="sidebar-footer">
-                    <div class="user-info">
-                        <div class="user-avatar">U</div>
-                        <span id="display-email" >usuario@tfg.com</span>
+        <template id="tpl-menu">
+            <section id="dashboard-page">
+    
+                <!-- BARRA LATERAL -->
+                <aside class="sidebar">
+                    <div class="sidebar-header">
+                        <h2 style="margin: 0;">FreezerManager</h2>
                     </div>
-                    <button class="nav-item" id="logout-btn">
-                        Salir
-                    </button>
-                </div>
-            </aside>
-
-            <!-- CONTENIDO DINÁMICO -->
-            <main class="content-area">
-
-                <!-- Vista Dashboard -->
-                <div id="dashboard-view" class="view">
-                    <header>
-                        <h1>Panel de Control</h1>
-                        <p>Estado general de tus unidades de almacenamiento.</p>
-                    </header>
-
-                    <div class="grid" id="freezer-grid">
-                        <!-- almacenes  -->
+    
+                    <nav class="nav-menu">
+                        <button class="nav-item active" data-view='dashboard'>
+                            Dashboard
+                        </button>
+                        <button class="nav-item" data-view='inventario'>
+                            Inventario
+                        </button>
+                        <button class="nav-item" data-view='recetas'>
+                            Recetas
+                        </button>
+                    </nav>
+    
+                    <div class="sidebar-footer">
+                        <div class="user-info">
+                            <div class="user-avatar">U</div>
+                            <span id="display-email" >usuario@tfg.com</span>
+                        </div>
+                        <button class="nav-item" id="logout-btn">
+                            Salir
+                        </button>
                     </div>
-                </div>
+                </aside>
+    
+                <main class="content-area" id="main-content">
+                </main>
+            </section>
+        </template>
 
-                <!-- Vista Inventario -->
-                <div id="inventario-view" class="hidden">
-                    <header>
-                        <h1>Inventario de Alimentos</h1>
-                        <p>Listado lotes guardados.</p>
-                    </header>
-                    <table class="inventory-table">
-                        <thead>
-                            <tr>
-                                <th>Alimento</th>
-                                <th>Tipo</th>
-                                <th>Cantidad</th>
-                                <th>Ubicación</th>
-                            </tr>
-                        </thead>
-                        <tbody id="inventory-list">
-                            <!-- generar elementos -->
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Vista Dashboard -->
+        <template id="dashboard-view" class="view">
+            <header>
+                <h1>Panel de Control</h1>
+                <p>Estado general de tus unidades de almacenamiento.</p>
+            </header>
 
-                <!-- Vista Recetas -->
-                <div id="recetas-view" class="hidden">
-                    <header>
-                        <h1>Recetas</h1>
-                        <p>Sugerencias</p>
-                    </header>
-                    <div class="card" >
-                        
-                    </div>
-                </div>
-            </main>
-        </section>
+            <div class="grid" id="freezer-grid">
+                <!-- almacenes  -->
+            </div>        
+        </template>
 
+        <!-- Vista Recetas -->
+        <template id="recetas-view">
+            <header>
+                <h1>Recetas</h1>
+                <p>Sugerencias</p>
+            </header>
+            <div class="card" >
+                
+            </div>
+        </template>
+
+        <!-- Vista Inventario -->
+        <template id="inventario-view" >
+            <header>
+                <h1>Inventario de Alimentos</h1>
+                <p>Listado lotes guardados.</p>
+            </header>
+            <table class="inventario-table">
+                <thead>
+                    <tr>
+                        <th>Alimento</th>
+                        <th>Tipo</th>
+                        <th>Cantidad</th>
+                        <th>Ubicación</th>
+                    </tr>
+                </thead>
+                <tbody id="inventario-list">
+                    <!-- generar elementos -->
+                </tbody>
+            </table>
+        </template>
 
         <script type="module" src="./js/main.js"></script>
     </body>
