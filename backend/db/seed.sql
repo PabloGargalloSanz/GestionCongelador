@@ -1,6 +1,6 @@
 CREATE DATABASE gestion_congeladores;
 
-\c gestion_congeladores;
+\c gestion_congeladores
 
 /* LIMPIEZA INICIAL  */
 DROP VIEW IF EXISTS vista_inventario_usuario CASCADE;
