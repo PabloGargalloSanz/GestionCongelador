@@ -37,6 +37,8 @@ function renderLogin() {
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
+        localStorage.setItem('userEmail', email);
+
         try {
 
     ////////////////////////////////////////////////////////////////
@@ -59,7 +61,8 @@ function renderLogin() {
 
             if (entrar || response.ok) {
                 // guardar token
-                localStorage.setItem("token", data.token); 
+                localStorage.setItem("token", data.token);                
+
                 rendermenu();
             } else {
                 alert(data.error || "Error al entrar");
@@ -89,9 +92,20 @@ function rendermenu() {
         });
     });
 
+    const savedEmail = localStorage.getItem('userEmail');
+    const displayElement = document.getElementById('display-email');
+
+    if(savedEmail){
+        displayElement.innerText = savedEmail;
+    } else {
+        renderLogin();
+    }
+    
+
     // Logout
     document.getElementById('logout-btn').addEventListener('click', () => {
         sessionStorage.clear();
+        localStorage.removeItem('userEmail');
         renderLogin();
     });
 
