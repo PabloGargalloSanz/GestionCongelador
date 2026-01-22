@@ -1,8 +1,3 @@
-// --- Datos de prueba ---
-export const almacenamientos = [
-    { id: 1, nombre: 'Congelador Cocina', localizacion: 'Cocina', ocupacion: 95 },
-    { id: 2, nombre: 'Arcón Garaje', localizacion: 'Garaje', ocupacion: 22 }
-];
 
 // selectores principales
 export const app = document.getElementById('app');
@@ -38,19 +33,26 @@ export function showToast(message, level = 'info') {
 
 
 //Llenar almacenes////////////////////
-export function renderAlmacenes() {
+export function renderAlmacenes(almacenes) {
     const grid = document.getElementById('freezer-grid');
-    if (!grid) return;
+    
+    grid.innerHTML="";
+    if(!grid) {
+        return;
+    }
 
-    almacenamientos.forEach(alm => {
+    almacenes.forEach(alm => {
+
+
         const card = document.createElement('div');
         card.className = 'card';
+                    
         card.innerHTML = `
             <div class="almacen-contenedor">
                 <div class="card-icon"></div>
                 <span class="almacen-localizacion">${alm.localizacion}</span>
             </div>
-            <h3 class="almacen-nombre">${alm.nombre}</h3>
+            <h3 class="almacen-nombre">${alm.almacenamiento_nombre}</h3>
             <p class="almacen-ocupacion">Ocupación actual</p>
             <div class="progress-container">
                 <div class="progress-bar" style="width: ${alm.ocupacion}% "></div>

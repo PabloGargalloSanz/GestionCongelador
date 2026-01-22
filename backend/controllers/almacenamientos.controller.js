@@ -2,7 +2,7 @@ import {getAllAlmacenamientoUsuario, newAlmacenamientoService, updateAlmacenamie
 
 //Obtener almacenamiento por usuario
 export const getTodosAlmacenamientosByIdUsuario = (req, res) => {
-    const idUsuario = req.params.idUsuario;
+    const idUsuario = req.userId;
 
     getAllAlmacenamientoUsuario(idUsuario)
         .then((almacenamientos) => {

@@ -1,5 +1,5 @@
 import { auth } from './auth.js';
-import { loginRequest, getTiposAlimento, getAllAlimentosByusuario } from './api.js';
+import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario } from './api.js';
 import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario } from './ui.js';
 
 // navegar por las vistas
@@ -79,12 +79,18 @@ async function renderView(viewName) {
     
     if (viewName === 'dashboard') {
         loadTemplate('dashboard-view', mainContent);
-        renderAlmacenes();
+        try {
+            const almacenes = await getAlmacenesByUsuarioDashboard();
+            renderAlmacenes(almacenes);
+
+        } catch (error) {
+            console.error("Fallo al cargar almacenes", error);
+        }
 
     } else if (viewName === 'inventario') {
         loadTemplate('inventario-view', mainContent);
         try {
-            const alimentos = await getAllAlimentosByusuario();
+            const alimentos = await getAllAlimentosByUsuario();
             renderTablaInventario(alimentos);
             renderFiltros(); 
 

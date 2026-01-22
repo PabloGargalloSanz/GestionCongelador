@@ -11,8 +11,29 @@ export async function loginRequest(email, password) {
     return response;
 }
 
-//get todos alimentos
-export async function getAllAlimentosByusuario(){
+//get almacenes usuario
+
+export async function getAlmacenesByUsuarioDashboard() {
+    const token = localStorage.getItem('auth_token');
+    try {
+        const response = await fetch(`${API_BASE_URL}/almacenamientos/usuario`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`, 
+                'Content-Type': 'application/json',
+                'X-accion': 'STORAGE_CONSULTING'
+            }
+        });
+        return response.json();
+
+    } catch (error) {
+        console.error("Error al obtener almacenes: ", error);
+        return [];
+    }
+}
+
+//get todos alimentos de usuario
+export async function getAllAlimentosByUsuario(){
     const token = localStorage.getItem('auth_token');
     try{
         const response = await fetch(`${API_BASE_URL}/alimentos/usuario`, {
