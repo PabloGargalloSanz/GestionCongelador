@@ -10,7 +10,7 @@ export const generateToken = (user) => {
     };
 
     return jwt.sign(payload, JWT, {
-        expiresIn: '1m' //m - minutos d - dias 
+        expiresIn: '1d' //m - minutos d - dias 
     })
 }
 
