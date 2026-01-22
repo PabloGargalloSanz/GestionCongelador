@@ -192,6 +192,3 @@ CREATE TABLE IF NOT EXISTS logs (
     status_codigo INTEGER,               
     fecha_creado TIMESTAMPTZ DEFAULT now()
 );
-
-INSERT INTO usuarios (email, password, role) VALUES 
-('p', '$argon2id$v=19$m=65536,t=10,p=4$H0iyUmm8uwPBhLEmoMrgXg$2K1GCeHx5O19Pm51bHTh6ixPH0vmW+a1VxDciVZtgmM', 'admin'); -- password: 0

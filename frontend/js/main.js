@@ -1,6 +1,6 @@
 import { auth } from './auth.js';
-import { loginRequest } from './api.js';
-import { app, loadTemplate, showToast, renderAlmacenes } from './ui.js';
+import { loginRequest, getTiposAlimento, getAllAlimentosByusuario } from './api.js';
+import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario } from './ui.js';
 
 // navegar por las vistas
 
@@ -73,7 +73,7 @@ function rendermenu() {
     renderView('dashboard');
 }
 
-function renderView(viewName) {
+async function renderView(viewName) {
     const mainContent = document.getElementById('main-content');
     if (!mainContent) return;
     
@@ -83,40 +83,53 @@ function renderView(viewName) {
 
     } else if (viewName === 'inventario') {
         loadTemplate('inventario-view', mainContent);
-        renderFiltros(); // Llamamos a la función de los filtros
+        try {
+            const alimentos = await getAllAlimentosByusuario();
+            renderTablaInventario(alimentos);
+            renderFiltros(); 
+
+        } catch (error) {
+            console.error("Fallo al cargar el inventario:", error);
+        }
+
     }  else if (viewName === 'recetas') {
         loadTemplate('recetas-view', mainContent);
     }
 }
 
 function renderFiltros() {  
-    const filtroBtn = document.getElementById('filtro-inventario-btn');
-    if (!filtroBtn) return;
+    const btnFiltro = document.getElementById('filtro-inventario-btn');
+        const contenedorFiltros = document.getElementById('filtros-contenedor');
 
-    filtroBtn.addEventListener('click', () => {
-        const filtro = document.createElement('div');
-        filtro.className = 'filtro-popup';
-        filtro.innerHTML = `
-            <select id="filtro-tipo">
-                <option value="todos">Todos los tipos</option>
-                <option value="carne">Carne</option>
-                <option value="pescado">Pescado</option>
-                <option value="vegetales">Vegetales</option>
-                <option value="frutas">Frutas</option>
-                <option value="lacteos">Lácteos</option>
-                <option value="otros">Otros</option>
-            </select>`;
-        
-        document.body.appendChild(filtro);
-
-        // Cerrar al hacer clic fuera
-        filtro.addEventListener('click', (e) => {
-            if (e.target === filtro) {
-                filtro.remove();
+        btnFiltro.addEventListener('click', async () => {
+            if (contenedorFiltros.innerHTML !== "") {
+                contenedorFiltros.innerHTML = "";
+                return;
             }
+
+            const tipos = await getTiposAlimento();
+            renderBarraFiltros(contenedorFiltros, tipos);
+
+            document.querySelectorAll('.filter-input').forEach(input => {
+                input.addEventListener('input', ejecutarFiltrado);
+            });
         });
-    });
 }
+
+function ejecutarFiltrado() {
+    const filtros = {
+        nombre: document.getElementById('filter-nombre').value.toLowerCase(),
+        tipo: document.getElementById('filter-tipo').value,
+        fechaIn: document.getElementById('filter-fecha-in').value,
+        fechaOut: document.getElementById('filter-fecha-out').value
+    };
+
+    console.log("Filtrando por:", filtros);
+    //funcion limpiar tabla segun filtros
+
+}
+
+
 
 // Arrancar App
 document.addEventListener('DOMContentLoaded', () => {

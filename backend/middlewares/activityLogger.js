@@ -7,7 +7,7 @@ export const activityLogger = (req, res, next) => {
             let userId = req.userId || null;
             const rute = req.originalUrl;
             const method = req.method;
-            let action = req.action;
+            let action = req.action || req.headers['x-accion'];
             const details = 'Acción realizada con exito';
             const statusCode = res.statusCode;
             

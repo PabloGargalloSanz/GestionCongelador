@@ -1,4 +1,5 @@
-import {getAllAlimentos, getAlimentoTipo, newAlimentoService, updateAlimentoService } from "../services/alimentos.service.js";
+
+import {getAllAlimentos, getAllAlimentosUsuario, getAlimentoTipo, newAlimentoService, updateAlimentoService, getAllAlimentosTipoService } from "../services/alimentos.service.js";
 
 
 //Obtener todos los alimentos
@@ -9,6 +10,27 @@ export const getTodosAlimentos = (req, res) => {
         });
 }
 
+//Obtener todos los alimentos por usuario
+export const getTodosAlimentosByUsuario = (req, res) => {
+    const userId = req.userId;
+
+    getAllAlimentosUsuario(userId)
+        .then((alimentos) => {
+            console.log("Alimentos encontrados:", alimentos.length);
+            res.send(alimentos);
+        })
+        .catch ((error) => {
+            res.status(500).json({ error: "Error al obtener el inventario" });
+    });
+}
+
+//obtener tipos de alimento
+export const getAllAlimentosTipo = (req, res) => {
+    getAllAlimentosTipoService()
+        .then((alimentos) => {
+            res.send(alimentos);
+        });
+}
 //Obtner alimentos por tipo
 
 export const getAlimentosByTipo = (req, res) => {

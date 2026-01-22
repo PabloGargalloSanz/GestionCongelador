@@ -36,9 +36,8 @@ export function showToast(message, level = 'info') {
     }, 4000); //  visible 4 segundos
 }
 
-// Componentes dinamicos 
 
-//Llenar almacenes
+//Llenar almacenes////////////////////
 export function renderAlmacenes() {
     const grid = document.getElementById('freezer-grid');
     if (!grid) return;
@@ -63,4 +62,62 @@ export function renderAlmacenes() {
         `;
         grid.appendChild(card);
     });
+}
+
+//llenar tabla inventario
+
+export function renderTablaInventario(alimentos) {
+    const tableBody = document.getElementById('inventario-list');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = ""; 
+
+    if (alimentos.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center;">No hay alimentos en el inventario</td>
+            </tr>`;
+        return;
+    }
+
+    alimentos.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.alimento}</td>
+            <td>${item.tipo}</td>
+            <td>${item.cantidad}</td>
+            <td>${item.ubicacion}</td>
+            <td>${new Date(item.fecha_introduccion).toLocaleDateString()}</td>
+            <td>${new Date(item.fecha_caducidad).toLocaleDateString()}</td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+
+//Filtros inventario////////////////////
+export function renderBarraFiltros(container, tipos) {
+    container.innerHTML = `
+        <div class="filter-row-container">
+            <div class="filter-grid">
+                <div class="filter-col">
+                    <input type="text" id="filter-nombre" placeholder=" Buscar..." class="filter-input">
+                </div>
+                <div class="filter-col">
+                    <select id="filter-tipo" class="filter-input">
+                        <option value="">Todos</option>
+                        ${tipos.map(t => `<option value="${t}">${t}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="filter-col"></div>
+                <div class="filter-col"></div>
+                <div class="filter-col">
+                    <input type="date" id="filter-fecha-in" class="filter-input">
+                </div>
+                <div class="filter-col">
+                    <input type="date" id="filter-fecha-out" class="filter-input">
+                </div>
+            </div>
+        </div>
+    `;
 }

@@ -388,3 +388,33 @@ header p {
     from { transform: translateX(100%); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
 }
+
+/* filtros*/
+.filter-row-container {
+    background: #fdfdfd;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-bottom: none; 
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr 1.5fr 1.5fr; 
+    gap: 15px;
+    align-items: center;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+}
+
+.filter-input:focus {
+    border-color: var(--primario);
+}

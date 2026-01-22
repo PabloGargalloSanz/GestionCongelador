@@ -15,8 +15,7 @@ export const verifyToken = (req, res, next) => {
         // decodificar
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
-        req.userId = decoded.id_usuario; 
-        
+        req.userId = decoded.id; 
         next();
     } catch (error) {
         error.action = 'TOKEN_VERIFY_FAIL';
