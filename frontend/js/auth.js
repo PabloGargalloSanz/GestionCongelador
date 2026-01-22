@@ -21,5 +21,11 @@ export const auth = {
 
     getUserEmail() {
         return localStorage.getItem('userEmail');
+    },
+
+    //token expirado
+    handleExpiredSession() {
+        this.clearSession();
+        window.dispatchEvent(new CustomEvent('unauthorized-access'));
     }
 };

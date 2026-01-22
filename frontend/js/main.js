@@ -2,6 +2,13 @@ import { auth } from './auth.js';
 import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario } from './api.js';
 import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario } from './ui.js';
 
+// comprobar si token expira
+window.addEventListener('unauthorized-access', () => {
+    showToast("Su sesión ha expirado. Por favor, inicie sesión de nuevo.", "danger");
+    renderLogin(); 
+});
+
+
 // navegar por las vistas
 
 //Login//////////////////////////////

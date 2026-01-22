@@ -1,5 +1,41 @@
+import { auth } from './auth.js';
+
 //variables grobales
 const API_BASE_URL = '/api';
+
+//
+async function apiFetch(endpoint, options = {}) {
+    const token = localStorage.getItem('auth_token');
+    
+    // headers defecto
+    const defaultHeaders = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    };
+
+    // union opciones 
+    const config = {
+        ...options,
+        headers: {
+            ...defaultHeaders,
+            ...options.headers
+        }
+    };
+
+    try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+
+        if (response.status === 401) {
+            auth.handleExpiredSession(); 
+            return null; 
+        }
+
+        return response;
+    } catch (error) {
+        console.error("Error en la comunicación API:", error);
+        throw error;
+    }
+}
 
 //login
 export async function loginRequest(email, password) {
@@ -16,11 +52,9 @@ export async function loginRequest(email, password) {
 export async function getAlmacenesByUsuarioDashboard() {
     const token = localStorage.getItem('auth_token');
     try {
-        const response = await fetch(`${API_BASE_URL}/almacenamientos/usuario`, {
+        const response = await apiFetch('/almacenamientos/usuario', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`, 
-                'Content-Type': 'application/json',
                 'X-accion': 'STORAGE_CONSULTING'
             }
         });
@@ -36,11 +70,9 @@ export async function getAlmacenesByUsuarioDashboard() {
 export async function getAllAlimentosByUsuario(){
     const token = localStorage.getItem('auth_token');
     try{
-        const response = await fetch(`${API_BASE_URL}/alimentos/usuario`, {
+        const response = await apiFetch('/alimentos/usuario', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`, 
-                'Content-Type': 'application/json',
                 'X-accion': 'INVENTORY_CONSULTING'
             }
         });
@@ -59,8 +91,10 @@ export async function getAllAlimentosByUsuario(){
 export async function getTiposAlimento() {
     const token = localStorage.getItem('auth_token');
     try {
-        const response = await fetch(`${API_BASE_URL}/alimentos/tipos_unicos_alimento`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+        const response = await apiFetch('/alimentos/tipos_unicos_alimento', {
+            headers: { 
+                'X-accion': 'FOOD_TYPES_CONSULTING'
+            }
         });
         return response.json(); 
 
