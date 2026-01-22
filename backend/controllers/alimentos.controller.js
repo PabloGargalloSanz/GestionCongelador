@@ -16,10 +16,10 @@ export const getTodosAlimentosByUsuario = (req, res) => {
 
     getAllAlimentosUsuario(userId)
         .then((alimentos) => {
-            res.send(alimentos);
+            res.status(200).send(alimentos);
         })
         .catch ((error) => {
-            res.status(500).json({ error: "Error al obtener el inventario" });
+            res.status(500).json({error: error.message = "Error al obtener el inventario" });
     });
 }
 
@@ -39,7 +39,7 @@ export const getAlimentosByTipo = (req, res) => {
             res.status(200).send(alimentos);
         })
         .catch((error) => {
-            res.status(400).send({ error: error.message});
+            res.status(400).send({ error: error.message = "Error al obtener tipos de alimento"});
         });
 }
 
@@ -59,7 +59,7 @@ export const createAlimento = (req, res) => {
             });    
 
     } else {
-        res.status(400).send({ error: 'Faltan datos obligatorios' });
+        res.status(400).send({ error: error.message= 'Faltan datos obligatorios' });
     }
 }
 
@@ -73,6 +73,6 @@ export const updateAlimento = ( req, res) => {
             res.status(200).send(updatedAlimento);
         })
         .catch((error) => {
-            res.status(400).send({ error: error.message});
+            res.status(400).send({ error: error.message = "Error al actualizar alimento"});
         });
 }
