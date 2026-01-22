@@ -12,7 +12,8 @@ DROP TABLE IF EXISTS logs, recetas_favoritas, receta_alimentos, cajon_lotes, lot
 CREATE TABLE usuarios (
     id_usuario SERIAL PRIMARY KEY,
     email VARCHAR(50) NOT NULL UNIQUE,
-    pass VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) DEFAULT 'user',
     puntuacion NUMERIC(10, 2) DEFAULT 0 
 );
 
@@ -55,7 +56,7 @@ CREATE TABLE cajon_lotes(
     id_cajon_lote SERIAL PRIMARY KEY,
     id_cajon INT NOT NULL REFERENCES cajones(id_cajon) ON DELETE CASCADE,
     id_lote INT NOT NULL REFERENCES lotes(id_lote) ON DELETE CASCADE,
-    fecha_introducido DATE NOT NULL DEFAULT CURRENT_DATE
+    fecha_introducido DATE DEFAULT CURRENT_DATE
 );
 
 -----
@@ -180,11 +181,17 @@ CREATE TABLE recetas_favoritas(
     id_receta INT NOT NULL REFERENCES recetas(id_receta) ON DELETE CASCADE
 );
 
-CREATE TABLE logs (
-	id_log SERIAL PRIMARY KEY,
-	fecha_log DATE NOT NULL,
-	hora_log TIME NOT NULL,
-	metodo VARCHAR,
-	ip VARCHAR,
-	direccion VARCHAR
+CREATE TABLE IF NOT EXISTS logs (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER REFERENCES usuarios(id_usuario),
+    accion VARCHAR(255) NOT NULL,
+    ip_origen VARCHAR(45) NOT NULL,
+    metodo VARCHAR (20),
+    ruta TEXT,
+    detalles TEXT,
+    status_codigo INTEGER,               
+    fecha_creado TIMESTAMPTZ DEFAULT now()
 );
+
+INSERT INTO usuarios (email, password, role) VALUES 
+('p', '$argon2id$v=19$m=65536,t=10,p=4$H0iyUmm8uwPBhLEmoMrgXg$2K1GCeHx5O19Pm51bHTh6ixPH0vmW+a1VxDciVZtgmM', 'admin'); -- password: 0

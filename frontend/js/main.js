@@ -17,60 +17,61 @@ function loadTemplate(templateId, container) {
 
 // navegar por las vistas
 
+
+//Login//////////////////////////////
 function renderLogin() {
     loadTemplate('tpl-login', app);
+
     const loginForm = document.getElementById('login-form');
-
-    //Login
-
-    loginForm.addEventListener("submit", async (e) => {
+    loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-
-        localStorage.setItem('userEmail', email);
+        const email = document.getElementById('username').value;
+        const tokenInput = document.getElementById('password').value; 
 
         try {
-
-    ////////////////////////////////////////////////////////////////
-    // Cambiar la URL a la correcta del backend cuando abra servidor
-    //////////////////////////////////////////////////////////////
-            const response = await fetch("/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, pass: password }) 
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password: tokenInput })
             });
 
             const data = await response.json();
 
-        ///////////////////////////////////////////////////////////
-            e.preventDefault();
-            const entrar = true;
-
-        ///////////////////////////////////////////////////////////
-            //if (response.ok) { poner esto y quitar entrar y e.preventDefault
-
-            if (entrar || response.ok) {
-                // guardar token
-                localStorage.setItem("token", data.token);                
-
+            if (response.ok) {
+                // guardamso token
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('userEmail', email);
+                                
+                //loginScreen.classList.add('hidden');
+                //mainApp.classList.remove('hidden');
+                
+                // Iniciamos el menu
                 rendermenu();
+
             } else {
-                alert(data.error || "Error al entrar");
+                showToast(data.error || "Acceso denegado", 'danger');
             }
         } catch (error) {
-            console.error(error);
-            alert("Error de conexión");
+            showToast("Error de conexión con el servidor de autenticación", 'danger');
         }
     });
-
 
 }
 
 //render menu
 function rendermenu() {
+    const savedEmail = localStorage.getItem('userEmail');
+    if(!savedEmail){
+        renderLogin();
+        return;
+    } 
+    
     loadTemplate('tpl-menu', app);
+
+    const displayElement = document.getElementById('display-email');
+    if(displayElement){
+        displayElement.innerText = savedEmail;
+    }
 
     // Configurar Sidebar
     const navButtons = document.querySelectorAll('.nav-item[data-view]');
@@ -84,20 +85,13 @@ function rendermenu() {
         });
     });
 
-    const savedEmail = localStorage.getItem('userEmail');
-    const displayElement = document.getElementById('display-email');
-
-    if(savedEmail){
-        displayElement.innerText = savedEmail;
-    } else {
-        renderLogin();
-    }
     
 
     // Logout
     document.getElementById('logout-btn').addEventListener('click', () => {
         sessionStorage.clear();
         localStorage.removeItem('userEmail');
+        localStorage.removeItem('auth_token');
         renderLogin();
     });
 
@@ -161,3 +155,25 @@ document.addEventListener('DOMContentLoaded', () => {
         
     }
 })
+
+// popups //////////////////////////////////
+function showToast(message, level = 'info') {
+    const container = document.getElementById("toast-container");
+    if (!container) return;
+
+    const toast = document.createElement("div");
+    
+    const activeLevel = level.toLowerCase();
+    toast.className = `toast ${activeLevel}`;
+    toast.innerText = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add('fade-out');
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 500); 
+    }, 4000); //  visible 4 segundos
+}

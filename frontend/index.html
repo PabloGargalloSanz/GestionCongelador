@@ -24,7 +24,7 @@
                     <form id="login-form">
                         <div class="form-group">
                             <label class="form-label">Correo Electrónico:</label>
-                            <input type="email" id="email" class="form-input" placeholder="ejemplo@dominio.com">
+                            <input type="email" id="username" class="form-input" placeholder="ejemplo@dominio.com">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Contraseña:</label>
@@ -61,7 +61,7 @@
                     <div class="sidebar-footer">
                         <div class="user-info">
                             <div class="user-avatar">U</div>
-                            <span id="display-email" >usuario@tfg.com</span>
+                            <span id="display-email" ></span>
                         </div>
                         <button class="nav-item" id="logout-btn">
                             Salir
@@ -117,6 +117,7 @@
                 </tbody>
             </table>
         </template>
+        <div id="toast-container"></div>
 
         <script type="module" src="./js/main.js"></script>
     </body>

@@ -1,9 +1,10 @@
 import express from 'express';
 import cors from 'cors';    
-import logger from './middlewares/logger.js';
 import ENV from './utils/envLoader.js';
 import pool from './db/db.js';
 import mainRouter from './routes/mainRouter.js';
+import { globalErrorHandler } from './middlewares/errorHandler.js';
+import { activityLogger } from './middlewares/activityLogger.js';
 import path from 'path';
 
 const app = express();
@@ -12,8 +13,10 @@ app.use(express.static(path.join('..', 'frontend')));
 
 app.use(cors());
 app.set('trust proxy', true);
-app.use(logger);
 app.use(express.json());
+app.use(activityLogger);
+app.use('/api', mainRouter);
+
 
 //Endpoint raiz
 app.get('/api', (req,res) => {
@@ -30,7 +33,8 @@ pool.connect()
         console.log('❌ Error al conectarse a la base de datos ', error);
 })
 
-app.use('/api', mainRouter);
+
+app.use(globalErrorHandler);
 
 //Escuchar en el puerto
 app.listen(ENV.PORT, () => {
