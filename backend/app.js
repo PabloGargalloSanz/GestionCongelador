@@ -4,10 +4,14 @@ import logger from './middlewares/logger.js';
 import ENV from './utils/envLoader.js';
 import pool from './db/db.js';
 import mainRouter from './routes/mainRouter.js';
+import path from 'path';
 
 const app = express();
 
+app.use(express.static(path.join('..', 'frontend')));
+
 app.use(cors());
+app.set('trust proxy', true);
 app.use(logger);
 app.use(express.json());
 
