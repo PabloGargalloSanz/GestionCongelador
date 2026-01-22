@@ -19,6 +19,7 @@ export const verifyToken = (req, res, next) => {
         next();
     } catch (error) {
         error.action = 'TOKEN_VERIFY_FAIL';
+        error.status = 401;
         next(error);
     }
 };
