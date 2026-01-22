@@ -20,15 +20,7 @@ function loadTemplate(templateId, container) {
 function renderLogin() {
     loadTemplate('tpl-login', app);
     const loginForm = document.getElementById('login-form');
-/*
-//Si no funciona conexion db
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const emailValue = document.getElementById('email').value || 'test@test.com';
-        
-        rendermenu();
-    });   
-     */
+
     //Login
 
     loginForm.addEventListener("submit", async (e) => {
@@ -44,7 +36,7 @@ function renderLogin() {
     ////////////////////////////////////////////////////////////////
     // Cambiar la URL a la correcta del backend cuando abra servidor
     //////////////////////////////////////////////////////////////
-            const response = await fetch("http://127.0.0.1/api/login", {
+            const response = await fetch("/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, pass: password }) 

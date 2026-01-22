@@ -16,7 +16,7 @@ app.use(logger);
 app.use(express.json());
 
 //Endpoint raiz
-app.get('/', (req,res) => {
+app.get('/api', (req,res) => {
     res.send ({
         mensaje: "Bienvenido"
     })
