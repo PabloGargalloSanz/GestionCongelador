@@ -16,15 +16,25 @@ INSERT INTO alimentos (alimento_nombre, alimento_tipo) VALUES
 INSERT INTO almacenamientos (id_usuario, almacenamiento_nombre, localizacion) VALUES
 (2, 'Nevera Principal', 'Cocina'), -- ID 1
 (2, 'Arcón Garaje', 'Garaje');     -- ID 2
+(3, 'Nevera grande', 'Masico'), -- ID 1
+(3, 'Arcón ', 'Trastero');     -- ID 2
 
 INSERT INTO cajones (id_almacenamiento, posicion, tamano) VALUES
-(1, 1, 500.00), -- ID 1
-(2, 1, 1000.00);-- ID 2
+(1, 2, 1500.00), -- ID 1
+(2, 2, 1500.00), -- ID 1
+(3, 1, 500.00), -- ID 1
+(3, 2, 1500.00), -- ID 1
+(4, 1, 1000.00);-- ID 2
+(4, 2, 1000.00);-- ID 2
 
 -- Lotes (id_cajon, id_alimento, cantidad, unidad, tamaño, fecha)
-SELECT insertar_lote_cajon(1, 1, 2, 'unidades', 100, '2026-05-10');
-SELECT insertar_lote_cajon(1, 3, 1, 'bolsa', 50, '2026-02-15');
-SELECT insertar_lote_cajon(2, 2, 4, 'lomos', 400, '2026-09-20');
+SELECT insertar_lote_cajon(2, 1, 2, 'unidades', 100, '2026-05-10');
+SELECT insertar_lote_cajon(3, 3, 1, 'bolsa', 50, '2026-02-15');
+SELECT insertar_lote_cajon(4, 2, 4, 'lomos', 400, '2026-09-20');
+SELECT insertar_lote_cajon(5, 3, 4, 'bolsa', 400, '2026-09-20');
+SELECT insertar_lote_cajon(6, 2, 4, 'lomos', 400, '2026-09-20');
+SELECT insertar_lote_cajon(7, 3, 4, 'bolsa', 400, '2026-09-20');
+SELECT insertar_lote_cajon(8, 2, 4, 'lomos', 400, '2026-09-20');
 
 -- Recetas y Favoritos para ID 2
 INSERT INTO recetas (receta_nombre, descripcion) VALUES ('Cena Ligera', 'Pollo con espinacas.');

@@ -25,7 +25,8 @@ export const getAllAlimentosUsuario = async (userId) => {
         JOIN cajon_lotes cl ON c.id_cajon = cl.id_cajon
         JOIN lotes l ON cl.id_lote = l.id_lote
         JOIN alimentos a ON l.id_alimento = a.id_alimento
-        WHERE u.id_usuario = $1;
+        WHERE u.id_usuario = $1
+        ORDER BY l.fecha_caducidad ASC;
     `
     try {
         const result = await pool.query (

@@ -16,7 +16,6 @@ export const getTodosAlimentosByUsuario = (req, res) => {
 
     getAllAlimentosUsuario(userId)
         .then((alimentos) => {
-            console.log("Alimentos encontrados:", alimentos.length);
             res.send(alimentos);
         })
         .catch ((error) => {
