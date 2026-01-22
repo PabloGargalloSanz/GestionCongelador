@@ -1,22 +1,8 @@
-// --- Datos de prueba ---
-const almacenamientos = [
-    { id: 1, nombre: 'Congelador Cocina', localizacion: 'Cocina', ocupacion: 95 },
-    { id: 2, nombre: 'Arcón Garaje', localizacion: 'Garaje', ocupacion: 22 }
-];
-
-// selectores principales
-const app = document.getElementById('app');
-
-// cargar templates
-function loadTemplate(templateId, container) {
-    const template = document.getElementById(templateId);
-    const clone = template.content.cloneNode(true);
-    container.innerHTML = "";
-    container.appendChild(clone);
-}
+import { auth } from './auth.js';
+import { loginRequest } from './api.js';
+import { app, loadTemplate, showToast, renderAlmacenes } from './ui.js';
 
 // navegar por las vistas
-
 
 //Login//////////////////////////////
 function renderLogin() {
@@ -26,28 +12,18 @@ function renderLogin() {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('username').value;
-        const tokenInput = document.getElementById('password').value; 
+        const password = document.getElementById('password').value; 
 
         try {
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password: tokenInput })
-            });
-
+            const response = await loginRequest(email, password);
             const data = await response.json();
 
             if (response.ok) {
                 // guardamso token
-                localStorage.setItem('auth_token', data.token);
-                localStorage.setItem('userEmail', email);
+                auth.saveSession(data.token, email);
                                 
-                //loginScreen.classList.add('hidden');
-                //mainApp.classList.remove('hidden');
-                
                 // Iniciamos el menu
                 rendermenu();
-
             } else {
                 showToast(data.error || "Acceso denegado", 'danger');
             }
@@ -55,12 +31,11 @@ function renderLogin() {
             showToast("Error de conexión con el servidor de autenticación", 'danger');
         }
     });
-
 }
 
 //render menu
 function rendermenu() {
-    const savedEmail = localStorage.getItem('userEmail');
+    const savedEmail = auth.getUserEmail();
     if(!savedEmail){
         renderLogin();
         return;
@@ -85,15 +60,14 @@ function rendermenu() {
         });
     });
 
-    
-
     // Logout
-    document.getElementById('logout-btn').addEventListener('click', () => {
-        sessionStorage.clear();
-        localStorage.removeItem('userEmail');
-        localStorage.removeItem('auth_token');
-        renderLogin();
-    });
+    const logoutBtn = document.getElementById('logout-btn');
+    if(logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            auth.clearSession();
+            renderLogin();
+        });
+    }
 
     // Carga inicial de la sub-vista dashboard
     renderView('dashboard');
@@ -101,6 +75,7 @@ function rendermenu() {
 
 function renderView(viewName) {
     const mainContent = document.getElementById('main-content');
+    if (!mainContent) return;
     
     if (viewName === 'dashboard') {
         loadTemplate('dashboard-view', mainContent);
@@ -108,72 +83,46 @@ function renderView(viewName) {
 
     } else if (viewName === 'inventario') {
         loadTemplate('inventario-view', mainContent);
-        // funcion rellenar tabla
-
+        renderFiltros(); // Llamamos a la función de los filtros
     }  else if (viewName === 'recetas') {
         loadTemplate('recetas-view', mainContent);
-        //funcion rellenar recetas
     }
 }
 
-// Componentes dinamicos 
+function renderFiltros() {  
+    const filtroBtn = document.getElementById('filtro-inventario-btn');
+    if (!filtroBtn) return;
 
-//Llenar almacenes
-function renderAlmacenes() {
-    const grid = document.getElementById('freezer-grid');
-    if (!grid) return;
+    filtroBtn.addEventListener('click', () => {
+        const filtro = document.createElement('div');
+        filtro.className = 'filtro-popup';
+        filtro.innerHTML = `
+            <select id="filtro-tipo">
+                <option value="todos">Todos los tipos</option>
+                <option value="carne">Carne</option>
+                <option value="pescado">Pescado</option>
+                <option value="vegetales">Vegetales</option>
+                <option value="frutas">Frutas</option>
+                <option value="lacteos">Lácteos</option>
+                <option value="otros">Otros</option>
+            </select>`;
+        
+        document.body.appendChild(filtro);
 
-    almacenamientos.forEach(alm => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <div class="almacen-contenedor">
-                <div class="card-icon"></div>
-                <span class="almacen-localizacion">${alm.localizacion}</span>
-            </div>
-            <h3 class="almacen-nombre">${alm.nombre}</h3>
-            <p class="almacen-ocupacion">Ocupación actual</p>
-            <div class="progress-container">
-                <div class="progress-bar" style="width: ${alm.ocupacion}% "></div>
-            </div>
-            <div class="status-row">
-                <span style="color: ${alm.ocupacion > 80 ? 'var(--accent)' : 'var(--primario-oscuro)'}">${alm.ocupacion}% </span>
-                <button class="btn-detail">Gestionar →</button>
-            </div>
-        `;
-        grid.appendChild(card);
+        // Cerrar al hacer clic fuera
+        filtro.addEventListener('click', (e) => {
+            if (e.target === filtro) {
+                filtro.remove();
+            }
+        });
     });
 }
 
 // Arrancar App
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem("token");
-    if (token) {
+    if (auth.isLoggedIn()) {
         rendermenu();
     } else {
         renderLogin();
-        
     }
-})
-
-// popups //////////////////////////////////
-function showToast(message, level = 'info') {
-    const container = document.getElementById("toast-container");
-    if (!container) return;
-
-    const toast = document.createElement("div");
-    
-    const activeLevel = level.toLowerCase();
-    toast.className = `toast ${activeLevel}`;
-    toast.innerText = message;
-
-    container.appendChild(toast);
-
-    setTimeout(() => {
-        toast.classList.add('fade-out');
-        
-        setTimeout(() => {
-            toast.remove();
-        }, 500); 
-    }, 4000); //  visible 4 segundos
-}
+});
