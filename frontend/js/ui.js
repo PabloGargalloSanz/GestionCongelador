@@ -98,7 +98,7 @@ export function renderTablaInventario(alimentos) {
 
 
 //Filtros inventario////////////////////
-export function renderBarraFiltros(container, tipos) {
+export function renderBarraFiltros(container, tipos, almacenes) {
     container.innerHTML = `
         <div class="filter-row-container">
             <div class="filter-grid">
@@ -112,7 +112,13 @@ export function renderBarraFiltros(container, tipos) {
                     </select>
                 </div>
                 <div class="filter-col"></div>
-                <div class="filter-col"></div>
+                <div class="filter-col">
+                    <select id="filter-almacenes" class="filter-input">
+                        <option value="" class="filter-input">Todos</option>
+                        ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
+                    </select>
+                
+                </div>
                 <div class="filter-col">
                     <select id="filter-fecha-introducido" class="filter-input">
                         <option value="" class="filter-input"> </option>

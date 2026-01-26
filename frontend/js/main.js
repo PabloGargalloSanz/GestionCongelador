@@ -92,8 +92,8 @@ async function renderView(viewName) {
     if (viewName === 'dashboard') {
         loadTemplate('dashboard-view', mainContent);
         try {
-            const almacenes = await getAlmacenesByUsuarioDashboard();
-            renderAlmacenes(almacenes);
+            almacenesGlobales = await getAlmacenesByUsuarioDashboard();
+            renderAlmacenes(almacenesGlobales);
 
         } catch (error) {
             console.error("Fallo al cargar almacenes", error);
@@ -130,11 +130,14 @@ function renderFiltros() {
         }
 
         const tipos = await getTiposAlimento();
-        renderBarraFiltros(contenedorFiltros, tipos);
+        
+        renderBarraFiltros(contenedorFiltros, tipos, almacenesGlobales);
 
         document.querySelectorAll('.filter-input').forEach(input => {
-            input.addEventListener('input', ejecutarFiltrado);
+            const evento = input.tagName === 'SELECT' ? 'change' : 'input';
+            input.addEventListener(evento, ejecutarFiltrado);
         });
+        
         document.getElementById('filter-fecha-introducido').addEventListener('change', () => {
             document.getElementById('filter-fecha-caducidad').value = "";
         });
@@ -145,42 +148,33 @@ function renderFiltros() {
 }
 
 function ejecutarFiltrado() {
+    // 1. Obtener valores de los filtros
     const filtros = {
         nombre: document.getElementById('filter-nombre').value.toLowerCase(),
         tipo: document.getElementById('filter-tipo').value,
+        almacen: document.getElementById('filter-almacenes').value,
         ordenIntro: document.getElementById('filter-fecha-introducido').value,
         ordenCaducidad: document.getElementById('filter-fecha-caducidad').value
     };
 
-    // filtro tipos
-    let datosProcesados = inventarioGlobal.filter(item => {
-        const nombreItem = (item.alimento || "").toLowerCase();
-        const coincideNombre = nombreItem.includes(filtros.nombre);
+    const datosFiltrados = inventarioGlobal.filter(item => {
+        const coincideNombre = (item.alimento || "").toLowerCase().includes(filtros.nombre);
         const coincideTipo = filtros.tipo === "" || item.tipo === filtros.tipo;
-        return coincideNombre && coincideTipo;
+        const coincideAlmacen = filtros.almacen === "" || (item.ubicacion && item.ubicacion.includes(filtros.almacen));
+
+        return coincideNombre && coincideTipo && coincideAlmacen;
     });
 
-    //  orden
     if (filtros.ordenIntro) {
-        datosProcesados.sort((a, b) => {
+        datosFiltrados.sort((a, b) => {
             const dateA = new Date(a.fecha_introduccion);
             const dateB = new Date(b.fecha_introduccion);
             return filtros.ordenIntro === "Ascendente" ? dateA - dateB : dateB - dateA;
         });
-    } else if (filtros.ordenCaducidad) {
-        datosProcesados.sort((a, b) => {
-           
-            // fecha
-            const dateA = new Date(a.fecha_caducidad || 0); 
-            const dateB = new Date(b.fecha_caducidad || 0);
-            return filtros.ordenCaducidad === "Ascendente" ? dateA - dateB : dateB - dateA;
-        });
     }
 
-    console.log(datosProcesados);
-    renderTablaInventario(datosProcesados);
+    renderTablaInventario(datosFiltrados); 
 }
-
 
 // Arrancar App
 document.addEventListener('DOMContentLoaded', () => {
