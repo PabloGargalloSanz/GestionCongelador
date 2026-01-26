@@ -142,30 +142,36 @@ function ejecutarFiltrado() {
     const filtros = {
         nombre: document.getElementById('filter-nombre').value.toLowerCase(),
         tipo: document.getElementById('filter-tipo').value,
-        fechaIn: document.getElementById('filter-fecha-in').value,
-        fechaOut: document.getElementById('filter-fecha-out').value
+        ordenIntro: document.getElementById('filter-fecha-introducido').value,
+        ordenCaducidad: document.getElementById('filter-fecha-caducidad').value
     };
 
-    const datosFiltrados = inventarioGlobal.filter(item => {
-        const nombreItem = item.alimento ? item.alimento.toLowerCase() : "";
+    // filtro tipos
+    let datosProcesados = inventarioGlobal.filter(item => {
+        const nombreItem = (item.alimento || "").toLowerCase();
         const coincideNombre = nombreItem.includes(filtros.nombre);
-        
         const coincideTipo = filtros.tipo === "" || item.tipo === filtros.tipo;
-        
-        let coincideFecha = true;
-        const fechaItem = item.fecha_introduccion; 
-        
-        if (filtros.fechaIn && fechaItem) {
-            coincideFecha = coincideFecha && new Date(fechaItem) >= new Date(filtros.fechaIn);
-        }
-        if (filtros.fechaOut && fechaItem) {
-            coincideFecha = coincideFecha && new Date(fechaItem) <= new Date(filtros.fechaOut);
-        }
-
-        return coincideNombre && coincideTipo && coincideFecha;
+        return coincideNombre && coincideTipo;
     });
 
-    renderTablaInventario(datosFiltrados); 
+    //  orden
+    if (filtros.ordenIntro) {
+        datosProcesados.sort((a, b) => {
+            const dateA = new Date(a.fecha_introduccion);
+            const dateB = new Date(b.fecha_introduccion);
+            return filtros.ordenIntro === "Ascendente" ? dateA - dateB : dateB - dateA;
+        });
+    } else if (filtros.ordenCaducidad) {
+        datosProcesados.sort((a, b) => {
+           
+            // fecha
+            const dateA = new Date(a.fecha_caducidad || 0); 
+            const dateB = new Date(b.fecha_caducidad || 0);
+            return filtros.ordenCaducidad === "Ascendente" ? dateA - dateB : dateB - dateA;
+        });
+    }
+
+    renderTablaInventario(datosProcesados);
 }
 
 

@@ -114,10 +114,18 @@ export function renderBarraFiltros(container, tipos) {
                 <div class="filter-col"></div>
                 <div class="filter-col"></div>
                 <div class="filter-col">
-                    <input type="date" id="filter-fecha-in" class="filter-input">
-                </div>
-                <div class="filter-col">
-                    <input type="date" id="filter-fecha-out" class="filter-input">
+                    <select id="filter-fecha-introducido" class="filter-input">
+                        <option value="" class="filter-input"> </option>
+                        <option value="Ascendente" >Ascendente</option>
+                        <option value="Descendente" >Descendente</option>
+                    </select>
+                    </div>
+                    <div class="filter-col">
+                    <select id="filter-fecha-caducidad" class="filter-input">
+                        <option value="" class="filter-input"> </option>
+                        <option value="Ascendente" >Ascendente</option>
+                        <option value="Descendente" >Descendente</option>
+                    </select>
                 </div>
             </div>
         </div>
