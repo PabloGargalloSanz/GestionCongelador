@@ -2,6 +2,11 @@ import { auth } from './auth.js';
 import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario } from './api.js';
 import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario } from './ui.js';
 
+
+///variables globales
+let inventarioGlobal = [];
+let almacenesGlobales = [];
+
 // comprobar si token expira
 window.addEventListener('unauthorized-access', () => {
     showToast("Su sesión ha expirado. Por favor, inicie sesión de nuevo.", "danger");
@@ -97,9 +102,11 @@ async function renderView(viewName) {
     } else if (viewName === 'inventario') {
         loadTemplate('inventario-view', mainContent);
         try {
-            const alimentos = await getAllAlimentosByUsuario();
-            renderTablaInventario(alimentos);
-            renderFiltros(); 
+            const respuestaApi = await getAllAlimentosByUsuario();
+            inventarioGlobal = Array.isArray(respuestaApi[0]) ? respuestaApi[0] : respuestaApi;
+            
+            renderTablaInventario(inventarioGlobal);
+            renderFiltros();
 
         } catch (error) {
             console.error("Fallo al cargar el inventario:", error);
@@ -109,6 +116,8 @@ async function renderView(viewName) {
         loadTemplate('recetas-view', mainContent);
     }
 }
+
+///Tabla inventario
 
 function renderFiltros() {  
     const btnFiltro = document.getElementById('filtro-inventario-btn');
@@ -137,11 +146,27 @@ function ejecutarFiltrado() {
         fechaOut: document.getElementById('filter-fecha-out').value
     };
 
-    console.log("Filtrando por:", filtros);
-    //funcion limpiar tabla segun filtros
+    const datosFiltrados = inventarioGlobal.filter(item => {
+        const nombreItem = item.alimento ? item.alimento.toLowerCase() : "";
+        const coincideNombre = nombreItem.includes(filtros.nombre);
+        
+        const coincideTipo = filtros.tipo === "" || item.tipo === filtros.tipo;
+        
+        let coincideFecha = true;
+        const fechaItem = item.fecha_introduccion; 
+        
+        if (filtros.fechaIn && fechaItem) {
+            coincideFecha = coincideFecha && new Date(fechaItem) >= new Date(filtros.fechaIn);
+        }
+        if (filtros.fechaOut && fechaItem) {
+            coincideFecha = coincideFecha && new Date(fechaItem) <= new Date(filtros.fechaOut);
+        }
 
+        return coincideNombre && coincideTipo && coincideFecha;
+    });
+
+    renderTablaInventario(datosFiltrados); 
 }
-
 
 
 // Arrancar App

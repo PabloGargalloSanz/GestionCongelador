@@ -108,7 +108,7 @@ export function renderBarraFiltros(container, tipos) {
                 <div class="filter-col">
                     <select id="filter-tipo" class="filter-input">
                         <option value="">Todos</option>
-                        ${tipos.map(t => `<option value="${t}">${t}</option>`).join('')}
+                        ${tipos.map(t => `<option value="${t.alimento_tipo}">${t.alimento_tipo}</option>`).join('')}
                     </select>
                 </div>
                 <div class="filter-col"></div>
