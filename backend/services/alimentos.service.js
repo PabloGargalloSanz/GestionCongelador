@@ -42,7 +42,6 @@ export const getAllAlimentosUsuario = async (userId) => {
 //Obtener todos los tipos de alimentos
 export const getAllAlimentosTipoService = async () => {
     const result = await pool.query('SELECT DISTINCT alimento_tipo FROM alimentos');
-    console.log(result.rows);
     return result.rows;
 
 }
@@ -54,7 +53,6 @@ export const getAlimentoTipo = async (tipo) => {
         [tipo]
     );
     
-    console.log(result.rows);
     return result.rows;
 }
 

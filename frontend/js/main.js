@@ -121,21 +121,27 @@ async function renderView(viewName) {
 
 function renderFiltros() {  
     const btnFiltro = document.getElementById('filtro-inventario-btn');
-        const contenedorFiltros = document.getElementById('filtros-contenedor');
+    const contenedorFiltros = document.getElementById('filtros-contenedor');
 
-        btnFiltro.addEventListener('click', async () => {
-            if (contenedorFiltros.innerHTML !== "") {
-                contenedorFiltros.innerHTML = "";
-                return;
-            }
+    btnFiltro.addEventListener('click', async () => {
+        if (contenedorFiltros.innerHTML !== "") {
+            contenedorFiltros.innerHTML = "";
+            return;
+        }
 
-            const tipos = await getTiposAlimento();
-            renderBarraFiltros(contenedorFiltros, tipos);
+        const tipos = await getTiposAlimento();
+        renderBarraFiltros(contenedorFiltros, tipos);
 
-            document.querySelectorAll('.filter-input').forEach(input => {
-                input.addEventListener('input', ejecutarFiltrado);
-            });
+        document.querySelectorAll('.filter-input').forEach(input => {
+            input.addEventListener('input', ejecutarFiltrado);
         });
+        document.getElementById('filter-fecha-introducido').addEventListener('change', () => {
+            document.getElementById('filter-fecha-caducidad').value = "";
+        });
+        document.getElementById('filter-fecha-caducidad').addEventListener('change', () => {
+            document.getElementById('filter-fecha-introducido').value = "";
+        });
+    });
 }
 
 function ejecutarFiltrado() {
@@ -171,6 +177,7 @@ function ejecutarFiltrado() {
         });
     }
 
+    console.log(datosProcesados);
     renderTablaInventario(datosProcesados);
 }
 

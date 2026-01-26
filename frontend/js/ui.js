@@ -119,8 +119,8 @@ export function renderBarraFiltros(container, tipos) {
                         <option value="Ascendente" >Ascendente</option>
                         <option value="Descendente" >Descendente</option>
                     </select>
-                    </div>
-                    <div class="filter-col">
+                </div>
+                <div class="filter-col">
                     <select id="filter-fecha-caducidad" class="filter-input">
                         <option value="" class="filter-input"> </option>
                         <option value="Ascendente" >Ascendente</option>

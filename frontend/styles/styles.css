@@ -303,6 +303,11 @@ header p {
     color: var(--primario);
 }
 
+.filter-col{
+    min-width: 50px;
+    max-width: 120px;
+}
+
 .add-btn {
     background: var(--primario); 
     color: white;

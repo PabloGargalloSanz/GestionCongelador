@@ -27,7 +27,7 @@ export const getTodosAlimentosByUsuario = (req, res) => {
 export const getAllAlimentosTipo = (req, res) => {
     getAllAlimentosTipoService()
         .then((alimentos) => {
-            res.send(alimentos);
+            res.status(200).send(alimentos);
         });
 }
 //Obtner alimentos por tipo
