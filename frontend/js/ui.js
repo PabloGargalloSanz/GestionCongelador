@@ -55,7 +55,9 @@ export function renderAlmacenes(almacenes) {
             <h3 class="almacen-nombre">${alm.almacenamiento_nombre}</h3>
             <p class="almacen-ocupacion">Ocupación actual</p>
             <div class="progress-container">
-                <div class="progress-bar" style="width: ${alm.ocupacion}% "></div>
+                <div class="progress-bar" 
+                    style="width: ${alm.ocupacion}%; background-color: ${alm.ocupacion > 80 ? 'var(--accent)' : 'var(--primario)'};">
+                </div>
             </div>
             <div class="status-row">
                 <span style="color: ${alm.ocupacion > 80 ? 'var(--accent)' : 'var(--primario-oscuro)'}">${alm.ocupacion}% </span>

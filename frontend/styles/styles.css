@@ -9,7 +9,7 @@
     --fondo-gris: #e2e8f0;
     --bg-body: #f8fafc;
     --blanco: #ffffff;
-    --accent: #ff5722;
+    --accent: #fd7951;
     --texto-oscuro: #1e293b;
     --texto-claro: #64748b;      
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
@@ -460,7 +460,7 @@ header p {
     background: var(--primario);
     border-radius: 5px;
     width: 0%; 
-    transition: width 1s ease-in-out;
+    transition: width 1s ease-in-out, background-color 0.3s ease;
 }
 
 .status-row {

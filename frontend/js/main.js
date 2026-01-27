@@ -148,7 +148,6 @@ function renderFiltros() {
 }
 
 function ejecutarFiltrado() {
-    // 1. Obtener valores de los filtros
     const filtros = {
         nombre: document.getElementById('filter-nombre').value.toLowerCase(),
         tipo: document.getElementById('filter-tipo').value,
@@ -157,7 +156,8 @@ function ejecutarFiltrado() {
         ordenCaducidad: document.getElementById('filter-fecha-caducidad').value
     };
 
-    const datosFiltrados = inventarioGlobal.filter(item => {
+    // filtro de datos
+    let datosFiltrados = inventarioGlobal.filter(item => {
         const coincideNombre = (item.alimento || "").toLowerCase().includes(filtros.nombre);
         const coincideTipo = filtros.tipo === "" || item.tipo === filtros.tipo;
         const coincideAlmacen = filtros.almacen === "" || (item.ubicacion && item.ubicacion.includes(filtros.almacen));
@@ -165,11 +165,21 @@ function ejecutarFiltrado() {
         return coincideNombre && coincideTipo && coincideAlmacen;
     });
 
-    if (filtros.ordenIntro) {
+    // ordenacion unica
+    const criterio = filtros.ordenIntro ? 'fecha_introduccion' : (filtros.ordenCaducidad ? 'fecha_caducidad' : null);
+    const direccion = filtros.ordenIntro || filtros.ordenCaducidad;
+
+    if (criterio && direccion) {
         datosFiltrados.sort((a, b) => {
-            const dateA = new Date(a.fecha_introduccion);
-            const dateB = new Date(b.fecha_introduccion);
-            return filtros.ordenIntro === "Ascendente" ? dateA - dateB : dateB - dateA;
+            
+            const dateA = new Date(a[criterio]).getTime();
+            const dateB = new Date(b[criterio]).getTime();
+
+            // gestion fechas vacias
+            if (isNaN(dateA)) return 1;
+            if (isNaN(dateB)) return -1;
+
+            return direccion === "Ascendente" ? dateA - dateB : dateB - dateA;
         });
     }
 
