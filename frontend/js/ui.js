@@ -96,6 +96,7 @@ export function renderTablaInventario(alimentos) {
             <td>${new Date(item.fecha_introduccion).toLocaleDateString()}</td>
             <td>${new Date(item.fecha_caducidad).toLocaleDateString()}</td>
             <td><button class="lapiz-btn"><img src="./img/lapiz.png" alt="modificarAlimento" class="logoLapiz"></button></td>
+            <td><button class="lapiz-btn"><img src="./img/papelera.png" alt="eliminarAlimento" class="logoLapiz"></button></td>
         `;
         tableBody.appendChild(row);
     });
@@ -138,6 +139,7 @@ export function renderBarraFiltros(container, tipos, almacenes) {
                         <option value="Descendente" >Descendente</option>
                     </select>
                 </div>
+                <div class="filter-col"></div>
                 <div class="filter-col"></div>
             </div>
         </div>
