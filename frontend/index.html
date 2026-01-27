@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <title>FreezerManager</title>
         <meta name="TFG Pablo Gargallo">
-        <link rel="icon" type="image" href="./img/copo.png">
+        <link rel="icon" type="image" href="./img/nieve.png">
         <link rel="stylesheet" href="./styles/styles.css">
     </head>
     <body>
@@ -16,7 +16,7 @@
             <section id="login-page" >
                 <div class="login-card">
                     <div class="logo-circle">
-                        <img src="./img/copo.png" alt="Logo" id="logo">
+                        <img src="./img/nieve.png" alt="Logo" id="logo">
                     </div>
                     <h2 class="login-title">FreezerManager</h2>
                     <p class="login-subtitle">Bienvenido al sistema de gestión</p>
@@ -30,7 +30,7 @@
                             <label class="form-label">Contraseña:</label>
                             <input type="password" id="password" class="form-input" placeholder="••••••••">
                         </div>
-                        <button type="submit" id="login-btn">Entrar al Sistema</button>
+                        <button type="submit" id="login-btn">Acceder</button>
                     </form>
                 </div>
             </section>
@@ -60,7 +60,9 @@
     
                     <div class="sidebar-footer">
                         <div class="user-info">
-                            <div class="user-avatar">U</div>
+                            <div class="user-avatar">
+                                <img src="./img/avatar.png" alt="Logousuario" class="logoUsuario">
+                            </div>
                             <span id="display-email" ></span>
                         </div>
                         <button class="nav-item" id="logout-btn">
@@ -123,6 +125,7 @@
                         <th>Ubicación</th>
                         <th>Fecha introducido</th>
                         <th>Fecha caducidad</th>
+                        <th>         </th>
                     </tr>
                 </thead>
                 <tbody id="inventario-list">

@@ -49,7 +49,9 @@ export function renderAlmacenes(almacenes) {
                     
         card.innerHTML = `
             <div class="almacen-contenedor">
-                <div class="card-icon"></div>
+                <div class="card-icon">
+                    <img src="./img/nieve.png" alt="CopoDeNieve" class="copo">
+                </div>
                 <span class="almacen-localizacion">${alm.localizacion}</span>
             </div>
             <h3 class="almacen-nombre">${alm.almacenamiento_nombre}</h3>
@@ -93,6 +95,7 @@ export function renderTablaInventario(alimentos) {
             <td>${item.ubicacion}</td>
             <td>${new Date(item.fecha_introduccion).toLocaleDateString()}</td>
             <td>${new Date(item.fecha_caducidad).toLocaleDateString()}</td>
+            <td><button class="lapiz-btn"><img src="./img/lapiz.png" alt="modificarAlimento" class="logoLapiz"></button></td>
         `;
         tableBody.appendChild(row);
     });
@@ -135,6 +138,7 @@ export function renderBarraFiltros(container, tipos, almacenes) {
                         <option value="Descendente" >Descendente</option>
                     </select>
                 </div>
+                <div class="filter-col"></div>
             </div>
         </div>
     `;
