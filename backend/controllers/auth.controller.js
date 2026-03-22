@@ -1,35 +1,67 @@
-import verificarCredenciales from '../services/auth.service.js';
+import {createUser, authenticateUser} from '../services/auth.service.js';
+import {generateToken} from '../utils/token.util.js';
 
-const login = async (req, res) => {
-  try {
-    const { email, pass } = req.body;
+//nuevo usuario
+export const register = async (req, res, next) => {
+    const { email, password, role } = req.body;   
+    
+    /////////////////////////////////////////////////////
+    //Quitar antes de finalizar
+    /////////////////////////////////////////////////////
+    const rolType = role ? role : 'user';
 
-    if (!email || !pass) {
-      return res.status(400).json({ message: 'Email y contraseña son obligatorios' });
-    }
+    try {
+        const newUser =  await createUser (email, password, rolType);
+        req.action = 'REGISTER_SUCCESS';
+        res.status(201).json(newUser);
 
-    const resultado = await verificarCredenciales(email, pass);
+    } catch (error) {
+        console.error('Error registering user:', error);
 
-    if (resultado.exito) {
-      return res.status(200).json({
-        success: true,
-        message: 'Login correcto',
-        data: resultado.usuario
-      });
-    } else {
-      return res.status(401).json({ 
-        success: false,
-        message: resultado.mensaje 
-      });
-    }
-
-  } catch (error) {
-    console.error('[AuthController Error]', error);
-    return res.status(500).json({ 
-      message: 'Error en el servidor', 
-      error: error.message 
-    });
-  }
+        if (error.code === '23505') {
+            error.status = 409;
+            error.message = "El email ya está registrado";
+        }
+        error.action = 'REGISTER_FAIL';
+        next(error);
+    }   
 };
 
-export default  login ;
+//autentificar usuario
+export const login = async (req, res, next) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await authenticateUser(email, password);
+
+        if (user) {
+            const token = generateToken(user);
+
+            // guardo id en req para uso posterior
+            req.userId = user.id;
+            req.action = 'LOGIN_SUCCES';
+
+            res.status(200).json({
+                message: "Login exitoso",
+                token: token,
+                user: {
+                    id: user.id,
+                    email: user.email
+                }
+            });
+
+        } else {
+            const err = new Error('Credenciales erroneas');
+            err.details = req.body.email;
+            err.action = 'AUTH_LOGIN_FAIL';
+            err.status = 401;
+            return next(err);
+        }
+        
+    } catch (error) {
+        error.status = 500;
+        error.action = 'AUTH_LOGIN_BIG_FAIL';
+        next(error);
+    }
+
+};

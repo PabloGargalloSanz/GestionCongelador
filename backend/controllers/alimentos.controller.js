@@ -1,4 +1,5 @@
-import {getAllAlimentos, getAlimentoTipo, newAlimentoService, updateAlimentoService } from "../services/alimentos.service.js";
+
+import {getAllAlimentos, getAllAlimentosUsuario, getAlimentoTipo, newAlimentoService, updateAlimentoService, getAllAlimentosTipoService } from "../services/alimentos.service.js";
 
 
 //Obtener todos los alimentos
@@ -9,6 +10,26 @@ export const getTodosAlimentos = (req, res) => {
         });
 }
 
+//Obtener todos los alimentos por usuario
+export const getTodosAlimentosByUsuario = (req, res) => {
+    const userId = req.userId;
+
+    getAllAlimentosUsuario(userId)
+        .then((alimentos) => {
+            res.status(200).send(alimentos);
+        })
+        .catch ((error) => {
+            res.status(500).json({error: error.message = "Error al obtener el inventario" });
+    });
+}
+
+//obtener tipos de alimento
+export const getAllAlimentosTipo = (req, res) => {
+    getAllAlimentosTipoService()
+        .then((alimentos) => {
+            res.status(200).send(alimentos);
+        });
+}
 //Obtner alimentos por tipo
 
 export const getAlimentosByTipo = (req, res) => {
@@ -18,7 +39,7 @@ export const getAlimentosByTipo = (req, res) => {
             res.status(200).send(alimentos);
         })
         .catch((error) => {
-            res.status(400).send({ error: error.message});
+            res.status(400).send({ error: error.message = "Error al obtener tipos de alimento"});
         });
 }
 
@@ -38,7 +59,7 @@ export const createAlimento = (req, res) => {
             });    
 
     } else {
-        res.status(400).send({ error: 'Faltan datos obligatorios' });
+        res.status(400).send({ error: error.message= 'Faltan datos obligatorios' });
     }
 }
 
@@ -52,6 +73,6 @@ export const updateAlimento = ( req, res) => {
             res.status(200).send(updatedAlimento);
         })
         .catch((error) => {
-            res.status(400).send({ error: error.message});
+            res.status(400).send({ error: error.message = "Error al actualizar alimento"});
         });
 }

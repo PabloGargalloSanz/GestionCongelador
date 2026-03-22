@@ -1,6 +1,6 @@
 import {Router} from 'express';
 
-import { createAlimentoCajon, getAllAlimentosCajon, getCantidadAlimento, deleteAlimentoCajon } from '../controllers/alimentoscajon.controller.js';
+import { createAlimentoCajon, getAllAlimentosCajon, getCantidadAlimento, deleteAlimentoCajon } from '../controllers/alimentosCajon.controller.js';
 
 const router = Router();
 

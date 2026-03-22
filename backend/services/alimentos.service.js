@@ -8,6 +8,44 @@ export const getAllAlimentos = async () => {
 
 }
 
+//Obtener todos los alimentos del usuario
+export const getAllAlimentosUsuario = async (userId) => {
+
+    const query = `
+        SELECT 
+            a.alimento_nombre AS alimento,
+            a.alimento_tipo AS tipo,
+            l.cantidad || ' ' || l.unidad_medida AS cantidad,
+            alm.almacenamiento_nombre || ' (' || alm.localizacion || ') - Cajón ' || c.posicion AS ubicacion,
+            cl.fecha_introducido AS fecha_introduccion,
+            l.fecha_caducidad
+        FROM usuarios u
+        JOIN almacenamientos alm ON u.id_usuario = alm.id_usuario
+        JOIN cajones c ON alm.id_almacenamiento = c.id_almacenamiento
+        JOIN cajon_lotes cl ON c.id_cajon = cl.id_cajon
+        JOIN lotes l ON cl.id_lote = l.id_lote
+        JOIN alimentos a ON l.id_alimento = a.id_alimento
+        WHERE u.id_usuario = $1
+        ORDER BY l.fecha_caducidad ASC;
+    `
+    try {
+        const result = await pool.query (
+            query, [userId]      
+        );
+        return result.rows;
+
+    } catch (error) {
+        console.error("Error en la consulta de inventario:", error);
+    }
+}
+
+//Obtener todos los tipos de alimentos
+export const getAllAlimentosTipoService = async () => {
+    const result = await pool.query('SELECT DISTINCT alimento_tipo FROM alimentos');
+    return result.rows;
+
+}
+
 //Obtener un tipo de alimento
 export const getAlimentoTipo = async (tipo) => {
     const result = await pool.query(
@@ -15,7 +53,6 @@ export const getAlimentoTipo = async (tipo) => {
         [tipo]
     );
     
-    console.log(result.rows);
     return result.rows;
 }
 

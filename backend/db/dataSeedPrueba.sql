@@ -1,54 +1,42 @@
-INSERT INTO usuarios (email, pass) VALUES
+INSERT INTO usuarios (email, password) VALUES
 ('admin@admin.com', 'admin'),
 ('estudiante@daw.es', '1234'),
 ('chef@cocina.com', 'chefpass'),
 ('usuario_prueba@gmail.com', 'user123'),
 ('maria.garcia@outlook.com', 'maria2025');
 
+-- Alimentos
 INSERT INTO alimentos (alimento_nombre, alimento_tipo) VALUES
-('Pechuga de Pollo', 'Carne'),
-('Lomo de Salmón', 'Pescado'),
-('Guisantes Tiernos', 'Verdura'),
-('Espinacas Frescas', 'Verdura'),
-('Carne Picada Vacuno', 'Carne');
+('Pechuga de Pollo', 'Carne'),     -- ID 1
+('Lomo de Salmón', 'Pescado'),     -- ID 2
+('Espinacas Frescas', 'Verdura'),  -- ID 3
+('Helado de Fresa', 'Postre');     -- ID 4
 
-INSERT INTO recetas (receta_nombre, descripcion) VALUES
-('Pollo al Horno', 'Pechuga asada con especias y limón.'),
-('Salmón a la Plancha', 'Lomo de salmón con un toque de sal y pimienta.'),
-('Crema de Guisantes', 'Guisantes triturados con cebolla y nata.'),
-('Espinacas con Ajo', 'Espinacas salteadas con ajos tiernos.'),
-('Hamburguesa Casera', 'Carne picada a la parrilla con pan artesano.');
-
+-- Almacenamientos y Cajones para ID 2
 INSERT INTO almacenamientos (id_usuario, almacenamiento_nombre, localizacion) VALUES
-(1, 'Congelador Principal', 'Cocina'),
-(1, 'Arcón Supletorio', 'Garaje'),
-(2, 'Nevera Mini', 'Habitación'),
-(3, 'Congelador Industrial', 'Restaurante'),
-(5, 'Congelador Vertical', 'Despensa');
+(2, 'Nevera Principal', 'Cocina'), -- ID 1
+(2, 'Arcón Garaje', 'Garaje'),     -- ID 2
+(1, 'Nevera grande', 'Masico'), -- ID 1
+(1, 'Arcón ', 'Trastero');     -- ID 2
 
 INSERT INTO cajones (id_almacenamiento, posicion, tamano) VALUES
-(1, 1, 500.00),
-(1, 2, 500.00),
-(2, 1, 1000.00),
-(3, 1, 200.00),
-(4, 1, 2000.00);
+(1, 2, 1500.00), -- ID 1
+(2, 2, 1500.00), -- ID 1
+(3, 1, 500.00), -- ID 1
+(3, 2, 1500.00), -- ID 1
+(4, 1, 1000.00),-- ID 2
+(4, 2, 1000.00);-- ID 2
 
-SELECT insertar_lote_cajon(1, 1, 2, 'unidades', 50, '2025-12-31'); 
-SELECT insertar_lote_cajon(1, 2, 1, 'paquete', 30, '2025-06-15'); 
-SELECT insertar_lote_cajon(2, 3, 500, 'gramos', 40, '2026-01-20'); 
-SELECT insertar_lote_cajon(3, 4, 3, 'bolsas', 60, '2025-08-10');   
-SELECT insertar_lote_cajon(5, 5, 1, 'kg', 100, '2025-05-05');      
+-- Lotes (id_cajon, id_alimento, cantidad, unidad, tamaño, fecha)
+SELECT insertar_lote_cajon(2, 1, 2, 'unidades', 100, '2026-05-10');
+SELECT insertar_lote_cajon(3, 3, 1, 'bolsa', 50, '2026-02-15');
+SELECT insertar_lote_cajon(4, 2, 4, 'lomos', 400, '2026-09-20');
+SELECT insertar_lote_cajon(5, 3, 4, 'bolsa', 400, '2026-09-20');
+SELECT insertar_lote_cajon(6, 2, 4, 'lomos', 400, '2026-09-20');
+SELECT insertar_lote_cajon(1, 3, 4, 'bolsa', 400, '2026-09-20');
+SELECT insertar_lote_cajon(2, 2, 4, 'lomos', 400, '2026-09-20');
 
-INSERT INTO receta_alimentos (id_receta, id_alimento, cantidad, unidad_medida) VALUES
-(1, 1, 1, 'unidad'),
-(2, 2, 1, 'lomo'),
-(3, 3, 200, 'gramos'),
-(4, 4, 2, 'manojos'),
-(5, 5, 250, 'gramos');
+-- Recetas y Favoritos para ID 2
+INSERT INTO recetas (receta_nombre, descripcion) VALUES ('Cena Ligera', 'Pollo con espinacas.');
+INSERT INTO recetas_favoritas (id_usuario, id_receta) VALUES (2, 1);
 
-INSERT INTO recetas_favoritas (id_usuario, id_receta) VALUES
-(1, 1),
-(1, 5),
-(2, 3),
-(3, 2),
-(5, 4);

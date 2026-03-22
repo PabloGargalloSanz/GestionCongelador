@@ -1,26 +1,46 @@
+import argon2 from 'argon2';
 import pool from '../db/db.js';
 
-const verificarCredenciales = async (email, pass) => {
-  const query = 'SELECT * FROM usuarios WHERE email = $1'; 
-  
-  try {
-    const resultado = await pool.query(query, [email]);
+const PEPPER = process.env.AUTH_PEPPER;
 
-    const usuarioEncontrado = resultado.rows ? resultado.rows[0] : resultado[0];
-
-    if (!usuarioEncontrado) {
-      return { exito: false, mensaje: 'Usuario o contraseña erroneo' };
-    }
-
-    if (usuarioEncontrado.pass === pass) {
-      return { exito: true, usuario: usuarioEncontrado };
-    } else {
-      return { exito: false, mensaje: 'Usuario o contraseña erroneo' };
-    }
-
-  } catch (error) {
-    console.error("Error de base de datos:", error);
-  }
+//Configuracion has
+const HASH_CONFIG = {
+    type: argon2.argon2id,
+    memoryCost: 2 ** 16, //64mb
+    timeCost: 10,
+    parallelism:4
 };
 
-export default verificarCredenciales ;
+//Crear nuevo usuario
+export const createUser = async (email, password, rolType) => {
+    const createHash = await argon2.hash(password + PEPPER, HASH_CONFIG);
+
+    const result = await pool.query(
+        'INSERT INTO usuarios (email, password, role) VALUES ($1, $2, $3) RETURNING id_usuario, email, role',
+        [email, createHash, rolType]
+    );
+
+    return result.rows[0];
+}
+
+//Autentificar usuario
+export const authenticateUser = async (email, password) => {
+    const result = await pool.query(
+        'SELECT id_usuario, email, password FROM usuarios WHERE email = $1',
+        [email]
+    ); 
+    const user = result.rows[0];
+
+    //user null o undefined
+    if (!user) {
+        return null;
+    }   
+
+    const isPasswordValid = await argon2.verify(user.password, password + PEPPER);
+
+    if (!isPasswordValid) {
+        return null;
+    }   
+    return { id: user.id_usuario, email: user.email };
+}   
+

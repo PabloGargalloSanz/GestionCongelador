@@ -2,12 +2,42 @@ import pool from '../db/db.js';
 
 //Obtener almacenamiento por usuario
 export const getAllAlmacenamientoUsuario = async (id_usuario) => {
-    const result = await pool.query(
-        'SELECT * FROM almacenamientos WHERE id_usuario = $1',
-        [id_usuario]
-    );
-
-    return result.rows;
+    const query = `
+        SELECT 
+        alm.id_almacenamiento,
+        alm.almacenamiento_nombre,
+        alm.localizacion,
+        COALESCE(
+            ROUND(
+                (
+                    -- suma tamaño de alimentos en almacenamiento
+                    SELECT SUM(l.alimento_tamano)::NUMERIC 
+                    FROM cajones c
+                    JOIN cajon_lotes cl ON c.id_cajon = cl.id_cajon
+                    JOIN lotes l ON cl.id_lote = l.id_lote
+                    WHERE c.id_almacenamiento = alm.id_almacenamiento
+                ) / 
+                -- calculo %
+                NULLIF(
+                    (SELECT SUM(tamano) FROM cajones WHERE id_almacenamiento = alm.id_almacenamiento), 
+                    0
+                ) * 100, 
+                0 -- redondeo
+            ), 
+            0
+        ) AS ocupacion
+    FROM almacenamientos alm
+    WHERE alm.id_usuario = $1;
+    `
+    try {
+        const result = await pool.query (
+            query, [id_usuario]      
+        );
+        return result.rows;
+        
+    } catch (error) {
+        console.error("Error en la consulta de inventario:", error);
+    }
 }
 
 //Crear nuevo almacenamiento
