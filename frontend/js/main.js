@@ -121,7 +121,7 @@ async function renderView(viewName) {
 
 function renderFiltros() {  
     const btnFiltro = document.getElementById('filtro-inventario-btn');
-    const contenedorFiltros = document.getElementById('filtros-contenedor');
+    const contenedorFiltros = document.getElementById('inventario-list-filter');
 
     btnFiltro.addEventListener('click', async () => {
         if (contenedorFiltros.innerHTML !== "") {
@@ -138,6 +138,18 @@ function renderFiltros() {
             input.addEventListener(evento, ejecutarFiltrado);
         });
         
+        // Boton eliminar filtros
+        const btnEliminar = document.getElementById('eliminar-filtros-btn');
+        if (btnEliminar) {
+            btnEliminar.addEventListener('click', () => {
+                
+                document.querySelectorAll('.filter-input').forEach(input => {
+                    input.value = "";
+                });
+                renderTablaInventario(inventarioGlobal);
+            });
+        }
+
         document.getElementById('filter-fecha-introducido').addEventListener('change', () => {
             document.getElementById('filter-fecha-caducidad').value = "";
         });

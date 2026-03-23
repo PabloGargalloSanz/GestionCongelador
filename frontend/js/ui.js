@@ -106,42 +106,38 @@ export function renderTablaInventario(alimentos) {
 //Filtros inventario////////////////////
 export function renderBarraFiltros(container, tipos, almacenes) {
     container.innerHTML = `
-        <div class="filter-row-container">
-            <div class="filter-grid">
-                <div class="filter-col">
-                    <input type="text" id="filter-nombre" placeholder=" Buscar..." class="filter-input">
-                </div>
-                <div class="filter-col">
-                    <select id="filter-tipo" class="filter-input">
-                        <option value="">Todos</option>
-                        ${tipos.map(t => `<option value="${t.alimento_tipo}">${t.alimento_tipo}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="filter-col"></div>
-                <div class="filter-col">
-                    <select id="filter-almacenes" class="filter-input">
-                        <option value="" class="filter-input">Todos</option>
-                        ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
-                    </select>
-                
-                </div>
-                <div class="filter-col">
-                    <select id="filter-fecha-introducido" class="filter-input">
-                        <option value="" class="filter-input"> </option>
-                        <option value="Ascendente" >Ascendente</option>
-                        <option value="Descendente" >Descendente</option>
-                    </select>
-                </div>
-                <div class="filter-col">
-                    <select id="filter-fecha-caducidad" class="filter-input">
-                        <option value="" class="filter-input"> </option>
-                        <option value="Ascendente" >Ascendente</option>
-                        <option value="Descendente" >Descendente</option>
-                    </select>
-                </div>
-                <div class="filter-col"></div>
-                <div class="filter-col"></div>
-            </div>
-        </div>
+        <td>
+            <input type="text" id="filter-nombre" placeholder=" Buscar..." class="filter-input">
+        </td>
+        <td>
+            <select id="filter-tipo" class="filter-input">
+                <option value="">Todos</option>
+                ${tipos.map(t => `<option value="${t.alimento_tipo}">${t.alimento_tipo}</option>`).join('')}
+            </select>
+        </td>
+        <td></td>
+        <td>
+            <select id="filter-almacenes" class="filter-input">
+                <option value="" class="filter-input">Todos</option>
+                ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
+            </select>
+        </td>
+        <td>
+            <select id="filter-fecha-introducido" class="filter-input">
+                <option value="" class="filter-input"> </option>
+                <option value="Ascendente" >Ascendente</option>
+                <option value="Descendente" >Descendente</option>
+            </select>
+        </td>
+        <td>
+            <select id="filter-fecha-caducidad" class="filter-input">
+                <option value="" class="filter-input"> </option>
+                <option value="Ascendente" >Ascendente</option>
+                <option value="Descendente" >Descendente</option>
+            </select>
+        </td>
+        <td></td>
+        <td><button id="eliminar-filtros-btn" class="lapiz-btn"><img src="./img/papelera.png" alt="eliminarFiltros" class="logoLapiz"></td>
+        
     `;
 }
