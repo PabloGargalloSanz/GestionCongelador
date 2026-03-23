@@ -16,7 +16,8 @@ export const getAllAlimentosUsuario = async (userId) => {
             a.alimento_nombre AS alimento,
             a.alimento_tipo AS tipo,
             l.cantidad || ' ' || l.unidad_medida AS cantidad,
-            alm.almacenamiento_nombre || ' (' || alm.localizacion || ') - Cajón ' || c.posicion AS ubicacion,
+            alm.almacenamiento_nombre || ' (' || alm.localizacion || ') ' AS ubicacion,
+            c.posicion AS cajon_posicion,
             cl.fecha_introducido AS fecha_introduccion,
             l.fecha_caducidad
         FROM usuarios u

@@ -122,6 +122,8 @@ async function renderView(viewName) {
 function renderFiltros() {  
     const btnFiltro = document.getElementById('filtro-inventario-btn');
     const contenedorFiltros = document.getElementById('inventario-list-filter');
+   
+    if (!btnFiltro) return; // Seguridad extra
 
     btnFiltro.addEventListener('click', async () => {
         if (contenedorFiltros.innerHTML !== "") {
@@ -130,67 +132,88 @@ function renderFiltros() {
         }
 
         const tipos = await getTiposAlimento();
-        
         renderBarraFiltros(contenedorFiltros, tipos, almacenesGlobales);
+
+        // Volvemos a añadir el listener al cajón específicamente
+        const selectCajon = document.getElementById('filter-cajon');
+        if(selectCajon) {
+            selectCajon.addEventListener('change', ejecutarFiltrado);
+        }
 
         document.querySelectorAll('.filter-input').forEach(input => {
             const evento = input.tagName === 'SELECT' ? 'change' : 'input';
             input.addEventListener(evento, ejecutarFiltrado);
         });
-        
-        // Boton eliminar filtros
+
+        // Lógica de borrar filtros
         const btnEliminar = document.getElementById('eliminar-filtros-btn');
         if (btnEliminar) {
             btnEliminar.addEventListener('click', () => {
-                
                 document.querySelectorAll('.filter-input').forEach(input => {
                     input.value = "";
                 });
+                if(selectCajon) selectCajon.disabled = true;
                 renderTablaInventario(inventarioGlobal);
             });
         }
 
-        document.getElementById('filter-fecha-introducido').addEventListener('change', () => {
-            document.getElementById('filter-fecha-caducidad').value = "";
-        });
-        document.getElementById('filter-fecha-caducidad').addEventListener('change', () => {
-            document.getElementById('filter-fecha-introducido').value = "";
-        });
+        // Lógica de Almacén -> Cajón
+        const selectAlmacen = document.getElementById('filter-almacenes');
+        if(selectAlmacen) {
+            selectAlmacen.addEventListener('change', (e) => {
+                const almacenSeleccionado = e.target.value;
+                if (almacenSeleccionado === "") {
+                    selectCajon.disabled = true;
+                    selectCajon.innerHTML = '<option value="">Cajón</option>';
+                } else {
+                    selectCajon.disabled = false;
+                    const almacenData = almacenesGlobales.find(a => a.localizacion === almacenSeleccionado);
+                    let opciones = '<option value="">Todos</option>';
+                    if(almacenData && almacenData.num_cajones) {
+                        for(let i=1; i <= almacenData.num_cajones; i++) {
+                            opciones += `<option value="${i}">Cajón ${i}</option>`;
+                        }
+                    }
+                    selectCajon.innerHTML = opciones;
+                }
+                ejecutarFiltrado(); 
+            });
+        }
     });
 }
 
 function ejecutarFiltrado() {
+    // Usamos el operador ?. y el ID correcto 'filter-cajon'
     const filtros = {
-        nombre: document.getElementById('filter-nombre').value.toLowerCase(),
-        tipo: document.getElementById('filter-tipo').value,
-        almacen: document.getElementById('filter-almacenes').value,
-        ordenIntro: document.getElementById('filter-fecha-introducido').value,
-        ordenCaducidad: document.getElementById('filter-fecha-caducidad').value
+        nombre: document.getElementById('filter-nombre')?.value.toLowerCase() || "",
+        tipo: document.getElementById('filter-tipo')?.value || "",
+        almacen: document.getElementById('filter-almacenes')?.value || "",
+        cajon: document.getElementById('filter-cajon')?.value || "", // Corregido ID
+        ordenIntro: document.getElementById('filter-fecha-introducido')?.value || "",
+        ordenCaducidad: document.getElementById('filter-fecha-caducidad')?.value || ""
     };
 
-    // filtro de datos
     let datosFiltrados = inventarioGlobal.filter(item => {
         const coincideNombre = (item.alimento || "").toLowerCase().includes(filtros.nombre);
         const coincideTipo = filtros.tipo === "" || item.tipo === filtros.tipo;
         const coincideAlmacen = filtros.almacen === "" || (item.ubicacion && item.ubicacion.includes(filtros.almacen));
+        
+        // Corregido: Usamos 'cajon_posicion' que es como viene de tu SQL
+        const coincideCajon = filtros.cajon === "" || String(item.cajon_posicion) === filtros.cajon;
 
-        return coincideNombre && coincideTipo && coincideAlmacen;
+        return coincideNombre && coincideTipo && coincideAlmacen && coincideCajon;
     });
 
-    // ordenacion unica
+    // ... (resto del código de ordenación igual)
     const criterio = filtros.ordenIntro ? 'fecha_introduccion' : (filtros.ordenCaducidad ? 'fecha_caducidad' : null);
     const direccion = filtros.ordenIntro || filtros.ordenCaducidad;
 
     if (criterio && direccion) {
         datosFiltrados.sort((a, b) => {
-            
             const dateA = new Date(a[criterio]).getTime();
             const dateB = new Date(b[criterio]).getTime();
-
-            // gestion fechas vacias
             if (isNaN(dateA)) return 1;
             if (isNaN(dateB)) return -1;
-
             return direccion === "Ascendente" ? dateA - dateB : dateB - dateA;
         });
     }

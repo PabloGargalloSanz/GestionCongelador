@@ -43,7 +43,6 @@ export function renderAlmacenes(almacenes) {
 
     almacenes.forEach(alm => {
 
-
         const card = document.createElement('div');
         card.className = 'card';
                     
@@ -93,6 +92,7 @@ export function renderTablaInventario(alimentos) {
             <td>${item.tipo}</td>
             <td>${item.cantidad}</td>
             <td>${item.ubicacion}</td>
+            <td>${item.cajon_posicion || 'N/A'}</td>
             <td>${new Date(item.fecha_introduccion).toLocaleDateString()}</td>
             <td>${new Date(item.fecha_caducidad).toLocaleDateString()}</td>
             <td><button class="lapiz-btn"><img src="./img/lapiz.png" alt="modificarAlimento" class="logoLapiz"></button></td>
@@ -104,7 +104,7 @@ export function renderTablaInventario(alimentos) {
 
 
 //Filtros inventario////////////////////
-export function renderBarraFiltros(container, tipos, almacenes) {
+export function renderBarraFiltros(container, tipos, almacenes, cajones) {
     container.innerHTML = `
         <td>
             <input type="text" id="filter-nombre" placeholder=" Buscar..." class="filter-input">
@@ -118,6 +118,12 @@ export function renderBarraFiltros(container, tipos, almacenes) {
         <td></td>
         <td>
             <select id="filter-almacenes" class="filter-input">
+                <option value="" class="filter-input">Todos</option>
+                ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
+            </select>
+        </td>
+        <td>
+            <select id="filter-cajon" class="filter-input" disabled>
                 <option value="" class="filter-input">Todos</option>
                 ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
             </select>
