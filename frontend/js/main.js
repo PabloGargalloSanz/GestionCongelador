@@ -1,6 +1,6 @@
 import { auth } from './auth.js';
 import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario } from './api.js';
-import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario } from './ui.js';
+import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario, renderBarraAñadirAlimento } from './ui.js';
 
 
 ///variables globales
@@ -101,12 +101,36 @@ async function renderView(viewName) {
 
     } else if (viewName === 'inventario') {
         loadTemplate('inventario-view', mainContent);
+        const btnAddAlimento = document.getElementById('add-alimento-btn');
         try {
             const respuestaApi = await getAllAlimentosByUsuario();
             inventarioGlobal = Array.isArray(respuestaApi[0]) ? respuestaApi[0] : respuestaApi;
             
             renderTablaInventario(inventarioGlobal);
             renderFiltros();
+
+            if (btnAddAlimento) {
+                btnAddAlimento.addEventListener('click', async () => {
+                    const contenedorAñadir = document.getElementById('inventario-list-filter');
+        
+                    try {
+                        // 1. Aseguramos que tenemos los TIPOS
+                        const tipos = await getTiposAlimento() || [];
+
+                        // 2. IMPORTANTE: Si almacenesGlobales está vacío, lo cargamos ahora
+                        if (almacenesGlobales.length === 0) {
+                            almacenesGlobales = await getAlmacenesByUsuarioDashboard();
+                        }
+
+                        // 3. Pasamos los datos (con un salvavidas de [] por si acaso)
+                        renderBarraAñadirAlimento(contenedorAñadir, tipos, almacenesGlobales);
+                        
+                    } catch (error) {
+                        showToast("Error al preparar el formulario de añadir", "danger");
+                        console.error(error);
+                    }
+                });
+            }
 
         } catch (error) {
             console.error("Fallo al cargar el inventario:", error);
@@ -118,12 +142,11 @@ async function renderView(viewName) {
 }
 
 ///Tabla inventario
-
 function renderFiltros() {  
     const btnFiltro = document.getElementById('filtro-inventario-btn');
     const contenedorFiltros = document.getElementById('inventario-list-filter');
    
-    if (!btnFiltro) return; // Seguridad extra
+    if (!btnFiltro) return; 
 
     btnFiltro.addEventListener('click', async () => {
         if (contenedorFiltros.innerHTML !== "") {
@@ -182,13 +205,13 @@ function renderFiltros() {
     });
 }
 
+//Filtrado inventario
 function ejecutarFiltrado() {
-    // Usamos el operador ?. y el ID correcto 'filter-cajon'
     const filtros = {
         nombre: document.getElementById('filter-nombre')?.value.toLowerCase() || "",
         tipo: document.getElementById('filter-tipo')?.value || "",
         almacen: document.getElementById('filter-almacenes')?.value || "",
-        cajon: document.getElementById('filter-cajon')?.value || "", // Corregido ID
+        cajon: document.getElementById('filter-cajon')?.value || "", 
         ordenIntro: document.getElementById('filter-fecha-introducido')?.value || "",
         ordenCaducidad: document.getElementById('filter-fecha-caducidad')?.value || ""
     };
@@ -197,14 +220,11 @@ function ejecutarFiltrado() {
         const coincideNombre = (item.alimento || "").toLowerCase().includes(filtros.nombre);
         const coincideTipo = filtros.tipo === "" || item.tipo === filtros.tipo;
         const coincideAlmacen = filtros.almacen === "" || (item.ubicacion && item.ubicacion.includes(filtros.almacen));
-        
-        // Corregido: Usamos 'cajon_posicion' que es como viene de tu SQL
         const coincideCajon = filtros.cajon === "" || String(item.cajon_posicion) === filtros.cajon;
 
         return coincideNombre && coincideTipo && coincideAlmacen && coincideCajon;
     });
 
-    // ... (resto del código de ordenación igual)
     const criterio = filtros.ordenIntro ? 'fecha_introduccion' : (filtros.ordenCaducidad ? 'fecha_caducidad' : null);
     const direccion = filtros.ordenIntro || filtros.ordenCaducidad;
 

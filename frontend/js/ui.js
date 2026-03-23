@@ -71,7 +71,7 @@ export function renderAlmacenes(almacenes) {
 
 //llenar tabla inventario
 
-export function renderTablaInventario(alimentos) {
+export function renderTablaInventario(alimentos) {    
     const tableBody = document.getElementById('inventario-list');
     if (!tableBody) return;
 
@@ -104,7 +104,7 @@ export function renderTablaInventario(alimentos) {
 
 
 //Filtros inventario////////////////////
-export function renderBarraFiltros(container, tipos, almacenes, cajones) {
+export function renderBarraFiltros(container, tipos, almacenes) {
     container.innerHTML = `
         <td>
             <input type="text" id="filter-nombre" placeholder=" Buscar..." class="filter-input">
@@ -146,4 +146,69 @@ export function renderBarraFiltros(container, tipos, almacenes, cajones) {
         <td><button id="eliminar-filtros-btn" class="lapiz-btn"><img src="./img/papelera.png" alt="eliminarFiltros" class="logoLapiz"></td>
         
     `;
+}
+
+
+//Añadir alimento////////////////////
+export function renderBarraAñadirAlimento(container, tipos, almacenes) {
+    const filaAñadir = document.createElement('tr');
+    const hoy = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+    
+    filaAñadir.innerHTML = `
+        <td>
+            <input type="text" id="alimento-nombre" placeholder=" Nombre" class="filter-input">
+        </td>
+        <td>
+            <select id="alimento-tipo" class="filter-input">
+                <option value="">Todos</option>
+                ${tipos.map(t => `<option value="${t.alimento_tipo}">${t.alimento_tipo}</option>`).join('')}
+            </select>
+        </td>
+        <td>
+            <input type="text" id="alimento-cantidad" placeholder=" Cantidad" class="filter-input">
+        </td>
+        <td>
+            <select id="alimento-almacenes" class="filter-input">
+                <option value="" class="filter-input">Todos</option>
+                ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
+            </select>
+        </td>
+        <td>
+            <select id="alimento-cajon" class="filter-input" disabled>
+                <option value="" class="filter-input">Todos</option>
+                ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
+            </select>
+        </td>
+        <td>
+            <input type="date" id="add-fecha-introducido" class="filter-input" value="${hoy}" readonly style="pointer-events: none; background-color: #f0f0f0;">
+        </td>
+        <td>
+            <input type="date" id="add-fecha-caducidad" class="filter-input">
+        </td>
+        <td colspan="2"><button id="guardar-alimento-btn" class="lapiz-btn">Guardar</td>
+    
+        
+    `;
+
+    container.innerHTML = "";
+    container.appendChild(filaAñadir);
+
+    const selectAlmacen = document.getElementById('alimento-almacenes');
+    const selectCajon = document.getElementById('alimento-cajon');
+
+    selectAlmacen.addEventListener('change', (e) => {
+        const idSeleccionado = parseInt(e.target.value);
+        const almacen = almacenes.find(a => a.id_almacenamiento === idSeleccionado);
+        
+        if (almacen && almacen.total_cajones) {
+            selectCajon.disabled = false;
+            let opciones = '<option value="">Cajón...</option>';
+            for (let i = 1; i <= almacen.total_cajones; i++) {
+                opciones += `<option value="${i}">${i}</option>`;
+            }
+            selectCajon.innerHTML = opciones;
+        } else {
+            selectCajon.disabled = true;
+        }
+    });
 }
