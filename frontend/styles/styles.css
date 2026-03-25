@@ -230,6 +230,7 @@ header p {
 
 .inventario-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     background: white;
     border-radius: var(--radius-sm);
@@ -261,6 +262,12 @@ header p {
 .lapiz-btn{
     padding: 0;
     margin: 0;
+}
+
+#guardar-alimento-btn{
+    width: 70px;
+    height: 27px;
+    
 }
 
 /* filtros*/
@@ -364,6 +371,17 @@ header p {
     color: var(--primario);
 }
 
+/*añadir alimento*/
+.cantidad-alimento{
+    display: flex; 
+    gap: 4px;
+}
+#alimento-cantidad{
+    width: 35%;
+}
+#alimento-unidad, #alimento-tamano{
+    width: 30%;
+}
 
 
 /***********************************/

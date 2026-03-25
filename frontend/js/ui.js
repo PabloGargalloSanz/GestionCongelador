@@ -80,7 +80,7 @@ export function renderTablaInventario(alimentos) {
     if (alimentos.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="6" style="text-align:center;">No hay alimentos en el inventario</td>
+                <td colspan="12" style="text-align:center;">No hay alimentos en el inventario</td>
             </tr>`;
         return;
     }
@@ -150,9 +150,9 @@ export function renderBarraFiltros(container, tipos, almacenes) {
 
 
 //Añadir alimento////////////////////
-export function renderBarraAñadirAlimento(container, tipos, almacenes) {
+export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []) {
     const filaAñadir = document.createElement('tr');
-    const hoy = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+    const hoy = new Date().toISOString().split('T')[0]; 
     
     filaAñadir.innerHTML = `
         <td>
@@ -160,23 +160,39 @@ export function renderBarraAñadirAlimento(container, tipos, almacenes) {
         </td>
         <td>
             <select id="alimento-tipo" class="filter-input">
-                <option value="">Todos</option>
+                <option value="">Tipo...</option>
                 ${tipos.map(t => `<option value="${t.alimento_tipo}">${t.alimento_tipo}</option>`).join('')}
             </select>
         </td>
+        
         <td>
-            <input type="text" id="alimento-cantidad" placeholder=" Cantidad" class="filter-input">
+            <div class="cantidad-alimento"">
+                <input type="number" id="alimento-cantidad" placeholder="Cant." class="filter-input" >
+                <select id="alimento-unidad" class="filter-input" >
+                    <option value="ud">Ud</option>  
+                    <option value="g">g</option>
+                    <option value="kg">Kg</option>
+                    <option value="l">L</option>
+                </select>
+                <select id="alimento-tamano" class="filter-input">
+                    <option value="XS">XS</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                </select>
+            </div>
         </td>
+        
         <td>
             <select id="alimento-almacenes" class="filter-input">
-                <option value="" class="filter-input">Todos</option>
+                <option value="">Ubicación...</option>
                 ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
             </select>
         </td>
         <td>
             <select id="alimento-cajon" class="filter-input" disabled>
-                <option value="" class="filter-input">Todos</option>
-                ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
+                <option value="">Cajón...</option>
             </select>
         </td>
         <td>
@@ -185,20 +201,23 @@ export function renderBarraAñadirAlimento(container, tipos, almacenes) {
         <td>
             <input type="date" id="add-fecha-caducidad" class="filter-input">
         </td>
-        <td colspan="2"><button id="guardar-alimento-btn" class="lapiz-btn">Guardar</td>
-    
-        
+        <td><button id="guardar-alimento-btn" class="lapiz-btn">Guardar</button></td>
+        <td><button id="eliminar-filtros-btn" class="lapiz-btn"><img src="./img/papelera.png" alt="eliminarFiltros" class="logoLapiz"></td>
     `;
 
     container.innerHTML = "";
     container.appendChild(filaAñadir);
 
+    // --- LÓGICA DE CAJONES (Sin Cambios) ---
     const selectAlmacen = document.getElementById('alimento-almacenes');
     const selectCajon = document.getElementById('alimento-cajon');
 
     selectAlmacen.addEventListener('change', (e) => {
-        const idSeleccionado = parseInt(e.target.value);
-        const almacen = almacenes.find(a => a.id_almacenamiento === idSeleccionado);
+        // OJO AQUÍ: Tu value en el HTML es "localizacion" (texto), 
+        // pero aquí estabas usando parseInt(e.target.value) que daría NaN.
+        // Lo he corregido para que busque por localización:
+        const locSeleccionada = e.target.value; 
+        const almacen = almacenes.find(a => a.localizacion === locSeleccionada);
         
         if (almacen && almacen.total_cajones) {
             selectCajon.disabled = false;
@@ -209,6 +228,12 @@ export function renderBarraAñadirAlimento(container, tipos, almacenes) {
             selectCajon.innerHTML = opciones;
         } else {
             selectCajon.disabled = true;
+            selectCajon.innerHTML = '<option value="">Cajón...</option>';
         }
+    });
+
+    // Añadimos el listener para el botón Cancelar que acabamos de meter
+    document.getElementById('cancelar-añadir-btn').addEventListener('click', () => {
+        container.innerHTML = ""; // Simplemente vacía el contenedor
     });
 }

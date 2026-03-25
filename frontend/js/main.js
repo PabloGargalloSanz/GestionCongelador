@@ -114,15 +114,12 @@ async function renderView(viewName) {
                     const contenedorAñadir = document.getElementById('inventario-list-filter');
         
                     try {
-                        // 1. Aseguramos que tenemos los TIPOS
                         const tipos = await getTiposAlimento() || [];
 
-                        // 2. IMPORTANTE: Si almacenesGlobales está vacío, lo cargamos ahora
                         if (almacenesGlobales.length === 0) {
                             almacenesGlobales = await getAlmacenesByUsuarioDashboard();
                         }
 
-                        // 3. Pasamos los datos (con un salvavidas de [] por si acaso)
                         renderBarraAñadirAlimento(contenedorAñadir, tipos, almacenesGlobales);
                         
                     } catch (error) {
