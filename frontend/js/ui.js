@@ -1,3 +1,4 @@
+import { guardarNuevoAlimentoAPI } from './api.js';
 
 // selectores principales
 export const app = document.getElementById('app');
@@ -153,7 +154,7 @@ export function renderBarraFiltros(container, tipos, almacenes) {
 export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []) {
     const filaAñadir = document.createElement('tr');
     const hoy = new Date().toISOString().split('T')[0]; 
-    
+        
     filaAñadir.innerHTML = `
         <td>
             <input type="text" id="alimento-nombre" placeholder=" Nombre" class="filter-input">
@@ -187,7 +188,7 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
         <td>
             <select id="alimento-almacenes" class="filter-input">
                 <option value="">Ubicación...</option>
-                ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
+                ${almacenes.map(a => `<option value="${a.id_almacenamiento}">${a.almacenamiento_nombre}</option>`).join('')}
             </select>
         </td>
         <td>
@@ -208,32 +209,100 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
     container.innerHTML = "";
     container.appendChild(filaAñadir);
 
-    // --- LÓGICA DE CAJONES (Sin Cambios) ---
+    // --- LÓGICA DE CAJONES ---
     const selectAlmacen = document.getElementById('alimento-almacenes');
     const selectCajon = document.getElementById('alimento-cajon');
 
-    selectAlmacen.addEventListener('change', (e) => {
-        // OJO AQUÍ: Tu value en el HTML es "localizacion" (texto), 
-        // pero aquí estabas usando parseInt(e.target.value) que daría NaN.
-        // Lo he corregido para que busque por localización:
-        const locSeleccionada = e.target.value; 
-        const almacen = almacenes.find(a => a.localizacion === locSeleccionada);
-        
-        if (almacen && almacen.total_cajones) {
-            selectCajon.disabled = false;
-            let opciones = '<option value="">Cajón...</option>';
-            for (let i = 1; i <= almacen.total_cajones; i++) {
-                opciones += `<option value="${i}">${i}</option>`;
+    if (selectAlmacen && selectCajon) {
+        selectAlmacen.addEventListener('change', (e) => {
+            const idSeleccionado = parseInt(e.target.value); 
+            const almacen = almacenes.find(a => a.id_almacenamiento === idSeleccionado);
+            
+            // Verificamos si existe el almacén y si tiene cajones
+            // Nota: Asegúrate de si tu objeto usa 'total_cajones' o 'num_cajones'
+            const numCajones = almacen ? (almacen.total_cajones || almacen.num_cajones) : 0;
+            
+            if (almacen && numCajones) {
+                selectCajon.disabled = false;
+                let opciones = '<option value="">Cajón...</option>';
+                for (let i = 1; i <= numCajones; i++) {
+                    opciones += `<option value="${i}">${i}</option>`;
+                }
+                selectCajon.innerHTML = opciones;
+            } else {
+                selectCajon.disabled = true;
+                selectCajon.innerHTML = '<option value="">Cajón...</option>';
             }
-            selectCajon.innerHTML = opciones;
-        } else {
-            selectCajon.disabled = true;
-            selectCajon.innerHTML = '<option value="">Cajón...</option>';
-        }
-    });
+        });
+    }
 
-    // Añadimos el listener para el botón Cancelar que acabamos de meter
-    document.getElementById('cancelar-añadir-btn').addEventListener('click', () => {
-        container.innerHTML = ""; // Simplemente vacía el contenedor
-    });
+    // --- BOTÓN CANCELAR ---
+    // Ahora que el ID arriba es 'cancelar-añadir-btn', esto ya no dará error
+    const btnCancelar = document.getElementById('eliminar-filtros-btn');
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', () => {
+            container.innerHTML = ""; 
+        });
+    }
+
+    // --- BOTÓN GUARDAR ---
+    const btnGuardar = document.getElementById('guardar-alimento-btn');
+    
+    if (btnGuardar) {
+        btnGuardar.addEventListener('click', async () => {
+            const nombre = document.getElementById('alimento-nombre').value.trim();
+            const tipo = document.getElementById('alimento-tipo').value;
+            const cantidad = parseInt(document.getElementById('alimento-cantidad').value);
+            const unidad = document.getElementById('alimento-unidad').value;
+            const tamano = document.getElementById('alimento-tamano').value; 
+            const idAlmacenamiento = document.getElementById('alimento-almacenes').value;
+            const cajonPosicion = document.getElementById('alimento-cajon').value;
+            const fechaCaducidad = document.getElementById('add-fecha-caducidad').value;
+
+            // Validación
+            if (!nombre || !tipo || !cantidad || !idAlmacenamiento || !cajonPosicion || !fechaCaducidad || !tamano) {
+                showToast("Por favor, rellena todos los campos obligatorios", "warning");
+                return;
+            }
+
+            // Mapeo del tamaño
+            const equivalenciasTamano = { 'XS': 5, 'S': 10, 'M': 20, 'L': 30, 'XL': 40 };
+            const volumenTamano = equivalenciasTamano[tamano.toUpperCase()] || 20;
+
+            const nuevoLote = {
+                alimento_nombre: nombre,
+                alimento_tipo: tipo,
+                cantidad: cantidad,
+                unidad_medida: unidad,
+                alimento_tamano: volumenTamano, 
+                id_almacenamiento: parseInt(idAlmacenamiento),
+                posicion_cajon: parseInt(cajonPosicion),
+                fecha_caducidad: fechaCaducidad
+            };
+
+            try {
+                btnGuardar.disabled = true;
+                btnGuardar.innerText = "Guardando...";
+
+                const resultado = await guardarNuevoAlimentoAPI(nuevoLote); 
+                
+                if (resultado.ok) {
+                    showToast("Alimento guardado correctamente", "success");
+                    container.innerHTML = ""; // Cerramos el formulario
+                    
+                    // Truco: Recargar la vista de inventario
+                    const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
+                    if(btnInventario) btnInventario.click(); 
+                } else {
+                    showToast(resultado.error, "danger");
+                    btnGuardar.disabled = false;
+                    btnGuardar.innerText = "Guardar";
+                }
+            } catch (error) {
+                showToast("Error de conexión con el servidor", "danger");
+                btnGuardar.disabled = false;
+                btnGuardar.innerText = "Guardar";
+            }
+        });
+    }
 }

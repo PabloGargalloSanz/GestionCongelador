@@ -6,7 +6,7 @@ import {verifyToken} from '../middlewares/jwt.middleware.js'
 const router = Router();
 
 router.get('/alimentos', getTodosAlimentos);
-router.get('/alimentos/usuario',verifyToken, getTodosAlimentosByUsuario);
+router.get('/alimentos/usuario', getTodosAlimentosByUsuario);
 router.get('/alimentos/tipos_unicos_alimento', getAllAlimentosTipo);
 router.get('/alimentos/tipo_alimento', getAlimentosByTipo);
 router.post('/alimentos', createAlimento);

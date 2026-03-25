@@ -6,6 +6,7 @@ import almacenamientosRoutes from './almacenamientos.routes.js';
 import cajonesRoutes from './cajones.routes.js';
 import alimentosCajonRoutes from './alimentosCajon.routes.js';
 import authRoutes from './auth.routes.js';
+import inventario from './inventario.routes.js'
 
 const router = Router();
 
@@ -15,5 +16,6 @@ router.use(almacenamientosRoutes);
 router.use(cajonesRoutes);
 router.use(alimentosCajonRoutes);
 router.use(authRoutes);
+router.use(inventario);
 
 export default router;

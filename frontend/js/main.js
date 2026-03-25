@@ -1,5 +1,5 @@
 import { auth } from './auth.js';
-import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario } from './api.js';
+import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario} from './api.js';
 import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario, renderBarraAñadirAlimento } from './ui.js';
 
 

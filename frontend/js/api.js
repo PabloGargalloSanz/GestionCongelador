@@ -103,3 +103,29 @@ export async function getTiposAlimento() {
         return [];
     }
 }
+
+// post nuevo alimento
+export async function guardarNuevoAlimentoAPI(loteData) {
+    try {
+        // Usamos apiFetch porque YA gestiona el token y la URL base por nosotros
+        const response = await apiFetch('/inventario', {
+            method: 'POST',
+            body: JSON.stringify(loteData)
+        });
+        
+        // Si el servidor devolvió un 401 (no autorizado), apiFetch devuelve null
+        if (!response) return { ok: false, error: "Sesión expirada" };
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({})); 
+            return { ok: false, error: errorData.error || "Error al guardar el alimento" };
+        }
+        
+        const data = await response.json();
+        return { ok: true, data };
+        
+    } catch (error) {
+        console.error("Error en guardarNuevoAlimentoAPI:", error);
+        return { ok: false, error: "Error de conexión con el servidor" };
+    }
+}
