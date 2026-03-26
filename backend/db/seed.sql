@@ -62,15 +62,19 @@ CREATE TABLE IF NOT EXISTS cajon_lotes(
 -----
 /*VISTAS*/
 /*inventario usuario*/
-CREATE VIEW vista_inventario_usuario AS
+CREATE OR REPLACE VIEW vista_inventario_usuario AS
 SELECT 
     u.id_usuario,
+    l.id_lote,
+    alm.id_almacenamiento, 
     alm.almacenamiento_nombre,
     c.id_cajon,
     c.posicion AS cajon_posicion,
     a.alimento_nombre,
     l.cantidad,
-    l.unidad_medida
+    l.unidad_medida,
+    l.fecha_caducidad, 
+    l.alimento_tamano / l.cantidad as tamano_unitario 
 FROM usuarios u
 JOIN almacenamientos alm ON u.id_usuario = alm.id_usuario
 JOIN cajones c ON alm.id_almacenamiento = c.id_almacenamiento
@@ -147,7 +151,77 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+/*modificar lote*/
+CREATE OR REPLACE FUNCTION actualizar_lote_cajon(
+    p_id_lote INT,
+    p_nueva_cantidad INT,
+    p_nuevo_id_almacenamiento INT,
+    p_nueva_posicion_cajon INT,
+    p_nuevo_tamano_total INT, 
+    p_id_usuario INT
 
+) RETURNS TABLE (
+    id_lote_editado INT,
+    nueva_cantidad INT,
+    nuevo_id_cajon INT
+) AS $$
+
+DECLARE
+    v_id_cajon_actual INT;
+    v_id_cajon_nuevo INT;
+    v_capacidad_maxIMA INT;
+    v_ocupacion_otros INT;
+    v_pertenece BOOLEAN;
+BEGIN
+    -- verificar que el lote pertenece a el usuario
+    SELECT EXISTS (
+        SELECT 1 FROM cajon_lotes cl
+        JOIN cajones c ON cl.id_cajon = c.id_cajon
+        JOIN almacenamientos alm ON c.id_almacenamiento = alm.id_almacenamiento
+        WHERE cl.id_lote = p_id_lote AND alm.id_usuario = p_id_usuario
+    ) INTO v_pertenece;
+
+    IF NOT v_pertenece THEN
+        RAISE EXCEPTION 'El lote no existe o no tienes permiso para modificarlo.';
+    END IF;
+
+    --  Buscar ID del nuevo cajón y capacidad
+    SELECT c.id_cajon, c.tamano INTO v_id_cajon_nuevo, v_capacidad_maxIMA
+    FROM cajones c
+    JOIN almacenamientos alm ON c.id_almacenamiento = alm.id_almacenamiento
+    WHERE alm.id_almacenamiento = p_nuevo_id_almacenamiento 
+      AND c.posicion = p_nueva_posicion_cajon
+      AND alm.id_usuario = p_id_usuario;
+
+    IF v_id_cajon_nuevo IS NULL THEN
+        RAISE EXCEPTION 'El cajón de destino no existe o no es tuyo.';
+    END IF;
+
+    -- comprobar espacio cajon nuevo
+    SELECT COALESCE(SUM(l.alimento_tamano), 0) INTO v_ocupacion_otros
+    FROM cajon_lotes cl
+    JOIN lotes l ON cl.id_lote = l.id_lote
+    WHERE cl.id_cajon = v_id_cajon_nuevo AND l.id_lote <> p_id_lote;
+
+    IF (v_ocupacion_otros + p_nuevo_tamano_total) > v_capacidad_maxIMA THEN
+        RAISE EXCEPTION 'Espacio insuficiente en el cajón (Máx: %, Requerido: %)', 
+            v_capacidad_maxIMA, (v_ocupacion_otros + p_nuevo_tamano_total);
+    END IF;
+
+    -- actualizar lotes
+    UPDATE lotes 
+    SET cantidad = p_nueva_cantidad,
+        alimento_tamano = p_nuevo_tamano_total
+    WHERE id_lote = p_id_lote;
+
+    -- actualizar cajon
+    UPDATE cajon_lotes
+    SET id_cajon = v_id_cajon_nuevo
+    WHERE id_lote = p_id_lote;
+
+    RETURN QUERY SELECT p_id_lote, p_nueva_cantidad, v_id_cajon_nuevo;
+END;
+$$ LANGUAGE plpgsql;
 
 /*eliminar lote completo*/
 CREATE OR REPLACE FUNCTION eliminar_lote(
