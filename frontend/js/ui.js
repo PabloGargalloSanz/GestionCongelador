@@ -1,4 +1,4 @@
-import { guardarNuevoAlimentoAPI } from './api.js';
+import { guardarNuevoAlimentoAPI, patchAlimentoAPI } from './api.js';
 
 // selectores principales
 export const app = document.getElementById('app');
@@ -390,20 +390,46 @@ export function activarEdicionFila(tr, item, almacenes) {
     });
 
     // guardado
-    tr.querySelector(`#btn-save-${item.id_lote}`).addEventListener('click', async () => {
+    const btnSave = tr.querySelector(`#btn-save-${item.id_lote}`);
+    
+    btnSave.addEventListener('click', async () => {
         const nuevaCantidad = parseInt(tr.querySelector(`#edit-cantidad-${item.id_lote}`).value);
         const nuevoAlmacen = parseInt(selectAlmacen.value);
         const nuevoCajon = parseInt(selectCajon.value);
 
-        const evento = new CustomEvent('guardarEdicion', {
-            detail: { 
-                id_lote: item.id_lote, 
-                cantidad: nuevaCantidad, 
-                id_almacenamiento: nuevoAlmacen, 
-                posicion_cajon: nuevoCajon,
-                tr: tr //fila para poder cerrarla luego
-            }
+        // validacion no sea valor inferior a 0
+        if (isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
+            showToast("La cantidad debe ser mayor a 0", "warning");
+            return;
+        }
+        
+        // validacion no sea valor superior al actual
+        if (nuevaCantidad > item.cantidad) {
+            showToast(`Solo puedes restar cantidad (máximo ${item.cantidad}). Para añadir más, crea un registro nuevo.`, "warning");
+            return;
+        }
+
+        //desactivar boton mientras se procesa
+        const textoOriginal = btnSave.innerText;
+        btnSave.disabled = true;
+
+        const resultado = await patchAlimentoAPI(item.id_lote, {
+            cantidad: nuevaCantidad,
+            id_almacenamiento: nuevoAlmacen,
+            posicion_cajon: nuevoCajon
         });
-        document.dispatchEvent(evento);
+
+        if (resultado.ok) {
+            showToast("Alimento modificado correctamente", "success");
+            
+            // recarga vista
+            const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
+            if(btnInventario) btnInventario.click(); 
+
+        } else {
+            showToast(resultado.error, "danger");
+            btnSave.disabled = false;
+            btnSave.innerText = textoOriginal;
+        }
     });
 }

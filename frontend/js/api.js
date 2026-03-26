@@ -125,3 +125,27 @@ export async function guardarNuevoAlimentoAPI(loteData) {
         return { ok: false, error: "Error de conexión con el servidor" };
     }
 }
+
+//actualizar alimento lotes
+export async function patchAlimentoAPI(idLote, datosActualizados) {
+    try {
+        const response = await apiFetch(`/lotes/${idLote}`, {
+            method: 'PATCH',
+            body: JSON.stringify(datosActualizados)
+        });
+
+        if (!response) return { ok: false, error: "Sesión expirada" };
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({})); 
+            return { ok: false, error: errorData.error || errorData.mensaje || "Error al actualizar el lote" };
+        }
+        
+        const data = await response.json();
+        return { ok: true, data };
+        
+    } catch (error) {
+        console.error("Error en patchAlimentoAPI:", error);
+        return { ok: false, error: "Error de conexión con el servidor" };
+    }
+}
