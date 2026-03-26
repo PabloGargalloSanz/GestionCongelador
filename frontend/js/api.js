@@ -48,7 +48,6 @@ export async function loginRequest(email, password) {
 }
 
 //get almacenes usuario
-
 export async function getAlmacenesByUsuarioDashboard() {
     const token = localStorage.getItem('auth_token');
     try {
