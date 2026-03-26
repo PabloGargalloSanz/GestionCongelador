@@ -3,6 +3,7 @@ import pool from '../db/db.js';
 import { getIdAlimento, newAlimentoService } from './alimentos.service.js';
 import { getIdCajon } from './cajones.service.js';
 
+//crear nuevo lote
 export const crearLoteAlimentoService = async (userId, loteData) => {
     const { 
         alimento_nombre, alimento_tipo, cantidad, unidad_medida, 
@@ -52,3 +53,4 @@ export const crearLoteAlimentoService = async (userId, loteData) => {
         client.release(); // se devuelve la conexión al pool
     }
 };
+

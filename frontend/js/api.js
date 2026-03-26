@@ -103,10 +103,10 @@ export async function getTiposAlimento() {
     }
 }
 
-// post nuevo alimento inventario
+// post nuevo alimento lotes
 export async function guardarNuevoAlimentoAPI(loteData) {
     try {
-        const response = await apiFetch('/inventario', {
+        const response = await apiFetch('/lotes', {
             method: 'POST',
             body: JSON.stringify(loteData)
         });

@@ -150,7 +150,7 @@ export function renderBarraFiltros(container, tipos, almacenes) {
 }
 
 
-//Añadir alimento////////////////////
+//Añadir alimento-lote////////////////////
 export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []) {
     const filaAñadir = document.createElement('tr');
     const hoy = new Date().toISOString().split('T')[0]; 

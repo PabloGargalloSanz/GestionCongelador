@@ -1,4 +1,4 @@
-import { crearLoteAlimentoService } from '../services/inventario.service.js';
+import { crearLoteAlimentoService } from '../services/lotes.service.js';
 
 export const anadirAlimento = async (req, res) => {
     try {
