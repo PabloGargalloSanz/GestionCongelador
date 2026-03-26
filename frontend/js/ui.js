@@ -334,15 +334,15 @@ export function activarEdicionFila(tr, item, almacenes) {
     tr.innerHTML = `
         <td>${item.alimento_nombre || item.alimento}</td>
         <td>${item.alimento_tipo || item.tipo}</td>
-        <td class="modificar-columna-cantidad">
+        <td>
             <div class="cantidad-alimento">
                 <input type="number" id="edit-cantidad-${item.id_lote}" 
-                       value="${item.cantidad}" class="filter-input" ">
+                       value="${item.cantidad}" class="filter-input cantidad-alimento-input">
+                ${item.unidad_medida}
             </div>
-            <small>${item.unidad_medida}</small>
         </td>
         <td>
-            <select id="edit-almacen-${item.id_lote}" class="filter-input">
+            <select id="edit-almacen-${item.id_lote}" class="filter-input input-tabla">
                 ${almacenes.map(a => `
                     <option value="${a.id_almacenamiento}" ${a.id_almacenamiento === item.id_almacenamiento ? 'selected' : ''}>
                         ${a.almacenamiento_nombre}
@@ -356,9 +356,11 @@ export function activarEdicionFila(tr, item, almacenes) {
         </td>
         <td >${fIntroduccion}</td>
         <td >${fCaducidad}</td>
-        <td colspan="2">
-            <button class="lapiz-btn" id="btn-save-${item.id_lote}" title="Guardar cambios">✅</button>
-            <button class="lapiz-btn" id="btn-cancel-${item.id_lote}" title="Cancelar">❌</button>
+        <td>
+            <button class="lapiz-btn guardar-lote-btn" id="btn-save-${item.id_lote}" title="Guardar cambios">Guardar</button>
+        </td>
+        <td>
+            <button class="lapiz-btn" id="btn-cancel-${item.id_lote}" title="Cancelar"><img src="./img/papelera.png" alt="eliminarFiltros" class="logoLapiz"></button>
         </td>
     `;
 

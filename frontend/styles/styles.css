@@ -374,7 +374,8 @@ header p {
 /*añadir alimento*/
 .cantidad-alimento{
     display: flex; 
-    gap: 4px;
+    align-items: center;
+    gap: 15px;
 }
 #alimento-cantidad{
     width: 35%;
@@ -388,6 +389,21 @@ header p {
     display: flex; 
     align-items: center; 
     gap: 5px; 
+}
+
+.guardar-lote-btn{
+    width: 70px;
+    height: 27px;
+}
+
+.cantidad-alimento-input{
+    width: 60px; 
+    flex-shrink: 0; 
+}
+
+.input-tabla{
+    width: 150px; 
+    flex-shrink: 0; 
 }
 
 /***********************************/
