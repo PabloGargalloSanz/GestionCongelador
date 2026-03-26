@@ -72,7 +72,7 @@ export function renderAlmacenes(almacenes) {
 
 //llenar tabla inventario
 
-export function renderTablaInventario(alimentos) {    
+export function renderTablaInventario(alimentos, listaAlmacenes) {    
     const tableBody = document.getElementById('inventario-list');
     if (!tableBody) return;
 
@@ -86,7 +86,7 @@ export function renderTablaInventario(alimentos) {
         return;
     }
 
-    alimentos.forEach(item => {
+    alimentos.forEach((item, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${item.alimento}</td>
@@ -96,10 +96,26 @@ export function renderTablaInventario(alimentos) {
             <td>${item.cajon_posicion || 'N/A'}</td>
             <td>${new Date(item.fecha_introduccion).toLocaleDateString()}</td>
             <td>${new Date(item.fecha_caducidad).toLocaleDateString()}</td>
-            <td><button class="lapiz-btn"><img src="./img/lapiz.png" alt="modificarAlimento" class="logoLapiz"></button></td>
+            <td>
+                <button  class="lapiz-btn editar-lote-btn" data-index="${index}">
+                    <img src="./img/lapiz.png" alt="modificarAlimento" class="logoLapiz">
+                </button>
+            </td>
             <td><button class="lapiz-btn"><img src="./img/papelera.png" alt="eliminarAlimento" class="logoLapiz"></button></td>
         `;
         tableBody.appendChild(row);
+    });
+    const botonesEditar = document.querySelectorAll('.editar-lote-btn');
+
+    botonesEditar.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            // indice de boton
+            const index = btn.getAttribute('data-index');
+            const item = alimentos[index]; 
+            const tr = btn.closest('tr'); 
+            
+            activarEdicionFila(tr, item, listaAlmacenes);
+        });
     });
 }
 
@@ -303,4 +319,80 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
             }
         });
     }
+}
+
+//Modificar alimento-lote
+export function activarEdicionFila(tr, item, almacenes) {
+    // Se guarda html por si se pulsa cancelar
+    const htmlOriginal = tr.innerHTML;
+
+    // cambio contenido por inputs
+    tr.innerHTML = `
+        <td>${item.alimento_nombre}</td>
+        <td>
+            <input type="number" id="edit-cantidad-${item.id_lote}" 
+                   value="${item.cantidad}" class="filter-input" style="width: 70px;">
+            <span class="text-claro">${item.unidad_medida}</span>
+        </td>
+        <td>
+            <select id="edit-almacen-${item.id_lote}" class="filter-input">
+                ${almacenes.map(a => `
+                    <option value="${a.id_almacenamiento}" ${a.id_almacenamiento === item.id_almacenamiento ? 'selected' : ''}>
+                        ${a.almacenamiento_nombre}
+                    </option>`).join('')}
+            </select>
+        </td>
+        <td>
+            <select id="edit-cajon-${item.id_lote}" class="filter-input">
+                </select>
+        </td>
+        <td>${new Date(item.fecha_caducidad).toLocaleDateString()}</td>
+        <td colspan="2">
+            <button class="btn-save" id="btn-save-${item.id_lote}" title="Guardar">S</button>
+            <button class="btn-cancel" id="btn-cancel-${item.id_lote}" title="Cancelar">X</button>
+        </td>
+    `;
+
+    const selectAlmacen = tr.querySelector(`#edit-almacen-${item.id_lote}`);
+    const selectCajon = tr.querySelector(`#edit-cajon-${item.id_lote}`);
+
+    const actualizarCajones = (idAlmacenSeleccionado, posicionActual) => {
+        const almacen = almacenes.find(a => a.id_almacenamiento === parseInt(idAlmacenSeleccionado));
+        const numCajones = almacen ? (almacen.total_cajones || almacen.num_cajones) : 0;
+        
+        let opciones = '';
+        for (let i = 1; i <= numCajones; i++) {
+            opciones += `<option value="${i}" ${i === posicionActual ? 'selected' : ''}>Cajón ${i}</option>`;
+        }
+        selectCajon.innerHTML = opciones;
+    };
+
+    // carga n cajon con la que ya estaba
+    actualizarCajones(item.id_almacenamiento, item.cajon_posicion);
+
+    // cambio almacen
+    selectAlmacen.addEventListener('change', (e) => actualizarCajones(e.target.value, 1));
+
+    // se restaura el HTML original
+    tr.querySelector(`#btn-cancel-${item.id_lote}`).addEventListener('click', () => {
+        tr.innerHTML = htmlOriginal;
+    });
+
+    // guardado
+    tr.querySelector(`#btn-save-${item.id_lote}`).addEventListener('click', async () => {
+        const nuevaCantidad = parseInt(tr.querySelector(`#edit-cantidad-${item.id_lote}`).value);
+        const nuevoAlmacen = parseInt(selectAlmacen.value);
+        const nuevoCajon = parseInt(selectCajon.value);
+
+        const evento = new CustomEvent('guardarEdicion', {
+            detail: { 
+                id_lote: item.id_lote, 
+                cantidad: nuevaCantidad, 
+                id_almacenamiento: nuevoAlmacen, 
+                posicion_cajon: nuevoCajon,
+                tr: tr //fila para poder cerrarla luego
+            }
+        });
+        document.dispatchEvent(evento);
+    });
 }

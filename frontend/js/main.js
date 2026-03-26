@@ -106,7 +106,11 @@ async function renderView(viewName) {
             const respuestaApi = await getAllAlimentosByUsuario();
             inventarioGlobal = Array.isArray(respuestaApi[0]) ? respuestaApi[0] : respuestaApi;
             
-            renderTablaInventario(inventarioGlobal);
+            if (!almacenesGlobales || almacenesGlobales.length === 0) {
+                almacenesGlobales = await getAlmacenesByUsuarioDashboard();
+            }
+
+            renderTablaInventario(inventarioGlobal, almacenesGlobales);
             renderFiltros();
 
             if (btnAddAlimento) {
@@ -117,7 +121,7 @@ async function renderView(viewName) {
                         const tipos = await getTiposAlimento() || [];
 
                         if (almacenesGlobales.length === 0) {
-                            almacenesGlobales = await getAlmacenesByUsuarioDashboard();
+                            renderBarraAñadirAlimento(contenedorAñadir, tipos, almacenesGlobales);
                         }
 
                         renderBarraAñadirAlimento(contenedorAñadir, tipos, almacenesGlobales);

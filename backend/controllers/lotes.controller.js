@@ -50,7 +50,7 @@ export const anadirAlimento = async (req, res, next) => {
 
 export const modificacionAlimento = async(req, res, next) =>{
     const userId = req.userId;
-    const id = req.params;
+    const id = req.params.id;
     const {cantidad, id_almacenamiento, posicion_cajon} = req.body;
 
     try{
