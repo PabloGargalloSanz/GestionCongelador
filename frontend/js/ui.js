@@ -91,7 +91,7 @@ export function renderTablaInventario(alimentos, listaAlmacenes) {
         row.innerHTML = `
             <td>${item.alimento}</td>
             <td>${item.tipo}</td>
-            <td>${item.cantidad}</td>
+            <td>${item.cantidad} ${item.unidad_medida}</td>
             <td>${item.ubicacion}</td>
             <td>${item.cajon_posicion || 'N/A'}</td>
             <td>${new Date(item.fecha_introduccion).toLocaleDateString()}</td>
@@ -326,13 +326,20 @@ export function activarEdicionFila(tr, item, almacenes) {
     // Se guarda html por si se pulsa cancelar
     const htmlOriginal = tr.innerHTML;
 
+    //quitar horas de la fecha
+    const fIntroduccion = item.fecha_introduccion ? new Date(item.fecha_introduccion).toLocaleDateString() : 'N/A';
+    const fCaducidad = item.fecha_caducidad ? new Date(item.fecha_caducidad).toLocaleDateString() : 'N/A';
+
     // cambio contenido por inputs
     tr.innerHTML = `
-        <td>${item.alimento_nombre}</td>
-        <td>
-            <input type="number" id="edit-cantidad-${item.id_lote}" 
-                   value="${item.cantidad}" class="filter-input" style="width: 70px;">
-            <span class="text-claro">${item.unidad_medida}</span>
+        <td>${item.alimento_nombre || item.alimento}</td>
+        <td>${item.alimento_tipo || item.tipo}</td>
+        <td class="modificar-columna-cantidad">
+            <div class="cantidad-alimento">
+                <input type="number" id="edit-cantidad-${item.id_lote}" 
+                       value="${item.cantidad}" class="filter-input" ">
+            </div>
+            <small>${item.unidad_medida}</small>
         </td>
         <td>
             <select id="edit-almacen-${item.id_lote}" class="filter-input">
@@ -344,12 +351,14 @@ export function activarEdicionFila(tr, item, almacenes) {
         </td>
         <td>
             <select id="edit-cajon-${item.id_lote}" class="filter-input">
-                </select>
+                <option value="">Cargando...</option>
+            </select>
         </td>
-        <td>${new Date(item.fecha_caducidad).toLocaleDateString()}</td>
+        <td >${fIntroduccion}</td>
+        <td >${fCaducidad}</td>
         <td colspan="2">
-            <button class="btn-save" id="btn-save-${item.id_lote}" title="Guardar">S</button>
-            <button class="btn-cancel" id="btn-cancel-${item.id_lote}" title="Cancelar">X</button>
+            <button class="lapiz-btn" id="btn-save-${item.id_lote}" title="Guardar cambios">✅</button>
+            <button class="lapiz-btn" id="btn-cancel-${item.id_lote}" title="Cancelar">❌</button>
         </td>
     `;
 

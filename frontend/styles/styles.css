@@ -383,6 +383,12 @@ header p {
     width: 30%;
 }
 
+/*modificar alimento*/
+.modificar-columna-cantidad{
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+}
 
 /***********************************/
 /* Sidebar Footer */
