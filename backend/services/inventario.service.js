@@ -9,16 +9,15 @@ export const crearLoteAlimentoService = async (userId, loteData) => {
         alimento_tamano, id_almacenamiento, posicion_cajon, fecha_caducidad 
     } = loteData;
 
-    // Pedimos un cliente dedicado para hacer la transacción de forma segura
     const client = await pool.connect();
 
     try {
         await client.query('BEGIN');
 
-        // PASO 1: Obtener el ID del alimento (usamos LET para poder reasignarlo)
+        //obtencion id alimento
         let idAlimento = await getIdAlimento(alimento_nombre);
 
-        // Si es null (no existe en la DB), lo creamos
+        // si no exist se crea
         if (!idAlimento) {
             const insertAlimento = await newAlimentoService({ 
                 alimento_nombre, 
@@ -28,15 +27,14 @@ export const crearLoteAlimentoService = async (userId, loteData) => {
             idAlimento = insertAlimento.id_alimento;
         } 
 
-        // PASO 2: Obtener el id_cajon usando nuestra función limpia
+        //obtencion id cajon
         const idCajon = await getIdCajon(id_almacenamiento, posicion_cajon, userId);
 
-        // Si es null, el cajón no existe o no es de ese usuario
         if (!idCajon) {
             throw new Error("CAJON_NO_ENCONTRADO"); 
         }
 
-        // PASO 3: Ejecutar la función PL/pgSQL
+        // ejecucion triger db
         const insertLote = await client.query(
             `SELECT * FROM insertar_lote_cajon($1, $2, $3, $4, $5, $6)`,
             [idCajon, idAlimento, cantidad, unidad_medida, alimento_tamano, fecha_caducidad]
@@ -44,14 +42,13 @@ export const crearLoteAlimentoService = async (userId, loteData) => {
 
         await client.query('COMMIT');
         
-        // Devolvemos los datos recién creados
         return insertLote.rows[0]; 
 
     } catch (error) {
         await client.query('ROLLBACK');
-        throw error; // Relanzamos el error para que lo atrape el controlador
+        throw error; 
 
     } finally {
-        client.release(); // ¡Muy importante! Devolvemos la conexión al pool
+        client.release(); // se devuelve la conexión al pool
     }
 };

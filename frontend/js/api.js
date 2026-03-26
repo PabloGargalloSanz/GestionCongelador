@@ -104,16 +104,13 @@ export async function getTiposAlimento() {
     }
 }
 
-// post nuevo alimento
+// post nuevo alimento inventario
 export async function guardarNuevoAlimentoAPI(loteData) {
     try {
-        // Usamos apiFetch porque YA gestiona el token y la URL base por nosotros
         const response = await apiFetch('/inventario', {
             method: 'POST',
             body: JSON.stringify(loteData)
         });
-        
-        // Si el servidor devolvió un 401 (no autorizado), apiFetch devuelve null
         if (!response) return { ok: false, error: "Sesión expirada" };
 
         if (!response.ok) {

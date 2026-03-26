@@ -209,7 +209,7 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
     container.innerHTML = "";
     container.appendChild(filaAñadir);
 
-    // --- LÓGICA DE CAJONES ---
+    //cajones
     const selectAlmacen = document.getElementById('alimento-almacenes');
     const selectCajon = document.getElementById('alimento-cajon');
 
@@ -218,8 +218,7 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
             const idSeleccionado = parseInt(e.target.value); 
             const almacen = almacenes.find(a => a.id_almacenamiento === idSeleccionado);
             
-            // Verificamos si existe el almacén y si tiene cajones
-            // Nota: Asegúrate de si tu objeto usa 'total_cajones' o 'num_cajones'
+            // verifica almacenes y cajones del almacen
             const numCajones = almacen ? (almacen.total_cajones || almacen.num_cajones) : 0;
             
             if (almacen && numCajones) {
@@ -236,8 +235,7 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
         });
     }
 
-    // --- BOTÓN CANCELAR ---
-    // Ahora que el ID arriba es 'cancelar-añadir-btn', esto ya no dará error
+    // boton cancelar/eliminar
     const btnCancelar = document.getElementById('eliminar-filtros-btn');
     if (btnCancelar) {
         btnCancelar.addEventListener('click', () => {
@@ -245,7 +243,7 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
         });
     }
 
-    // --- BOTÓN GUARDAR ---
+    // boton guardar
     const btnGuardar = document.getElementById('guardar-alimento-btn');
     
     if (btnGuardar) {
@@ -260,7 +258,7 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
             const fechaCaducidad = document.getElementById('add-fecha-caducidad').value;
 
             // Validación
-            if (!nombre || !tipo || !cantidad || !idAlmacenamiento || !cajonPosicion || !fechaCaducidad || !tamano) {
+            if (!nombre || !tipo || isNaN(cantidad) || cantidad <= 0 || !idAlmacenamiento || !cajonPosicion || !fechaCaducidad || !tamano) {
                 showToast("Por favor, rellena todos los campos obligatorios", "warning");
                 return;
             }
@@ -290,7 +288,7 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
                     showToast("Alimento guardado correctamente", "success");
                     container.innerHTML = ""; // Cerramos el formulario
                     
-                    // Truco: Recargar la vista de inventario
+                    // recarga vista
                     const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
                     if(btnInventario) btnInventario.click(); 
                 } else {
