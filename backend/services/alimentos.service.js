@@ -19,13 +19,16 @@ export const getIdAlimento = async (alimento_nombre) => {
 
 //Obtener todos los alimentos del usuario
 export const getAllAlimentosUsuario = async (userId) => {
-
     const query = `
         SELECT 
+            l.id_lote,
             a.alimento_nombre AS alimento,
             a.alimento_tipo AS tipo,
-            l.cantidad || ' ' || l.unidad_medida AS cantidad,
-            alm.almacenamiento_nombre || ' (' || alm.localizacion || ') ' AS ubicacion,
+            l.cantidad,
+            l.unidad_medida,
+            alm.id_almacenamiento,
+            alm.almacenamiento_nombre AS ubicacion,
+            alm.localizacion,
             c.posicion AS cajon_posicion,
             cl.fecha_introducido AS fecha_introduccion,
             l.fecha_caducidad
@@ -37,15 +40,14 @@ export const getAllAlimentosUsuario = async (userId) => {
         JOIN alimentos a ON l.id_alimento = a.id_alimento
         WHERE u.id_usuario = $1
         ORDER BY l.fecha_caducidad ASC;
-    `
+    `;
+    
     try {
-        const result = await pool.query (
-            query, [userId]      
-        );
+        const result = await pool.query(query, [userId]);
         return result.rows;
-
     } catch (error) {
         console.error("Error en la consulta de inventario:", error);
+        throw error;
     }
 }
 

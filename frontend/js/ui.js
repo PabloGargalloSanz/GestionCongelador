@@ -1,4 +1,4 @@
-import { guardarNuevoAlimentoAPI } from './api.js';
+import { guardarNuevoAlimentoAPI, patchAlimentoAPI } from './api.js';
 
 // selectores principales
 export const app = document.getElementById('app');
@@ -72,7 +72,7 @@ export function renderAlmacenes(almacenes) {
 
 //llenar tabla inventario
 
-export function renderTablaInventario(alimentos) {    
+export function renderTablaInventario(alimentos, listaAlmacenes) {    
     const tableBody = document.getElementById('inventario-list');
     if (!tableBody) return;
 
@@ -86,20 +86,36 @@ export function renderTablaInventario(alimentos) {
         return;
     }
 
-    alimentos.forEach(item => {
+    alimentos.forEach((item, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${item.alimento}</td>
             <td>${item.tipo}</td>
-            <td>${item.cantidad}</td>
+            <td>${item.cantidad} ${item.unidad_medida}</td>
             <td>${item.ubicacion}</td>
             <td>${item.cajon_posicion || 'N/A'}</td>
             <td>${new Date(item.fecha_introduccion).toLocaleDateString()}</td>
             <td>${new Date(item.fecha_caducidad).toLocaleDateString()}</td>
-            <td><button class="lapiz-btn"><img src="./img/lapiz.png" alt="modificarAlimento" class="logoLapiz"></button></td>
+            <td>
+                <button  class="lapiz-btn editar-lote-btn" data-index="${index}">
+                    <img src="./img/lapiz.png" alt="modificarAlimento" class="logoLapiz">
+                </button>
+            </td>
             <td><button class="lapiz-btn"><img src="./img/papelera.png" alt="eliminarAlimento" class="logoLapiz"></button></td>
         `;
         tableBody.appendChild(row);
+    });
+    const botonesEditar = document.querySelectorAll('.editar-lote-btn');
+
+    botonesEditar.forEach((btn) => {
+        btn.addEventListener('click', () => {
+            // indice de boton
+            const index = btn.getAttribute('data-index');
+            const item = alimentos[index]; 
+            const tr = btn.closest('tr'); 
+            
+            activarEdicionFila(tr, item, listaAlmacenes);
+        });
     });
 }
 
@@ -150,7 +166,7 @@ export function renderBarraFiltros(container, tipos, almacenes) {
 }
 
 
-//Añadir alimento////////////////////
+//Añadir alimento-lote////////////////////
 export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []) {
     const filaAñadir = document.createElement('tr');
     const hoy = new Date().toISOString().split('T')[0]; 
@@ -303,4 +319,117 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
             }
         });
     }
+}
+
+//Modificar alimento-lote
+export function activarEdicionFila(tr, item, almacenes) {
+    // Se guarda html por si se pulsa cancelar
+    const htmlOriginal = tr.innerHTML;
+
+    //quitar horas de la fecha
+    const fIntroduccion = item.fecha_introduccion ? new Date(item.fecha_introduccion).toLocaleDateString() : 'N/A';
+    const fCaducidad = item.fecha_caducidad ? new Date(item.fecha_caducidad).toLocaleDateString() : 'N/A';
+
+    // cambio contenido por inputs
+    tr.innerHTML = `
+        <td>${item.alimento_nombre || item.alimento}</td>
+        <td>${item.alimento_tipo || item.tipo}</td>
+        <td>
+            <div class="cantidad-alimento">
+                <input type="number" id="edit-cantidad-${item.id_lote}" 
+                       value="${item.cantidad}" class="filter-input cantidad-alimento-input">
+                ${item.unidad_medida}
+            </div>
+        </td>
+        <td>
+            <select id="edit-almacen-${item.id_lote}" class="filter-input input-tabla">
+                ${almacenes.map(a => `
+                    <option value="${a.id_almacenamiento}" ${a.id_almacenamiento === item.id_almacenamiento ? 'selected' : ''}>
+                        ${a.almacenamiento_nombre}
+                    </option>`).join('')}
+            </select>
+        </td>
+        <td>
+            <select id="edit-cajon-${item.id_lote}" class="filter-input">
+                <option value="">Cargando...</option>
+            </select>
+        </td>
+        <td >${fIntroduccion}</td>
+        <td >${fCaducidad}</td>
+        <td>
+            <button class="lapiz-btn guardar-lote-btn" id="btn-save-${item.id_lote}" title="Guardar cambios">Guardar</button>
+        </td>
+        <td>
+            <button class="lapiz-btn" id="btn-cancel-${item.id_lote}" title="Cancelar"><img src="./img/papelera.png" alt="eliminarFiltros" class="logoLapiz"></button>
+        </td>
+    `;
+
+    const selectAlmacen = tr.querySelector(`#edit-almacen-${item.id_lote}`);
+    const selectCajon = tr.querySelector(`#edit-cajon-${item.id_lote}`);
+
+    const actualizarCajones = (idAlmacenSeleccionado, posicionActual) => {
+        const almacen = almacenes.find(a => a.id_almacenamiento === parseInt(idAlmacenSeleccionado));
+        const numCajones = almacen ? (almacen.total_cajones || almacen.num_cajones) : 0;
+        
+        let opciones = '';
+        for (let i = 1; i <= numCajones; i++) {
+            opciones += `<option value="${i}" ${i === posicionActual ? 'selected' : ''}>Cajón ${i}</option>`;
+        }
+        selectCajon.innerHTML = opciones;
+    };
+
+    // carga n cajon con la que ya estaba
+    actualizarCajones(item.id_almacenamiento, item.cajon_posicion);
+
+    // cambio almacen
+    selectAlmacen.addEventListener('change', (e) => actualizarCajones(e.target.value, 1));
+
+    // se restaura el HTML original
+    tr.querySelector(`#btn-cancel-${item.id_lote}`).addEventListener('click', () => {
+        tr.innerHTML = htmlOriginal;
+    });
+
+    // guardado
+    const btnSave = tr.querySelector(`#btn-save-${item.id_lote}`);
+    
+    btnSave.addEventListener('click', async () => {
+        const nuevaCantidad = parseInt(tr.querySelector(`#edit-cantidad-${item.id_lote}`).value);
+        const nuevoAlmacen = parseInt(selectAlmacen.value);
+        const nuevoCajon = parseInt(selectCajon.value);
+
+        // validacion no sea valor inferior a 0
+        if (isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
+            showToast("La cantidad debe ser mayor a 0", "warning");
+            return;
+        }
+        
+        // validacion no sea valor superior al actual
+        if (nuevaCantidad > item.cantidad) {
+            showToast(`Solo puedes restar cantidad (máximo ${item.cantidad}). Para añadir más, crea un registro nuevo.`, "warning");
+            return;
+        }
+
+        //desactivar boton mientras se procesa
+        const textoOriginal = btnSave.innerText;
+        btnSave.disabled = true;
+
+        const resultado = await patchAlimentoAPI(item.id_lote, {
+            cantidad: nuevaCantidad,
+            id_almacenamiento: nuevoAlmacen,
+            posicion_cajon: nuevoCajon
+        });
+
+        if (resultado.ok) {
+            showToast("Alimento modificado correctamente", "success");
+            
+            // recarga vista
+            const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
+            if(btnInventario) btnInventario.click(); 
+
+        } else {
+            showToast(resultado.error, "danger");
+            btnSave.disabled = false;
+            btnSave.innerText = textoOriginal;
+        }
+    });
 }

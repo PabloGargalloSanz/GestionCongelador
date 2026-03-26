@@ -3,6 +3,7 @@ import pool from '../db/db.js';
 import { getIdAlimento, newAlimentoService } from './alimentos.service.js';
 import { getIdCajon } from './cajones.service.js';
 
+//crear nuevo lote
 export const crearLoteAlimentoService = async (userId, loteData) => {
     const { 
         alimento_nombre, alimento_tipo, cantidad, unidad_medida, 
@@ -50,5 +51,43 @@ export const crearLoteAlimentoService = async (userId, loteData) => {
 
     } finally {
         client.release(); // se devuelve la conexión al pool
+    }
+};
+
+// modificar lote
+export const patchLoteService = async (userId, idLote, datos) => {
+    const { cantidad, id_almacenamiento, posicion_cajon } = datos;
+    const client = await pool.connect();
+
+    try {
+        const resLote = await client.query(
+            'SELECT cantidad, alimento_tamano FROM lotes WHERE id_lote = $1',
+            [idLote]
+        );
+
+        if (resLote.rows.length === 0) {
+            throw new Error("LOTE_NO_ENCONTRADO");
+        }
+
+        const loteActual = resLote.rows[0];
+        
+        // calculo del tamaño
+        const tamanoUnitario = loteActual.alimento_tamano / loteActual.cantidad;
+        
+        //espacio que ocupara
+        const nuevoTamanoTotal = Math.round(tamanoUnitario * cantidad);
+
+        // funcion db de actualizar lote
+        const resultado = await client.query(
+            `SELECT * FROM actualizar_lote_cajon($1, $2, $3, $4, $5, $6)`,
+            [idLote, cantidad, id_almacenamiento, posicion_cajon, nuevoTamanoTotal, userId]
+        );
+
+        return resultado.rows[0];
+
+    } catch (error) {
+        throw error; 
+    } finally {
+        client.release(); 
     }
 };
