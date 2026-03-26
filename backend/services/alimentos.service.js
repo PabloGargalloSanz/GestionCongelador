@@ -8,6 +8,15 @@ export const getAllAlimentos = async () => {
 
 }
 
+//Obtener id de alimento
+export const getIdAlimento = async (alimento_nombre) => {
+    const result = await pool.query(
+        'SELECT id_alimento FROM alimentos WHERE LOWER(alimento_nombre) = LOWER($1)',
+        [alimento_nombre]
+    );
+    return result.rows.length > 0 ? result.rows[0].id_alimento : null;
+}
+
 //Obtener todos los alimentos del usuario
 export const getAllAlimentosUsuario = async (userId) => {
 
@@ -16,7 +25,8 @@ export const getAllAlimentosUsuario = async (userId) => {
             a.alimento_nombre AS alimento,
             a.alimento_tipo AS tipo,
             l.cantidad || ' ' || l.unidad_medida AS cantidad,
-            alm.almacenamiento_nombre || ' (' || alm.localizacion || ') - Cajón ' || c.posicion AS ubicacion,
+            alm.almacenamiento_nombre || ' (' || alm.localizacion || ') ' AS ubicacion,
+            c.posicion AS cajon_posicion,
             cl.fecha_introducido AS fecha_introduccion,
             l.fecha_caducidad
         FROM usuarios u

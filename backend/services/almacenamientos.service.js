@@ -7,6 +7,7 @@ export const getAllAlmacenamientoUsuario = async (id_usuario) => {
         alm.id_almacenamiento,
         alm.almacenamiento_nombre,
         alm.localizacion,
+        (SELECT MAX(posicion) FROM cajones WHERE id_almacenamiento = alm.id_almacenamiento) AS num_cajones,
         COALESCE(
             ROUND(
                 (

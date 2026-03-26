@@ -48,7 +48,6 @@ export async function loginRequest(email, password) {
 }
 
 //get almacenes usuario
-
 export async function getAlmacenesByUsuarioDashboard() {
     const token = localStorage.getItem('auth_token');
     try {
@@ -101,5 +100,28 @@ export async function getTiposAlimento() {
     } catch (error) {
         console.error("Error al obtener tipos:", error);
         return [];
+    }
+}
+
+// post nuevo alimento inventario
+export async function guardarNuevoAlimentoAPI(loteData) {
+    try {
+        const response = await apiFetch('/inventario', {
+            method: 'POST',
+            body: JSON.stringify(loteData)
+        });
+        if (!response) return { ok: false, error: "Sesión expirada" };
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({})); 
+            return { ok: false, error: errorData.error || "Error al guardar el alimento" };
+        }
+        
+        const data = await response.json();
+        return { ok: true, data };
+        
+    } catch (error) {
+        console.error("Error en guardarNuevoAlimentoAPI:", error);
+        return { ok: false, error: "Error de conexión con el servidor" };
     }
 }

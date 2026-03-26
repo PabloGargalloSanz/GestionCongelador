@@ -230,6 +230,7 @@ header p {
 
 .inventario-table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     background: white;
     border-radius: var(--radius-sm);
@@ -263,6 +264,12 @@ header p {
     margin: 0;
 }
 
+#guardar-alimento-btn{
+    width: 70px;
+    height: 27px;
+    
+}
+
 /* filtros*/
 .filter-row-container {
     background: #fdfdfd;
@@ -276,7 +283,7 @@ header p {
 
 .filter-grid {
     display: grid;
-    grid-template-columns: 2fr 1.5fr 1fr 1fr 1.5fr 1.5fr; 
+    grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1.5fr 1.5fr; 
     gap: 15px;
     align-items: center;
 }
@@ -364,6 +371,17 @@ header p {
     color: var(--primario);
 }
 
+/*añadir alimento*/
+.cantidad-alimento{
+    display: flex; 
+    gap: 4px;
+}
+#alimento-cantidad{
+    width: 35%;
+}
+#alimento-unidad, #alimento-tamano{
+    width: 30%;
+}
 
 
 /***********************************/
@@ -508,6 +526,8 @@ header p {
 
 .toast.info { background: #1e293b; border-left: 4px solid #6366f1; }
 .toast.danger { background: #7f1d1d; border-left: 4px solid #ef4444; color: #fee2e2; }
+.toast.success { background: #2a6630; border-left: 4px solid #37883f; color: #e2fee4; }
+.toast.warning { background: #647327; border-left: 4px solid #888737; color: #e2fee4; }
 
 @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }

@@ -8,7 +8,7 @@ export const globalErrorHandler = async (err, req, res, next) => {
     const method = req.method;
     const details = err.details || null;
     
-    const userId = req.user ? req.user.id : null; // con token tenemos id
+    const userId = req.userId || (req.user ? req.user.id : null); // con token tenemos id
     
     logError(userId, action, ip, method, rute, err.message +" ( "+ details + " )", statusCode);
     
