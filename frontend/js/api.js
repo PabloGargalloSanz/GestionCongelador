@@ -171,3 +171,27 @@ export async function deleteAlimentoAPI(idLote) {
         return { ok: false, error: "Error de conexión con el servidor" };
     }
 }
+
+// añadir nuevo almacenamiento
+export async function crearAlmacenAPI(datosAlmacen) {
+    try {
+        const response = await apiFetch('/almacenamientos', {
+            method: 'POST',
+            body: JSON.stringify(datosAlmacen)
+        });
+
+        if (!response) return { ok: false, error: "Sesión expirada" };
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({})); 
+            return { ok: false, error: errorData.error || errorData.mensaje || "Error al crear el almacén" };
+        }
+        
+        const data = await response.json();
+        return { ok: true, data };
+        
+    } catch (error) {
+        console.error("Error en crearAlmacenAPI:", error);
+        return { ok: false, error: "Error de conexión con el servidor" };
+    }
+}

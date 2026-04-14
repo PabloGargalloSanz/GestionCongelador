@@ -1,6 +1,6 @@
 import { auth } from './auth.js';
-import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario} from './api.js';
-import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario, renderBarraAñadirAlimento } from './ui.js';
+import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario, crearAlmacenAPI} from './api.js';
+import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario, renderBarraAñadirAlimento, openModalAlmacen } from './ui.js';
 
 
 ///variables globales
@@ -94,6 +94,29 @@ async function renderView(viewName) {
         try {
             almacenesGlobales = await getAlmacenesByUsuarioDashboard();
             renderAlmacenes(almacenesGlobales);
+
+            const btnAddAlmacen = document.getElementById('add-almacenamiento-btn');
+            
+            if (btnAddAlmacen) {
+                btnAddAlmacen.addEventListener('click', async () => {
+                    
+                    const resultado = await openModalAlmacen(); 
+
+                    if (resultado && resultado.action === 'CREATE') {
+                        
+                        const resAPI = await crearAlmacenAPI(resultado.data);
+
+                        if (resAPI.ok) {
+                            showToast("Almacén creado correctamente", "success");
+                            
+                            almacenesGlobales = await getAlmacenesByUsuarioDashboard();
+                            renderAlmacenes(almacenesGlobales);
+                        } else {
+                            showToast(resAPI.error, "danger");
+                        }
+                    }
+                });
+            }
 
         } catch (error) {
             console.error("Fallo al cargar almacenes", error);

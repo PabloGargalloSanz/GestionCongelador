@@ -508,3 +508,90 @@ export function showConfirmModal(mensaje) {
         });
     });
 }
+
+// gestionar almacenes
+export function openModalAlmacen(almacenExistente = null) {
+    return new Promise((resolve) => {
+        const isEdit = almacenExistente !== null;
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        
+        const nombreVal = isEdit ? almacenExistente.almacenamiento_nombre : '';
+        const locVal = isEdit ? almacenExistente.localizacion : '';
+        const cajonesVal = isEdit ? (almacenExistente.num_cajones || 1) : 1; 
+
+        overlay.innerHTML = `
+            <div class="modal-card">
+                <h3 id="modal-title-almacen" class="modal-title">${isEdit ? 'Editar Almacenamiento' : ' Nuevo Almacenamiento'}</h3>
+                
+                <div class="modal-form-container">
+                    <label class="form-label modal-label">Nombre del almacén:</label>
+                    <input type="text" id="modal-alm-nombre" class="filter-input modal-input" placeholder="Ej: Nevera Principal" value="${nombreVal}">
+                    
+                    <label class="form-label modal-label">Ubicación:</label>
+                    <input type="text" id="modal-alm-loc" class="filter-input modal-input" placeholder="Ej: Cocina" value="${locVal}">
+                    
+                    <label class="form-label modal-label">Número de cajones:</label>
+                    <input type="number" id="modal-alm-cajones" class="filter-input modal-input" min="1" max="10" value="${cajonesVal}" ${isEdit ? 'disabled title="Para cambiar cajones, crea un almacén nuevo"' : ''}>
+                </div>
+
+                <div class="modal-botones ${isEdit ? 'justify-between' : 'justify-center'}">
+                    ${isEdit ? `<button id="btn-eliminar-alm" class="btn-borrar-almacen"> Eliminar</button>` : ''}
+                    
+                    <div class="modal-botones-derecha">
+                        <button id="btn-cancelar-alm" class="btn-cancelar-modal">Cancelar</button>
+                        <button id="btn-guardar-alm" class="btn-guardar-almacen">${isEdit ? 'Guardar Cambios' : 'Crear'}</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        // botones
+
+        //Cancelar
+        overlay.querySelector('#btn-cancelar-alm').addEventListener('click', () => {
+            overlay.remove();
+            resolve(null);
+        });
+
+        // Guardar / Crear
+        overlay.querySelector('#btn-guardar-alm').addEventListener('click', () => {
+            const nombre = overlay.querySelector('#modal-alm-nombre').value.trim();
+            const localizacion = overlay.querySelector('#modal-alm-loc').value.trim();
+            const num_cajones = parseInt(overlay.querySelector('#modal-alm-cajones').value);
+
+            if (!nombre || !localizacion || isNaN(num_cajones) || num_cajones <= 0) {
+                alert("Por favor, rellena todos los campos correctamente.");
+                return;
+            }
+
+            overlay.remove();
+            resolve({
+                action: isEdit ? 'EDIT' : 'CREATE',
+                data: {
+                    id_almacenamiento: isEdit ? almacenExistente.id_almacenamiento : null,
+                    almacenamiento_nombre: nombre,
+                    localizacion: localizacion,
+                    num_cajones: num_cajones
+                }
+            });
+        });
+
+        // Eliminar
+        if (isEdit) {
+            overlay.querySelector('#btn-eliminar-alm').addEventListener('click', () => {
+                const seguro = confirm(`¿Estás súper seguro de eliminar "${nombreVal}"? Perderás todos los alimentos que estén dentro.`);
+                if (seguro) {
+                    overlay.remove();
+                    resolve({
+                        action: 'DELETE',
+                        data: { id_almacenamiento: almacenExistente.id_almacenamiento }
+                    });
+                }
+            });
+        }
+    });
+}

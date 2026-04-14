@@ -42,15 +42,38 @@ export const getAllAlmacenamientoUsuario = async (id_usuario) => {
 }
 
 //Crear nuevo almacenamiento
-export const newAlmacenamientoService = async (data) => {
-    const { id_usuario, almacenamiento_nombre, localizacion} = data;
+export const newAlmacenamientoService = async (userId, datos) => {
+    const { almacenamiento_nombre, localizacion, num_cajones } = datos;
+    const client = await pool.connect();
 
-    const result = await pool.query(
-        'INSERT INTO almacenamientos (id_usuario, almacenamiento_nombre, localizacion) VALUES ($1, $2, $3) RETURNING *',
-        [id_usuario, almacenamiento_nombre, localizacion]
-    );
-    return result.rows[0];
-}
+    try {
+        await client.query('BEGIN'); 
+
+        // crear almacenamiento
+        const resAlmacen = await client.query(
+            'INSERT INTO almacenamientos (id_usuario, almacenamiento_nombre, localizacion) VALUES ($1, $2, $3) RETURNING *',
+            [userId, almacenamiento_nombre, localizacion]
+        );
+        const nuevoAlmacen = resAlmacen.rows[0];
+
+        // crear cajones
+        for (let i = 1; i <= num_cajones; i++) {
+            await client.query(
+                'INSERT INTO cajones (id_almacenamiento, posicion) VALUES ($1, $2)',
+                [nuevoAlmacen.id_almacenamiento, i]
+            );
+        }
+
+        await client.query('COMMIT'); // guardado
+        return nuevoAlmacen;
+
+    } catch (error) {
+        await client.query('ROLLBACK'); 
+        throw error;
+    } finally {
+        client.release();
+    }
+};
 
 //Actualizar almacenamiento (nombre)
 export const updateAlmacenamientoService = async (id_almacenamiento, data) => {

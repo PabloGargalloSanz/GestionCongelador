@@ -6,7 +6,7 @@ import { verifyToken } from '../middlewares/jwt.middleware.js'
 const router = Router();
 
 router.get('/almacenamientos/usuario', verifyToken , getTodosAlmacenamientosByIdUsuario);
-router.post('/almacenamientos', createAlmacenamiento);
-router.put('/almacenamientos/:idUsuario', updateAlmacenamiento);
+router.post('/almacenamientos', verifyToken, createAlmacenamiento);
+router.put('/almacenamientos/:idUsuario', verifyToken, updateAlmacenamiento);
 
 export default router;
