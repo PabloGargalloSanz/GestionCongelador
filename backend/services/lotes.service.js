@@ -91,3 +91,25 @@ export const patchLoteService = async (userId, idLote, datos) => {
         client.release(); 
     }
 };
+
+// Eliminar lote
+export const deleteLoteService = async (idLote) => {
+    const client = await pool.connect();
+
+    try {
+        const resultado = await client.query(
+            'DELETE FROM lotes WHERE id_lote = $1 RETURNING *',
+            [idLote]
+        );
+
+        if (resultado.rowCount === 0) {
+            throw new Error("LOTE_NO_ENCONTRADO");
+        }
+
+        return resultado.rows[0];
+    } catch (error) {
+        throw error;
+    } finally {
+        client.release();
+    }
+};

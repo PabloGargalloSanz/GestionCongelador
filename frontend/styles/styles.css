@@ -418,6 +418,100 @@ header p {
     flex-shrink: 0; 
 }
 
+/*Eliminar alimento*/
+/*POPUP*/
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(30, 41, 59, 0.7); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease-out;
+    backdrop-filter: blur(3px); 
+}
+
+.modal-card {
+    background: var(--blanco);
+    padding: 30px;
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 450px;
+    box-shadow: var(--shadow-lg);
+    animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-title {
+    color: var(--accent);
+    font-size: 22px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-text {
+    font-size: 16px;
+    color: var(--texto-oscuro);
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+.modal-botones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.btn-cancelar-modal {
+    background: var(--fondo-gris);
+    color: var(--texto-oscuro);
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-cancelar-modal:hover {
+    background: #cbd5e1;
+}
+
+.btn-eliminar-modal {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(219, 87, 87, 0.3);
+    transition: transform 0.2s, background 0.3s;
+}
+
+.btn-eliminar-modal:hover {
+    background: #c53030;
+    transform: translateY(-2px);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes scaleUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+
 /***********************************/
 /* Sidebar Footer */
 /***********************************/
