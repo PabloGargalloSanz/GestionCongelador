@@ -149,3 +149,25 @@ export async function patchAlimentoAPI(idLote, datosActualizados) {
         return { ok: false, error: "Error de conexión con el servidor" };
     }
 }
+
+// Eliminar alimento lote
+export async function deleteAlimentoAPI(idLote) {
+    try {
+        const response = await apiFetch(`/lotes/${idLote}`, {
+            method: 'DELETE'
+        });
+
+        if (!response) return { ok: false, error: "Sesión expirada" };
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({})); 
+            return { ok: false, error: errorData.error || errorData.mensaje || "Error al eliminar el lote" };
+        }
+        
+        return { ok: true };
+        
+    } catch (error) {
+        console.error("Error en deleteAlimentoAPI:", error);
+        return { ok: false, error: "Error de conexión con el servidor" };
+    }
+}

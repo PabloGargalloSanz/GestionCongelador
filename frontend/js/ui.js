@@ -1,4 +1,4 @@
-import { guardarNuevoAlimentoAPI, patchAlimentoAPI } from './api.js';
+import { guardarNuevoAlimentoAPI, patchAlimentoAPI, deleteAlimentoAPI } from './api.js';
 
 // selectores principales
 export const app = document.getElementById('app');
@@ -101,7 +101,9 @@ export function renderTablaInventario(alimentos, listaAlmacenes) {
                     <img src="./img/lapiz.png" alt="modificarAlimento" class="logoLapiz">
                 </button>
             </td>
-            <td><button class="lapiz-btn"><img src="./img/papelera.png" alt="eliminarAlimento" class="logoLapiz"></button></td>
+            <td><button class="lapiz-btn eliminar-lote-btn" data-index="${index}">
+                <img src="./img/papelera.png" alt="eliminarAlimento" class="logoLapiz">
+            </button></td>
         `;
         tableBody.appendChild(row);
     });
@@ -115,6 +117,41 @@ export function renderTablaInventario(alimentos, listaAlmacenes) {
             const tr = btn.closest('tr'); 
             
             activarEdicionFila(tr, item, listaAlmacenes);
+        });
+    });
+
+    // Eliminar lote
+    const botonesEliminar = document.querySelectorAll('.eliminar-lote-btn');
+
+    botonesEliminar.forEach((btn) => {
+        btn.addEventListener('click', async () => {
+            const index = btn.getAttribute('data-index');
+            const item = alimentos[index]; 
+            
+            // Confirmacion antes de eliminar
+            const confirmacion = await showConfirmModal(
+                `¿Estás seguro de que deseas eliminar <strong>"${item.alimento}"</strong> con la cantidad <strong>${item.cantidad} ${item.unidad_medida}</strong> del inventario?`
+            );
+
+            if (confirmacion) {
+                // desactivar boton 
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+
+                // api
+                const resultado = await deleteAlimentoAPI(item.id_lote);
+
+                if (resultado.ok) {
+                    showToast("Alimento eliminado correctamente", "success");
+                    // refrescar
+                    const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
+                    if(btnInventario) btnInventario.click(); 
+                } else {
+                    showToast(resultado.error, "danger");
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                }
+            }
         });
     });
 }
@@ -431,5 +468,43 @@ export function activarEdicionFila(tr, item, almacenes) {
             btnSave.disabled = false;
             btnSave.innerText = textoOriginal;
         }
+    });
+}
+
+//popups eliminar lote
+export function showConfirmModal(mensaje) {
+    return new Promise((resolve) => {
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
+        
+        overlay.innerHTML = `
+            <div class="modal-card">
+                <h3 class="modal-title"> Confirmar eliminación</h3>
+                <p class="modal-text">${mensaje}</p>
+                <div class="modal-botones">
+                    <button id="modal-cancel-btn" class="btn-cancelar-modal">Cancelar</button>
+                    <button id="modal-confirm-btn" class="btn-eliminar-modal">Eliminar Lote</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
+
+        // logica botones
+        const btnCancel = overlay.querySelector('#modal-cancel-btn');
+        const btnConfirm = overlay.querySelector('#modal-confirm-btn');
+
+        // Si cancela, borramos el HTML y devolvemos false
+        btnCancel.addEventListener('click', () => {
+            overlay.remove();
+            resolve(false);
+        });
+
+        // Si confirma, borramos el HTML y devolvemos true
+        btnConfirm.addEventListener('click', () => {
+            overlay.remove();
+            resolve(true);
+        });
     });
 }
