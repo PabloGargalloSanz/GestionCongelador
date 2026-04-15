@@ -667,6 +667,8 @@ header p {
     transform: translateY(-2px);
 }
 
+/*popup eliminar */
+
 /* Animaciones */
 @keyframes fadeIn {
     from { opacity: 0; }

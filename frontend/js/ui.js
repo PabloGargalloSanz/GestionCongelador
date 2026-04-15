@@ -517,7 +517,7 @@ export function openModalAlmacen(almacenExistente = null) {
         overlay.className = 'modal-overlay';
         
         const nombreVal = isEdit ? almacenExistente.almacenamiento_nombre : '';
-        const locVal = isEdit ? almacenExistente.localizacion : '';
+        const localizacionVal = isEdit ? almacenExistente.localizacion : '';
         const cajonesVal = isEdit ? (almacenExistente.num_cajones || 1) : 1; 
 
         overlay.innerHTML = `
@@ -529,7 +529,7 @@ export function openModalAlmacen(almacenExistente = null) {
                     <input type="text" id="modal-alm-nombre" class="filter-input modal-input" placeholder="Ej: Nevera Principal" value="${nombreVal}">
                     
                     <label class="form-label modal-label">Ubicación:</label>
-                    <input type="text" id="modal-alm-loc" class="filter-input modal-input" placeholder="Ej: Cocina" value="${locVal}">
+                    <input type="text" id="modal-alm-loc" class="filter-input modal-input" placeholder="Ej: Cocina" value="${localizacionVal}">
                     
                     <label class="form-label modal-label">Número de cajones:</label>
                     <input type="number" id="modal-alm-cajones" class="filter-input modal-input" min="1" max="10" value="${cajonesVal}" ${isEdit ? 'disabled title="Para cambiar cajones, crea un almacén nuevo"' : ''}>
@@ -538,7 +538,7 @@ export function openModalAlmacen(almacenExistente = null) {
                 </div>
 
                 <div class="modal-botones ${isEdit ? 'justify-between' : 'justify-center'}">
-                    ${isEdit ? `<button id="btn-eliminar-alm" class="btn-borrar-almacen"> Eliminar</button>` : ''}
+                    ${isEdit ? `<button id="btn-eliminar-alm" class="btn-eliminar-modal"> Eliminar</button>` : ''}
                     
                     <div class="modal-botones-derecha">
                         <button id="btn-cancelar-alm" class="btn-cancelar-modal">Cancelar</button>
@@ -646,8 +646,13 @@ export function openModalAlmacen(almacenExistente = null) {
 
         // Eliminar
         if (isEdit) {
-            overlay.querySelector('#btn-eliminar-alm').addEventListener('click', () => {
-                const seguro = confirm(`¿Estás súper seguro de eliminar "${nombreVal}"? Perderás todos los alimentos que estén dentro.`);
+            overlay.querySelector('#btn-eliminar-alm').addEventListener('click', async () => {
+                
+                const seguro = await showConfirmModal(
+                    `¿Estás seguro de eliminar el almacén <strong>${nombreVal}</strong> localizado en <strong>${localizacionVal}</strong>?<br><br>
+                    <strong> Atención: Perderás todos los alimentos que estén dentro.</strong>`
+                );
+
                 if (seguro) {
                     overlay.remove();
                     resolve({
