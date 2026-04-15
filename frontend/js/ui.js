@@ -173,13 +173,12 @@ export function renderBarraFiltros(container, tipos, almacenes) {
         <td>
             <select id="filter-almacenes" class="filter-input">
                 <option value="" class="filter-input">Todos</option>
-                ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
+                ${almacenes.map(a => `<option value="${a.almacenamiento_nombre}">${a.almacenamiento_nombre}</option>`).join('')}
             </select>
         </td>
         <td>
             <select id="filter-cajon" class="filter-input" disabled>
                 <option value="" class="filter-input">Todos</option>
-                ${almacenes.map(a => `<option value="${a.localizacion}">${a.localizacion}</option>`).join('')}
             </select>
         </td>
         <td>

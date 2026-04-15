@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS cajones(
     id_cajon SERIAL PRIMARY KEY,
     id_almacenamiento INT NOT NULL REFERENCES almacenamientos(id_almacenamiento) ON DELETE CASCADE,
     posicion INT NOT NULL,
-    tamano NUMERIC(10, 2) DEFAULT 100 CHECK (tamano > 0)
+    tamano NUMERIC(10, 2) DEFAULT 1000 CHECK (tamano > 0)
 );
 
 CREATE TABLE IF NOT EXISTS lotes(

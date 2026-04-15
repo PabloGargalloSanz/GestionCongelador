@@ -214,7 +214,7 @@ function renderFiltros() {
                     selectCajon.innerHTML = '<option value="">Cajón</option>';
                 } else {
                     selectCajon.disabled = false;
-                    const almacenData = almacenesGlobales.find(a => a.localizacion === almacenSeleccionado);
+                    const almacenData = almacenesGlobales.find(a => a.almacenamiento_nombre === almacenSeleccionado);                    
                     let opciones = '<option value="">Todos</option>';
                     if(almacenData && almacenData.num_cajones) {
                         for(let i=1; i <= almacenData.num_cajones; i++) {
