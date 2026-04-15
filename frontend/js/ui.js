@@ -533,6 +533,8 @@ export function openModalAlmacen(almacenExistente = null) {
                     
                     <label class="form-label modal-label">Número de cajones:</label>
                     <input type="number" id="modal-alm-cajones" class="filter-input modal-input" min="1" max="10" value="${cajonesVal}" ${isEdit ? 'disabled title="Para cambiar cajones, crea un almacén nuevo"' : ''}>
+                    
+                    <div id="cajones-capacidades-container"></div>
                 </div>
 
                 <div class="modal-botones ${isEdit ? 'justify-between' : 'justify-center'}">
@@ -548,6 +550,57 @@ export function openModalAlmacen(almacenExistente = null) {
 
         document.body.appendChild(overlay);
 
+        const inputNumCajones = overlay.querySelector('#modal-alm-cajones');
+        const containerCapacidades = overlay.querySelector('#cajones-capacidades-container');
+
+        const renderInputsCajones = () => {
+            if (isEdit) return; 
+            const num = parseInt(inputNumCajones.value) || 0;
+            
+            // guia tamaños
+            let html = `
+                <div class="capacidad-header">
+                    <label class="form-label modal-label capacidad-label">Tamaño por cajón:</label>
+                    <div class="info-icon-container">
+                        i
+                        <span class="tooltip-text">
+                            <strong>Guía de Tamaños:</strong><br><br>
+                            <strong>XS:</strong> Cajón pequeño (Hielos)<br>
+                            <strong>S:</strong> Cajón estándar reducido<br>
+                            <strong>M:</strong> Cajón estándar<br>
+                            <strong>L:</strong> Cajón grande<br>
+                            <strong>XL:</strong> Cajón extra grande
+                        </span>
+                    </div>
+                </div>
+                <div class="capacidad-lista">
+            `;
+            
+            // opciones capacidad
+            for (let i = 1; i <= num; i++) {
+                html += `
+                    <div class="capacidad-fila">
+                        <span class="capacidad-texto">Cajón ${i}:</span>
+                        <select class="filter-input modal-input input-capacidad-cajon capacidad-select" data-posicion="${i}">
+                            <option value="XS">XS - Muy Pequeño</option>
+                            <option value="S">S - Pequeño</option>
+                            <option value="M" selected>M - Estándar</option>
+                            <option value="L">L - Grande</option>
+                            <option value="XL">XL - Extra Grande</option>
+                        </select>
+                    </div>
+                `;
+            }
+            html += '</div>';
+            containerCapacidades.innerHTML = html;
+        };
+
+        // si se añaden mas cajones
+        if (!isEdit) {
+            inputNumCajones.addEventListener('input', renderInputsCajones);
+            renderInputsCajones();
+        }
+        
         // botones
 
         //Cancelar
@@ -562,6 +615,17 @@ export function openModalAlmacen(almacenExistente = null) {
             const localizacion = overlay.querySelector('#modal-alm-loc').value.trim();
             const num_cajones = parseInt(overlay.querySelector('#modal-alm-cajones').value);
 
+            let capacidades = [];
+            if (!isEdit) {
+                const valoresCapacidad = { 'XS': 250, 'S': 500, 'M': 1000, 'L': 2000, 'XL': 4000 };
+                
+                const inputsCapacidad = overlay.querySelectorAll('.input-capacidad-cajon');
+                inputsCapacidad.forEach(input => {
+                    const letraSeleccionada = input.value;
+                    capacidades.push(valoresCapacidad[letraSeleccionada] || 1000); 
+                });
+            }
+
             if (!nombre || !localizacion || isNaN(num_cajones) || num_cajones <= 0) {
                 alert("Por favor, rellena todos los campos correctamente.");
                 return;
@@ -574,7 +638,8 @@ export function openModalAlmacen(almacenExistente = null) {
                     id_almacenamiento: isEdit ? almacenExistente.id_almacenamiento : null,
                     almacenamiento_nombre: nombre,
                     localizacion: localizacion,
-                    num_cajones: num_cajones
+                    num_cajones: num_cajones,
+                    capacidades_cajones: capacidades 
                 }
             });
         });

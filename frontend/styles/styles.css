@@ -219,6 +219,99 @@ body {
     margin-top: 25px; 
 }
 
+/* icono info crear almacen */
+.info-icon-container {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: var(--primario-claro);
+    color: var(--primario);
+    font-weight: bold;
+    font-size: 12px;
+    cursor: help;
+    margin-left: 8px;
+    border: 1px solid var(--primario);
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: var(--texto-oscuro);
+    color: var(--blanco);
+    text-align: left;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 10001; 
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.5;
+    box-shadow: var(--shadow-sm);
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--texto-oscuro) transparent transparent transparent;
+}
+
+.info-icon-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/*  capacidad de los cajones (crear almacenes) */
+
+.capacidad-header {
+    display: flex; 
+    align-items: center; 
+    margin-top: 10px; 
+    margin-bottom: 10px;
+}
+
+.capacidad-label {
+    color: var(--primario); 
+    margin: 0;
+}
+
+.capacidad-lista {
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px;
+}
+
+.capacidad-fila {
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+}
+
+.capacidad-texto {
+    min-width: 65px; 
+    font-size: 0.85rem; 
+    font-weight: bold;
+}
+
+.capacidad-select {
+    width: 100%; 
+    padding: 6px; 
+    margin: 0;
+}
+
 /***********************************/
 /* Sidebar */
 /***********************************/

@@ -43,7 +43,7 @@ export const getAllAlmacenamientoUsuario = async (id_usuario) => {
 
 //Crear nuevo almacenamiento
 export const newAlmacenamientoService = async (userId, datos) => {
-    const { almacenamiento_nombre, localizacion, num_cajones } = datos;
+    const { almacenamiento_nombre, localizacion, num_cajones, capacidades_cajones } = datos;
     const client = await pool.connect();
 
     try {
@@ -58,9 +58,11 @@ export const newAlmacenamientoService = async (userId, datos) => {
 
         // crear cajones
         for (let i = 1; i <= num_cajones; i++) {
+            const capacidadCajon = capacidades_cajones[i - 1] || 1000;
+            
             await client.query(
-                'INSERT INTO cajones (id_almacenamiento, posicion) VALUES ($1, $2)',
-                [nuevoAlmacen.id_almacenamiento, i]
+                'INSERT INTO cajones (id_almacenamiento, posicion, tamano) VALUES ($1, $2, $3)',
+                [nuevoAlmacen.id_almacenamiento, i, capacidadCajon]
             );
         }
 
