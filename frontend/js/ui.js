@@ -63,7 +63,7 @@ export function renderAlmacenes(almacenes) {
             </div>
             <div class="status-row">
                 <span style="color: ${alm.ocupacion > 80 ? 'var(--accent)' : 'var(--primario-oscuro)'}">${alm.ocupacion}% </span>
-                <button class="btn-detail">Gestionar →</button>
+                <button class="btn-detail btn-gestionar-almacen" data-id="${alm.id_almacenamiento}">Gestionar →</button>
             </div>
         `;
         grid.appendChild(card);

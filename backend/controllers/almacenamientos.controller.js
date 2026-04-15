@@ -1,4 +1,4 @@
-import {getAllAlmacenamientoUsuario, newAlmacenamientoService, updateAlmacenamientoService} from '../services/almacenamientos.service.js';
+import {getAllAlmacenamientoUsuario, newAlmacenamientoService, updateAlmacenamientoService, deleteAlmacenService} from '../services/almacenamientos.service.js';
 
 //Obtener almacenamiento por usuario
 export const getTodosAlmacenamientosByIdUsuario = (req, res) => {
@@ -43,19 +43,24 @@ export const createAlmacenamiento = async (req, res, next) => {
 };
 
 //Actualizar almacenamiento
-export const updateAlmacenamiento = (req, res) => {
-    const data = req.body;
-    const id_almacenamiento = req.body.id_almacenamiento;
-
-    if(data.almacenamiento_nombre) {
-        updateAlmacenamientoService(id_almacenamiento, data)
-        .then((updatedAlmacenamiento) => {
-            res.status(200).send(updatedAlmacenamiento);
-        })
-        .catch((error) => {
-            res.status(400).send({error: error.message});
-        });
-    }else {
-        res.status(400).send({error: 'Faltan datos obligatorios'});
+export const updateAlmacenamiento = async (req, res, next) => {
+    try {
+        const almacenModificado = await updateAlmacenamientoService(req.params.id, req.body);
+        req.action = 'PATCH_ALMACEN_SUCCESS';
+        res.status(200).json({ mensaje: "Actualizado", almacen: almacenModificado });
+    } catch (error) {
+        error.action = 'PATCH_ALMACEN_ERROR';
+        next(error);
     }
-}
+};
+
+export const deleteAlmacen = async (req, res, next) => {
+    try {
+        await deleteAlmacenService(req.params.id);
+        req.action = 'DELETE_ALMACEN_SUCCESS';
+        res.status(200).json({ mensaje: "Eliminado" });
+    } catch (error) {
+        error.action = 'DELETE_ALMACEN_ERROR';
+        next(error);
+    }
+};

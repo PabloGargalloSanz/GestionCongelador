@@ -1,12 +1,13 @@
 import {Router} from 'express';
 
-import {getTodosAlmacenamientosByIdUsuario, createAlmacenamiento, updateAlmacenamiento } from '../controllers/almacenamientos.controller.js';
+import {getTodosAlmacenamientosByIdUsuario, createAlmacenamiento, updateAlmacenamiento, deleteAlmacen } from '../controllers/almacenamientos.controller.js';
 import { verifyToken } from '../middlewares/jwt.middleware.js'
 
 const router = Router();
 
 router.get('/almacenamientos/usuario', verifyToken , getTodosAlmacenamientosByIdUsuario);
 router.post('/almacenamientos', verifyToken, createAlmacenamiento);
-router.put('/almacenamientos/:idUsuario', verifyToken, updateAlmacenamiento);
+router.patch('/almacenamientos/:id', verifyToken, updateAlmacenamiento);
+router.delete('/almacenamientos/:id', verifyToken, deleteAlmacen);
 
 export default router;

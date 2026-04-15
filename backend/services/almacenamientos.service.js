@@ -59,7 +59,7 @@ export const newAlmacenamientoService = async (userId, datos) => {
         // crear cajones
         for (let i = 1; i <= num_cajones; i++) {
             const capacidadCajon = capacidades_cajones[i - 1] || 1000;
-            
+
             await client.query(
                 'INSERT INTO cajones (id_almacenamiento, posicion, tamano) VALUES ($1, $2, $3)',
                 [nuevoAlmacen.id_almacenamiento, i, capacidadCajon]
@@ -79,13 +79,19 @@ export const newAlmacenamientoService = async (userId, datos) => {
 
 //Actualizar almacenamiento (nombre)
 export const updateAlmacenamientoService = async (id_almacenamiento, data) => {
-    const { almacenamiento_nombre} = data;
+    const { almacenamiento_nombre, localizacion } = data;
     const result = await pool.query(
-        'UPDATE almacenamientos SET almacenamiento_nombre = $1 WHERE id_almacenamiento = $2 RETURNING *',
-        [almacenamiento_nombre, id_almacenamiento]
+        'UPDATE almacenamientos SET almacenamiento_nombre = $1, localizacion = $2 WHERE id_almacenamiento = $3 RETURNING *',
+        [almacenamiento_nombre, localizacion, id_almacenamiento]
     )
     if(result.rows.length ===0 ) {
         throw new Error('Almacenamiento no encontrado');
     }
     return result.rows[0];
 }
+
+//Eliminar almacenamiento
+export const deleteAlmacenService = async (id) => {
+    await pool.query('DELETE FROM almacenamientos WHERE id_almacenamiento = $1', [id]);
+    return true;
+};   

@@ -1,5 +1,5 @@
 import { auth } from './auth.js';
-import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario, crearAlmacenAPI} from './api.js';
+import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario, crearAlmacenAPI, patchAlmacenAPI, deleteAlmacenAPI } from './api.js';
 import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario, renderBarraAñadirAlimento, openModalAlmacen } from './ui.js';
 
 
@@ -92,31 +92,60 @@ async function renderView(viewName) {
     if (viewName === 'dashboard') {
         loadTemplate('dashboard-view', mainContent);
         try {
+            //datos iniciales
             almacenesGlobales = await getAlmacenesByUsuarioDashboard();
             renderAlmacenes(almacenesGlobales);
 
+            // añadir almacen
             const btnAddAlmacen = document.getElementById('add-almacenamiento-btn');
-            
             if (btnAddAlmacen) {
                 btnAddAlmacen.addEventListener('click', async () => {
-                    
                     const resultado = await openModalAlmacen(); 
 
                     if (resultado && resultado.action === 'CREATE') {
-                        
                         const resAPI = await crearAlmacenAPI(resultado.data);
 
                         if (resAPI.ok) {
                             showToast("Almacén creado correctamente", "success");
-                            
-                            almacenesGlobales = await getAlmacenesByUsuarioDashboard();
-                            renderAlmacenes(almacenesGlobales);
+                            document.querySelector('.nav-item[data-view="dashboard"]').click(); 
                         } else {
                             showToast(resAPI.error, "danger");
                         }
                     }
                 });
             }
+
+            // gestionar almacenes (Editar/Borrar)
+            const botonesGestionar = document.querySelectorAll('.btn-gestionar-almacen');
+            
+            botonesGestionar.forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const idAlmacen = parseInt(btn.getAttribute('data-id'));
+                    const almacenSeleccionado = almacenesGlobales.find(a => a.id_almacenamiento === idAlmacen);
+
+                    const resultado = await openModalAlmacen(almacenSeleccionado);
+
+                    if (resultado) {
+                        let resAPI;
+                        
+                        if (resultado.action === 'EDIT') {
+                            resAPI = await patchAlmacenAPI(resultado.data.id_almacenamiento, {
+                                almacenamiento_nombre: resultado.data.almacenamiento_nombre,
+                                localizacion: resultado.data.localizacion
+                            });
+                        } else if (resultado.action === 'DELETE') {
+                            resAPI = await deleteAlmacenAPI(resultado.data.id_almacenamiento);
+                        }
+
+                        if (resAPI && resAPI.ok) {
+                            showToast(resultado.action === 'EDIT' ? "Almacén actualizado" : "Almacén eliminado", "success");
+                            document.querySelector('.nav-item[data-view="dashboard"]').click(); 
+                        } else if (resAPI && !resAPI.ok) {
+                            showToast(resAPI.error, "danger");
+                        }
+                    }
+                });
+            });
 
         } catch (error) {
             console.error("Fallo al cargar almacenes", error);
