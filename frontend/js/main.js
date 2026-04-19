@@ -163,7 +163,11 @@ async function renderView(viewName) {
             }
 
             renderTablaInventario(inventarioGlobal, almacenesGlobales);
-            renderFiltros();
+            renderFiltros(); 
+
+            if (window.filtroPendiente) {
+                document.getElementById('filtro-inventario-btn')?.click();
+            }
 
             if (btnAddAlimento) {
                 btnAddAlimento.addEventListener('click', async () => {
@@ -199,63 +203,70 @@ function renderFiltros() {
     const btnFiltro = document.getElementById('filtro-inventario-btn');
     const contenedorFiltros = document.getElementById('inventario-list-filter');
    
-    if (!btnFiltro) return; 
+    if (!btnFiltro || !contenedorFiltros) return; 
 
-    btnFiltro.addEventListener('click', async () => {
-        if (contenedorFiltros.innerHTML !== "") {
+    btnFiltro.onclick = async () => {
+        if (contenedorFiltros.children.length > 0) {
             contenedorFiltros.innerHTML = "";
+            renderTablaInventario(inventarioGlobal, almacenesGlobales);
             return;
         }
 
         const tipos = await getTiposAlimento();
-        renderBarraFiltros(contenedorFiltros, tipos, almacenesGlobales);
+        
+        const prefiltro = window.filtroPendiente || "";
+        renderBarraFiltros(contenedorFiltros, tipos, almacenesGlobales, prefiltro);
+        
+        //borramos html cargado
+        window.filtroPendiente = null;
 
-        // Volvemos a añadir el listener al cajón específicamente
-        const selectCajon = document.getElementById('filter-cajon');
-        if(selectCajon) {
-            selectCajon.addEventListener('change', ejecutarFiltrado);
+        // filtro con almacen selecionado
+        if (prefiltro !== "") {
+            ejecutarFiltrado();
         }
 
         document.querySelectorAll('.filter-input').forEach(input => {
-            const evento = input.tagName === 'SELECT' ? 'change' : 'input';
-            input.addEventListener(evento, ejecutarFiltrado);
+            input.addEventListener(input.tagName === 'SELECT' ? 'change' : 'input', ejecutarFiltrado);
         });
 
-        // Lógica de borrar filtros
-        const btnEliminar = document.getElementById('eliminar-filtros-btn');
-        if (btnEliminar) {
-            btnEliminar.addEventListener('click', () => {
-                document.querySelectorAll('.filter-input').forEach(input => {
-                    input.value = "";
-                });
-                if(selectCajon) selectCajon.disabled = true;
-                renderTablaInventario(inventarioGlobal);
-            });
-        }
-
-        // Lógica de Almacén -> Cajón
+        // para cargado de cajones desde dashboard
         const selectAlmacen = document.getElementById('filter-almacenes');
-        if(selectAlmacen) {
+        const selectCajon = document.getElementById('filter-cajon');
+        
+        if(selectAlmacen && selectCajon) {
+            //cargamos cajones
+            if (selectAlmacen.value !== "") {
+                const alm = almacenesGlobales.find(a => a.almacenamiento_nombre === selectAlmacen.value);
+                if (alm) {
+                    selectCajon.disabled = false;
+                    let opciones = '<option value="">Todos</option>';
+                    for(let i=1; i <= alm.num_cajones; i++) opciones += `<option value="${i}">Cajón ${i}</option>`;
+                    selectCajon.innerHTML = opciones;
+                }
+            }
+
             selectAlmacen.addEventListener('change', (e) => {
-                const almacenSeleccionado = e.target.value;
-                if (almacenSeleccionado === "") {
+                const nombreAlm = e.target.value;
+                if (!nombreAlm) {
                     selectCajon.disabled = true;
                     selectCajon.innerHTML = '<option value="">Cajón</option>';
                 } else {
                     selectCajon.disabled = false;
-                    const almacenData = almacenesGlobales.find(a => a.almacenamiento_nombre === almacenSeleccionado);                    
+                    const alm = almacenesGlobales.find(a => a.almacenamiento_nombre === nombreAlm);                    
                     let opciones = '<option value="">Todos</option>';
-                    if(almacenData && almacenData.num_cajones) {
-                        for(let i=1; i <= almacenData.num_cajones; i++) {
-                            opciones += `<option value="${i}">Cajón ${i}</option>`;
-                        }
-                    }
+                    const n = alm?.num_cajones || 0;
+                    for(let i=1; i <= n; i++) opciones += `<option value="${i}">Cajón ${i}</option>`;
                     selectCajon.innerHTML = opciones;
                 }
                 ejecutarFiltrado(); 
             });
         }
-    });
+
+        document.getElementById('eliminar-filtros-btn')?.addEventListener('click', () => {
+            contenedorFiltros.innerHTML = "";
+            renderTablaInventario(inventarioGlobal, almacenesGlobales);
+        });
+    };
 }
 
 //Filtrado inventario
@@ -293,6 +304,17 @@ function ejecutarFiltrado() {
 
     renderTablaInventario(datosFiltrados); 
 }
+
+// redirigir a inventario
+window.addEventListener('navegar-inventario', (e) => {
+    window.filtroPendiente = e.detail.almacenNombre; 
+    
+    const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
+    
+    if (btnInventario) {
+        btnInventario.click(); 
+    } 
+});
 
 // Arrancar App
 document.addEventListener('DOMContentLoaded', () => {

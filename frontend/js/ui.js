@@ -46,6 +46,7 @@ export function renderAlmacenes(almacenes) {
 
         const card = document.createElement('div');
         card.className = 'card';
+        card.style.cursor = 'pointer';
                     
         card.innerHTML = `
             <div class="almacen-contenedor">
@@ -66,12 +67,23 @@ export function renderAlmacenes(almacenes) {
                 <button class="btn-detail btn-gestionar-almacen" data-id="${alm.id_almacenamiento}">Gestionar →</button>
             </div>
         `;
+
+        //listener para navegar a inventario filtrado por almacen
+        card.addEventListener('click', (e) => {            
+            if (!e.target.closest('.btn-gestionar-almacen')) {
+                
+                const event = new CustomEvent('navegar-inventario', { 
+                    detail: { almacenNombre: alm.almacenamiento_nombre } 
+                });
+                window.dispatchEvent(event);
+            }
+        });
+
         grid.appendChild(card);
     });
 }
 
 //llenar tabla inventario
-
 export function renderTablaInventario(alimentos, listaAlmacenes) {    
     const tableBody = document.getElementById('inventario-list');
     if (!tableBody) return;
@@ -158,7 +170,7 @@ export function renderTablaInventario(alimentos, listaAlmacenes) {
 
 
 //Filtros inventario////////////////////
-export function renderBarraFiltros(container, tipos, almacenes) {
+export function renderBarraFiltros(container, tipos, almacenes, almacenPreseleccionado = "") {
     container.innerHTML = `
         <td>
             <input type="text" id="filter-nombre" placeholder=" Buscar..." class="filter-input">
@@ -172,8 +184,12 @@ export function renderBarraFiltros(container, tipos, almacenes) {
         <td></td>
         <td>
             <select id="filter-almacenes" class="filter-input">
-                <option value="" class="filter-input">Todos</option>
-                ${almacenes.map(a => `<option value="${a.almacenamiento_nombre}">${a.almacenamiento_nombre}</option>`).join('')}
+                <option value="">Todos</option>
+                ${almacenes.map(a => `
+                    <option value="${a.almacenamiento_nombre}" ${a.almacenamiento_nombre === almacenPreseleccionado ? 'selected' : ''}>
+                        ${a.almacenamiento_nombre}
+                    </option>
+                `).join('')}
             </select>
         </td>
         <td>
@@ -197,10 +213,8 @@ export function renderBarraFiltros(container, tipos, almacenes) {
         </td>
         <td></td>
         <td><button id="eliminar-filtros-btn" class="lapiz-btn"><img src="./img/papelera.png" alt="eliminarFiltros" class="logoLapiz"></td>
-        
     `;
 }
-
 
 //Añadir alimento-lote////////////////////
 export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []) {
