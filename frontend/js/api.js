@@ -85,7 +85,6 @@ export async function getAllAlimentosByUsuario(){
 
 }
 
-
 //get tipos de alimentos
 export async function getTiposAlimento() {
     const token = localStorage.getItem('auth_token');

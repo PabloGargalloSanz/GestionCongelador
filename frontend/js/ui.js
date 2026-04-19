@@ -82,9 +82,6 @@ export function renderAlmacenes(almacenes) {
 }
 
 //llenar tabla inventario
-// ui.js - Actualiza estas dos funciones
-
-// 🚀 Añadimos onEditLote y onEliminarLote como parámetros
 export function renderTablaInventario(alimentos, listaAlmacenes, onEditLote, onEliminarLote) {    
     const tableBody = document.getElementById('inventario-list');
     if (!tableBody) return;
@@ -128,7 +125,6 @@ export function renderTablaInventario(alimentos, listaAlmacenes, onEditLote, onE
             const item = alimentos[index]; 
             const tr = btn.closest('tr'); 
             
-            // 🚀 Pasamos la orden de edición hacia abajo
             activarEdicionFila(tr, item, listaAlmacenes, onEditLote);
         });
     });
@@ -147,10 +143,8 @@ export function renderTablaInventario(alimentos, listaAlmacenes, onEditLote, onE
                 btn.disabled = true;
                 btn.style.opacity = '0.5';
 
-                // 🚀 Delegamos la acción en main.js
                 const exito = await onEliminarLote(item.id_lote);
 
-                // Si main.js nos dice que ha fallado, reactivamos el botón
                 if (!exito) {
                     btn.disabled = false;
                     btn.style.opacity = '1';
@@ -160,7 +154,7 @@ export function renderTablaInventario(alimentos, listaAlmacenes, onEditLote, onE
     });
 }
 
-// 🚀 Añadimos onEditLote como parámetro
+//  Añadimos onEditLote como parámetro
 export function activarEdicionFila(tr, item, almacenes, onEditLote) {
     const htmlOriginal = tr.innerHTML;
     const fIntroduccion = item.fecha_introduccion ? new Date(item.fecha_introduccion).toLocaleDateString() : 'N/A';
@@ -240,14 +234,12 @@ export function activarEdicionFila(tr, item, almacenes, onEditLote) {
         const textoOriginal = btnSave.innerText;
         btnSave.disabled = true;
 
-        // 🚀 Delegamos en main.js
         const exito = await onEditLote(item.id_lote, {
             cantidad: nuevaCantidad,
             id_almacenamiento: nuevoAlmacen,
             posicion_cajon: nuevoCajon
         });
 
-        // Si main.js nos dice que ha fallado, restauramos el botón
         if (!exito) {
             btnSave.disabled = false;
             btnSave.innerText = textoOriginal;
