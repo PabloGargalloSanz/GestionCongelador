@@ -1,5 +1,5 @@
 import { auth } from './auth.js';
-import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario, crearAlmacenAPI, patchAlmacenAPI, deleteAlmacenAPI, guardarNuevoAlimentoAPI } from './api.js';
+import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario, crearAlmacenAPI, patchAlmacenAPI, deleteAlmacenAPI, guardarNuevoAlimentoAPI, patchAlimentoAPI, deleteAlimentoAPI } from './api.js';
 import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario, openModalAlmacen, openModalAñadirAlimento } from './ui.js';
 
 
@@ -13,6 +13,32 @@ window.addEventListener('unauthorized-access', () => {
     renderLogin(); 
 });
 
+// funciones para manejar acciones de alimentos
+async function handleEliminarLote(id_lote) {
+    const resultado = await deleteAlimentoAPI(id_lote);
+    if (resultado.ok) {
+        showToast("Alimento eliminado correctamente", "success");
+        const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
+        if(btnInventario) btnInventario.click(); 
+        return true;
+    } else {
+        showToast(resultado.error, "danger");
+        return false;
+    }
+}
+
+async function handleEditarLote(id_lote, data) {
+    const resultado = await patchAlimentoAPI(id_lote, data);
+    if (resultado.ok) {
+        showToast("Alimento modificado correctamente", "success");
+        const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
+        if(btnInventario) btnInventario.click(); 
+        return true;
+    } else {
+        showToast(resultado.error, "danger");
+        return false;
+    }
+}
 
 // navegar por las vistas
 
@@ -162,7 +188,7 @@ async function renderView(viewName) {
                 almacenesGlobales = await getAlmacenesByUsuarioDashboard();
             }
 
-            renderTablaInventario(inventarioGlobal, almacenesGlobales);
+            renderTablaInventario(inventarioGlobal, almacenesGlobales, handleEditarLote, handleEliminarLote);
             renderFiltros(); 
 
             if (window.filtroPendiente) {
@@ -269,7 +295,7 @@ function renderFiltros() {
 
         document.getElementById('eliminar-filtros-btn')?.addEventListener('click', () => {
             contenedorFiltros.innerHTML = "";
-            renderTablaInventario(inventarioGlobal, almacenesGlobales);
+            renderTablaInventario(inventarioGlobal, almacenesGlobales, handleEditarLote, handleEliminarLote);
         });
     };
 }
@@ -307,7 +333,7 @@ function ejecutarFiltrado() {
         });
     }
 
-    renderTablaInventario(datosFiltrados); 
+    renderTablaInventario(datosFiltrados, almacenesGlobales, handleEditarLote, handleEliminarLote);
 }
 
 // redirigir a inventario
