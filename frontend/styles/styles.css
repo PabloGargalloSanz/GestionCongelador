@@ -312,6 +312,32 @@ body {
     margin: 0;
 }
 
+/*x para cerrar modal*/
+/* Cabecera del modal*/
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+/* El botón de la X */
+.btn-cerrar-x {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--texto-claro);
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    line-height: 1;
+    padding: 0 5px;
+}
+
+.btn-cerrar-x:hover {
+    color: var(--accent);
+    transform: scale(1.1);
+}
+
 /***********************************/
 /* Sidebar */
 /***********************************/

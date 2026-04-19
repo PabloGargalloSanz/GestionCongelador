@@ -536,7 +536,13 @@ export function openModalAlmacen(almacenExistente = null) {
 
         overlay.innerHTML = `
             <div class="modal-card">
-                <h3 id="modal-title-almacen" class="modal-title">${isEdit ? 'Editar Almacenamiento' : ' Nuevo Almacenamiento'}</h3>
+                
+                <div class="modal-header">
+                    <h3 id="modal-title-almacen" class="modal-title" style="margin-bottom: 0;">
+                        ${isEdit ? 'Editar Almacenamiento' : ' Nuevo Almacenamiento'}
+                    </h3>
+                    <button id="btn-cerrar-x" class="btn-cerrar-x" title="Cerrar">&times;</button>
+                </div>
                 
                 <div class="modal-form-container">
                     <label class="form-label modal-label">Nombre del almacén:</label>
@@ -555,7 +561,6 @@ export function openModalAlmacen(almacenExistente = null) {
                     ${isEdit ? `<button id="btn-eliminar-alm" class="btn-eliminar-modal"> Eliminar</button>` : ''}
                     
                     <div class="modal-botones-derecha">
-                        <button id="btn-cancelar-alm" class="btn-cancelar-modal">Cancelar</button>
                         <button id="btn-guardar-alm" class="btn-guardar-almacen">${isEdit ? 'Guardar Cambios' : 'Crear'}</button>
                     </div>
                 </div>
@@ -616,6 +621,11 @@ export function openModalAlmacen(almacenExistente = null) {
         }
         
         // botones
+
+        overlay.querySelector('#btn-cerrar-x').addEventListener('click', () => {
+            overlay.remove();
+            resolve(null);
+        });
 
         //Cancelar
         overlay.querySelector('#btn-cancelar-alm').addEventListener('click', () => {
