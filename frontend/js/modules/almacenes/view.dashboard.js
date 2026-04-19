@@ -1,7 +1,6 @@
-// js/views/dashboard.js
-
-import { getAlmacenesByUsuarioDashboard, crearAlmacenAPI, patchAlmacenAPI, deleteAlmacenAPI } from '../../core/api.js';
-import { loadTemplate, showToast, renderAlmacenes, openModalAlmacen } from '../../core/ui.js';
+import { getAlmacenesByUsuarioDashboard, crearAlmacenAPI, patchAlmacenAPI, deleteAlmacenAPI } from './api.almacenes.js';
+import { loadTemplate, showToast } from '../../core/ui.js';
+import { renderAlmacenes, openModalAlmacen } from './ui.almacenes.js';
 
 export async function initDashboard(container) {
     loadTemplate('dashboard-view', container);

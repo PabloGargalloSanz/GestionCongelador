@@ -1,46 +1,24 @@
+// js/main.js
+
 import { auth } from './auth.js';
-import { loginRequest } from './core/api.js';
 import { app, loadTemplate, showToast } from './core/ui.js';
+
+// Importamos las vistas
+import { renderLogin } from './modules/auth/view.auth.js';
 import { initDashboard } from './modules/almacenes/view.dashboard.js';
 import { initInventario } from './modules/inventario/view.inventario.js';
 
-// comprobar token
+// Comprobar si token expira
 window.addEventListener('unauthorized-access', () => {
     showToast("Su sesión ha expirado. Por favor, inicie sesión de nuevo.", "danger");
-    renderLogin(); 
+    renderLogin(rendermenu); 
 });
 
-// Login
-function renderLogin() {
-    loadTemplate('tpl-login', app);
-
-    const loginForm = document.getElementById('login-form');
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('username').value;
-        const password = document.getElementById('password').value; 
-
-        try {
-            const response = await loginRequest(email, password);
-            const data = await response.json();
-
-            if (response.ok) {
-                auth.saveSession(data.token, email);
-                rendermenu();
-            } else {
-                showToast(data.error || "Acceso denegado", 'danger');
-            }
-        } catch (error) {
-            showToast("Error de conexión con el servidor de autenticación", 'danger');
-        }
-    });
-}
-
-// render menu
+// Render Menu (Dashboard layout)
 function rendermenu() {
     const savedEmail = auth.getUserEmail();
     if(!savedEmail){
-        renderLogin();
+        renderLogin(rendermenu); // Le pasamos rendermenu para que sepa qué hacer al tener éxito
         return;
     } 
     
@@ -51,7 +29,6 @@ function rendermenu() {
         displayElement.innerText = savedEmail;
     }
 
-    // navegacion
     const navButtons = document.querySelectorAll('.nav-item[data-view]');
     navButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -61,19 +38,18 @@ function rendermenu() {
         });
     });
 
-    // logout
     const logoutBtn = document.getElementById('logout-btn');
     if(logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             auth.clearSession();
-            renderLogin();
+            renderLogin(rendermenu);
         });
     }
 
-    renderView('dashboard');
+    renderView('dashboard'); // Carga inicial
 }
 
-// cargar vistas
+// Enrutador Principal
 async function renderView(viewName) {
     const mainContent = document.getElementById('main-content');
     if (!mainContent) return;
@@ -89,18 +65,19 @@ async function renderView(viewName) {
     }
 }
 
-// saltos entre vistas
+// Escuchador global para saltos entre vistas
 window.addEventListener('navegar-inventario', (e) => {
     window.filtroPendiente = e.detail.almacenNombre; 
     const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
     if (btnInventario) btnInventario.click(); 
 });
 
-// arrancar app
+// Arrancar App
 document.addEventListener('DOMContentLoaded', () => {
     if (auth.isLoggedIn()) {
         rendermenu();
     } else {
-        renderLogin();
+        // Al renderLogin le decimos: "Cuando acabes con éxito, llama a rendermenu"
+        renderLogin(rendermenu); 
     }
 });
