@@ -59,6 +59,32 @@ CREATE TABLE IF NOT EXISTS cajon_lotes(
     fecha_introducido DATE DEFAULT CURRENT_DATE
 );
 
+CREATE TABLE IF NOT EXISTS receta_alimentos(
+    id_receta_alimento SERIAL PRIMARY KEY,
+    id_receta INT NOT NULL REFERENCES recetas(id_receta) ON DELETE CASCADE,
+    id_alimento INT NOT NULL REFERENCES alimentos(id_alimento) ON DELETE CASCADE,
+    cantidad INT NOT NULL CHECK (cantidad > 0),
+    unidad_medida VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS recetas_favoritas(
+    id_receta_favorita SERIAL PRIMARY KEY,
+    id_usuario INT NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    id_receta INT NOT NULL REFERENCES recetas(id_receta) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS logs (
+    id SERIAL PRIMARY KEY,
+    usuario_id INTEGER REFERENCES usuarios(id_usuario),
+    accion VARCHAR(255) NOT NULL,
+    ip_origen VARCHAR(45) NOT NULL,
+    metodo VARCHAR (20),
+    ruta TEXT,
+    detalles TEXT,
+    status_codigo INTEGER,               
+    fecha_creado TIMESTAMPTZ DEFAULT now()
+);
+
 -----
 /*VISTAS*/
 /*inventario usuario*/
@@ -241,28 +267,3 @@ END;
 $$ LANGUAGE plpgsql;
 
 ---------------------------------------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS receta_alimentos(
-    id_receta_alimento SERIAL PRIMARY KEY,
-    id_receta INT NOT NULL REFERENCES recetas(id_receta) ON DELETE CASCADE,
-    id_alimento INT NOT NULL REFERENCES alimentos(id_alimento) ON DELETE CASCADE,
-    cantidad INT NOT NULL CHECK (cantidad > 0),
-    unidad_medida VARCHAR(20) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS recetas_favoritas(
-    id_receta_favorita SERIAL PRIMARY KEY,
-    id_usuario INT NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
-    id_receta INT NOT NULL REFERENCES recetas(id_receta) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS logs (
-    id SERIAL PRIMARY KEY,
-    usuario_id INTEGER REFERENCES usuarios(id_usuario),
-    accion VARCHAR(255) NOT NULL,
-    ip_origen VARCHAR(45) NOT NULL,
-    metodo VARCHAR (20),
-    ruta TEXT,
-    detalles TEXT,
-    status_codigo INTEGER,               
-    fecha_creado TIMESTAMPTZ DEFAULT now()
-);
