@@ -1,5 +1,5 @@
-import { getAllAlimentosByUsuario, getAlmacenesByUsuarioDashboard, getTiposAlimento, guardarNuevoAlimentoAPI, patchAlimentoAPI, deleteAlimentoAPI } from '../api.js';
-import { loadTemplate, showToast, renderTablaInventario, openModalAñadirAlimento, renderBarraFiltros } from '../ui.js';
+import { getAllAlimentosByUsuario, getAlmacenesByUsuarioDashboard, getTiposAlimento, guardarNuevoAlimentoAPI, patchAlimentoAPI, deleteAlimentoAPI } from '../../core/api.js';
+import { loadTemplate, showToast, renderTablaInventario, openModalAñadirAlimento, renderBarraFiltros } from '../../core/ui.js';
 
 let inventarioLocal = [];
 let almacenesLocales = [];

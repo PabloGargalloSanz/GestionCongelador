@@ -1,8 +1,8 @@
 import { auth } from './auth.js';
-import { loginRequest } from './api.js';
-import { app, loadTemplate, showToast } from './ui.js';
-import { initDashboard } from './views/dashboard.js';
-import { initInventario } from './views/inventario.js';
+import { loginRequest } from './core/api.js';
+import { app, loadTemplate, showToast } from './core/ui.js';
+import { initDashboard } from './modules/almacenes/view.dashboard.js';
+import { initInventario } from './modules/inventario/view.inventario.js';
 
 // comprobar token
 window.addEventListener('unauthorized-access', () => {

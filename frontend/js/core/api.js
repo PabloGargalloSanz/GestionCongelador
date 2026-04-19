@@ -1,4 +1,4 @@
-import { auth } from './auth.js';
+import { auth } from '../auth.js';
 
 //variables grobales
 const API_BASE_URL = 'http://localhost:80/api';
