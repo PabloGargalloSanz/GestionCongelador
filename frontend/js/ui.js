@@ -1,4 +1,4 @@
-import { guardarNuevoAlimentoAPI, patchAlimentoAPI, deleteAlimentoAPI } from './api.js';
+import { patchAlimentoAPI, deleteAlimentoAPI } from './api.js';
 
 // selectores principales
 export const app = document.getElementById('app');
@@ -217,81 +217,105 @@ export function renderBarraFiltros(container, tipos, almacenes, almacenPreselecc
 }
 
 //Añadir alimento-lote////////////////////
-export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []) {
-    const filaAñadir = document.createElement('tr');
-    const hoy = new Date().toISOString().split('T')[0]; 
+// ui.js - Nueva función para el Modal de Añadir Alimento
+export function openModalAñadirAlimento(tipos, almacenes) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'modal-overlay';
         
-    filaAñadir.innerHTML = `
-        <td>
-            <input type="text" id="alimento-nombre" placeholder=" Nombre" class="filter-input">
-        </td>
-        <td>
-            <select id="alimento-tipo" class="filter-input">
-                <option value="">Tipo...</option>
-                ${tipos.map(t => `<option value="${t.alimento_tipo}">${t.alimento_tipo}</option>`).join('')}
-            </select>
-        </td>
-        
-        <td>
-            <div class="cantidad-alimento"">
-                <input type="number" id="alimento-cantidad" placeholder="Cant." class="filter-input" >
-                <select id="alimento-unidad" class="filter-input" >
-                    <option value="ud">Ud</option>  
-                    <option value="g">g</option>
-                    <option value="kg">Kg</option>
-                    <option value="l">L</option>
-                </select>
-                <select id="alimento-tamano" class="filter-input">
-                    <option value="XS">XS</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                </select>
+        // Fecha actual para validaciones o por defecto
+        const hoy = new Date().toISOString().split('T')[0];
+
+        overlay.innerHTML = `
+            <div class="modal-card" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h3 class="modal-title" style="margin-bottom: 0;">Añadir Nuevo Alimento</h3>
+                    <button id="btn-cerrar-x-alim" class="btn-cerrar-x" title="Cerrar">&times;</button>
+                </div>
+                
+                <div class="modal-form-container">
+                    <label class="form-label modal-label">Nombre del alimento:</label>
+                    <input type="text" id="add-nombre" class="filter-input modal-input" placeholder="Ej: Pechuga de pollo">
+                    
+                    <label class="form-label modal-label">Tipo de alimento:</label>
+                    <select id="add-tipo" class="filter-input modal-input">
+                        <option value="">Selecciona una categoría...</option>
+                        ${tipos.map(t => `<option value="${t.alimento_tipo}">${t.alimento_tipo}</option>`).join('')}
+                    </select>
+
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                            <label class="form-label modal-label">Cantidad:</label>
+                            <div style="display: flex; gap: 5px;">
+                                <input type="number" id="add-cantidad" class="filter-input" placeholder="0" min="1" style="width: 60%;">
+                                <select id="add-unidad" class="filter-input" style="width: 40%;">
+                                    <option value="ud">Ud</option>  
+                                    <option value="g">g</option>
+                                    <option value="kg">Kg</option>
+                                    <option value="l">L</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="form-label modal-label">Tamaño aprox:</label>
+                            <select id="add-tamano" class="filter-input">
+                                <option value="XS">XS - Muy Pequeño</option>
+                                <option value="S">S - Pequeño</option>
+                                <option value="M" selected>M - Estándar</option>
+                                <option value="L">L - Grande</option>
+                                <option value="XL">XL - Extra Grande</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                            <label class="form-label modal-label">Ubicación:</label>
+                            <select id="add-almacen" class="filter-input">
+                                <option value="">Selecciona almacén...</option>
+                                ${almacenes.map(a => `<option value="${a.id_almacenamiento}">${a.almacenamiento_nombre}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label class="form-label modal-label">Cajón:</label>
+                            <select id="add-cajon" class="filter-input" disabled>
+                                <option value="">Cajón...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="form-label modal-label">Fecha de Caducidad:</label>
+                    <input type="date" id="add-caducidad" class="filter-input modal-input" min="${hoy}">
+                </div>
+
+                <div class="modal-botones justify-center" style="margin-top: 25px;">
+                    <button id="btn-guardar-alim-modal" class="btn-guardar-almacen" style="width: 100%;">Guardar en Inventario</button>
+                </div>
             </div>
-        </td>
-        
-        <td>
-            <select id="alimento-almacenes" class="filter-input">
-                <option value="">Ubicación...</option>
-                ${almacenes.map(a => `<option value="${a.id_almacenamiento}">${a.almacenamiento_nombre}</option>`).join('')}
-            </select>
-        </td>
-        <td>
-            <select id="alimento-cajon" class="filter-input" disabled>
-                <option value="">Cajón...</option>
-            </select>
-        </td>
-        <td>
-            <input type="date" id="add-fecha-introducido" class="filter-input" value="${hoy}" readonly style="pointer-events: none; background-color: #f0f0f0;">
-        </td>
-        <td>
-            <input type="date" id="add-fecha-caducidad" class="filter-input">
-        </td>
-        <td><button id="guardar-alimento-btn" class="lapiz-btn">Guardar</button></td>
-        <td><button id="eliminar-filtros-btn" class="lapiz-btn"><img src="./img/papelera.png" alt="eliminarFiltros" class="logoLapiz"></td>
-    `;
+        `;
 
-    container.innerHTML = "";
-    container.appendChild(filaAñadir);
+        document.body.appendChild(overlay);
 
-    //cajones
-    const selectAlmacen = document.getElementById('alimento-almacenes');
-    const selectCajon = document.getElementById('alimento-cajon');
+        // 1. Lógica para cerrar en la X
+        overlay.querySelector('#btn-cerrar-x-alim').addEventListener('click', () => {
+            overlay.remove();
+            resolve(null);
+        });
 
-    if (selectAlmacen && selectCajon) {
+        // 2. Lógica de Almacén -> Cajones
+        const selectAlmacen = overlay.querySelector('#add-almacen');
+        const selectCajon = overlay.querySelector('#add-cajon');
+
         selectAlmacen.addEventListener('change', (e) => {
             const idSeleccionado = parseInt(e.target.value); 
             const almacen = almacenes.find(a => a.id_almacenamiento === idSeleccionado);
-            
-            // verifica almacenes y cajones del almacen
             const numCajones = almacen ? (almacen.total_cajones || almacen.num_cajones) : 0;
             
             if (almacen && numCajones) {
                 selectCajon.disabled = false;
                 let opciones = '<option value="">Cajón...</option>';
                 for (let i = 1; i <= numCajones; i++) {
-                    opciones += `<option value="${i}">${i}</option>`;
+                    opciones += `<option value="${i}">Cajón ${i}</option>`;
                 }
                 selectCajon.innerHTML = opciones;
             } else {
@@ -299,37 +323,26 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
                 selectCajon.innerHTML = '<option value="">Cajón...</option>';
             }
         });
-    }
 
-    // boton cancelar/eliminar
-    const btnCancelar = document.getElementById('eliminar-filtros-btn');
-    if (btnCancelar) {
-        btnCancelar.addEventListener('click', () => {
-            container.innerHTML = ""; 
-        });
-    }
-
-    // boton guardar
-    const btnGuardar = document.getElementById('guardar-alimento-btn');
-    
-    if (btnGuardar) {
-        btnGuardar.addEventListener('click', async () => {
-            const nombre = document.getElementById('alimento-nombre').value.trim();
-            const tipo = document.getElementById('alimento-tipo').value;
-            const cantidad = parseInt(document.getElementById('alimento-cantidad').value);
-            const unidad = document.getElementById('alimento-unidad').value;
-            const tamano = document.getElementById('alimento-tamano').value; 
-            const idAlmacenamiento = document.getElementById('alimento-almacenes').value;
-            const cajonPosicion = document.getElementById('alimento-cajon').value;
-            const fechaCaducidad = document.getElementById('add-fecha-caducidad').value;
+        // 3. Lógica de Guardar
+        const btnGuardar = overlay.querySelector('#btn-guardar-alim-modal');
+        btnGuardar.addEventListener('click', () => {
+            const nombre = overlay.querySelector('#add-nombre').value.trim();
+            const tipo = overlay.querySelector('#add-tipo').value;
+            const cantidad = parseInt(overlay.querySelector('#add-cantidad').value);
+            const unidad = overlay.querySelector('#add-unidad').value;
+            const tamano = overlay.querySelector('#add-tamano').value; 
+            const idAlmacenamiento = overlay.querySelector('#add-almacen').value;
+            const cajonPosicion = overlay.querySelector('#add-cajon').value;
+            const fechaCaducidad = overlay.querySelector('#add-caducidad').value;
 
             // Validación
-            if (!nombre || !tipo || isNaN(cantidad) || cantidad <= 0 || !idAlmacenamiento || !cajonPosicion || !fechaCaducidad || !tamano) {
+            if (!nombre || !tipo || isNaN(cantidad) || cantidad <= 0 || !idAlmacenamiento || !cajonPosicion || !fechaCaducidad) {
                 showToast("Por favor, rellena todos los campos obligatorios", "warning");
                 return;
             }
 
-            // Mapeo del tamaño
+            // Conversión de tamaño
             const equivalenciasTamano = { 'XS': 5, 'S': 10, 'M': 20, 'L': 30, 'XL': 40 };
             const volumenTamano = equivalenciasTamano[tamano.toUpperCase()] || 20;
 
@@ -344,31 +357,14 @@ export function renderBarraAñadirAlimento(container, tipos = [], almacenes = []
                 fecha_caducidad: fechaCaducidad
             };
 
-            try {
-                btnGuardar.disabled = true;
-                btnGuardar.innerText = "Guardando...";
+            // Cambiamos texto del botón para feedback visual
+            btnGuardar.disabled = true;
+            btnGuardar.innerText = "Guardando...";
 
-                const resultado = await guardarNuevoAlimentoAPI(nuevoLote); 
-                
-                if (resultado.ok) {
-                    showToast("Alimento guardado correctamente", "success");
-                    container.innerHTML = ""; // Cerramos el formulario
-                    
-                    // recarga vista
-                    const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
-                    if(btnInventario) btnInventario.click(); 
-                } else {
-                    showToast(resultado.error, "danger");
-                    btnGuardar.disabled = false;
-                    btnGuardar.innerText = "Guardar";
-                }
-            } catch (error) {
-                showToast("Error de conexión con el servidor", "danger");
-                btnGuardar.disabled = false;
-                btnGuardar.innerText = "Guardar";
-            }
+            overlay.remove();
+            resolve(nuevoLote); // Devolvemos el objeto al main.js
         });
-    }
+    });
 }
 
 //Modificar alimento-lote

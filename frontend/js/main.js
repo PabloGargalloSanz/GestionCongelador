@@ -1,6 +1,6 @@
 import { auth } from './auth.js';
-import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario, crearAlmacenAPI, patchAlmacenAPI, deleteAlmacenAPI } from './api.js';
-import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario, renderBarraAñadirAlimento, openModalAlmacen } from './ui.js';
+import { loginRequest, getTiposAlimento, getAlmacenesByUsuarioDashboard, getAllAlimentosByUsuario, crearAlmacenAPI, patchAlmacenAPI, deleteAlmacenAPI, guardarNuevoAlimentoAPI } from './api.js';
+import { app, loadTemplate, showToast, renderAlmacenes, renderBarraFiltros, renderTablaInventario, openModalAlmacen, openModalAñadirAlimento } from './ui.js';
 
 
 ///variables globales
@@ -171,19 +171,24 @@ async function renderView(viewName) {
 
             if (btnAddAlimento) {
                 btnAddAlimento.addEventListener('click', async () => {
-                    const contenedorAñadir = document.getElementById('inventario-list-filter');
-        
                     try {
                         const tipos = await getTiposAlimento() || [];
-
-                        if (almacenesGlobales.length === 0) {
-                            renderBarraAñadirAlimento(contenedorAñadir, tipos, almacenesGlobales);
-                        }
-
-                        renderBarraAñadirAlimento(contenedorAñadir, tipos, almacenesGlobales);
                         
+                        const nuevoLote = await openModalAñadirAlimento(tipos, almacenesGlobales);
+
+                        if (nuevoLote) {
+                            const resultado = await guardarNuevoAlimentoAPI(nuevoLote); 
+                            
+                            if (resultado.ok) {
+                                showToast("Alimento añadido correctamente", "success");
+                                const btnInventario = document.querySelector('.nav-item[data-view="inventario"]');
+                                if(btnInventario) btnInventario.click(); 
+                            } else {
+                                showToast(resultado.error, "danger");
+                            }
+                        }
                     } catch (error) {
-                        showToast("Error al preparar el formulario de añadir", "danger");
+                        showToast("Error al abrir el formulario", "danger");
                         console.error(error);
                     }
                 });
