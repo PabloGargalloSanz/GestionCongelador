@@ -1,0 +1,90 @@
+.grid { 
+    display: grid; 
+    grid-template-columns: 
+    repeat(auto-fill, 
+    minmax(320px, 1fr)); 
+    gap: 25px; 
+}
+
+.card { 
+    background: var(--blanco); 
+    padding: 25px; 
+    border-radius: 20px; 
+    box-shadow: var(--shadow-sm); 
+    border: 1px solid var(--fondo-gris); 
+    transition: transform 0.3s,
+    box-shadow 0.3s; 
+}
+
+.card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: var(--shadow-md); 
+}
+
+.card-icon { 
+    background: var(--primario-claro); 
+    padding: 12px; 
+    border-radius: 14px; 
+    display: inline-flex; 
+    margin-bottom: 20px; 
+    color: var(--primario); 
+}
+
+.btn-detail { 
+    background: none; 
+    border: none; 
+    color: var(--primario-oscuro); 
+    font-weight: 600; 
+    cursor: pointer; 
+    padding: 0; 
+}
+
+.almacen-contenedor { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+}
+
+.almacen-localizacion { 
+    font-size: 15px; 
+    font-weight: bold; 
+    background: var(--fondo-gris); 
+    padding: 4px 10px; 
+    border-radius: 20px; 
+}
+
+.almacen-nombre { margin: 0 0 8px 0; }
+.almacen-ocupacion { 
+    margin: 0; 
+    color: #64748b; 
+    font-size: 14px; 
+}
+
+.progress-container { 
+    height: 10px; 
+    background: var(--fondo-gris); 
+    border-radius: 5px; 
+    margin: 15px 0 8px; 
+    overflow: hidden; 
+}
+
+.progress-bar { 
+    height: 100%; 
+    background: var(--primario); 
+    border-radius: 5px; 
+    width: 0%; 
+    transition: width 1s ease-in-out, background-color 0.3s ease; 
+}
+
+.status-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    font-size: 14px; 
+    font-weight: 700; 
+}
+
+.copo { 
+    width: 20px; 
+    height: 20px; 
+}
