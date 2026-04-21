@@ -284,8 +284,9 @@ export function openModalAñadirAlimento(tipos, almacenes) {
                     <input type="date" id="add-caducidad" class="filter-input modal-input" min="${hoy}">
                 </div>
 
-                <div class="modal-botones justify-center" style="margin-top: 25px;">
-                    <button id="btn-guardar-alim-modal" class="btn-guardar-almacen" style="width: 100%;">Guardar en Inventario</button>
+                <div class="modal-botones justify-center">
+                    <button id="btn-cancelar" class="btn-cancelar-modal">Cancelar</button>
+                    <button id="btn-guardar-alim-modal" class="btn-guardar-modal">Guardar en Inventario</button>
                 </div>
             </div>
         `;
@@ -294,6 +295,10 @@ export function openModalAñadirAlimento(tipos, almacenes) {
 
         //cerrar en la X
         overlay.querySelector('#btn-cerrar-x-alim').addEventListener('click', () => {
+            overlay.remove();
+            resolve(null);
+        });
+        overlay.querySelector('#btn-cancelar').addEventListener('click', () => {
             overlay.remove();
             resolve(null);
         });

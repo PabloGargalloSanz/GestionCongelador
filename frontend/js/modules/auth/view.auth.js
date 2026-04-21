@@ -3,7 +3,7 @@ import { loginRequest } from './api.auth.js';
 import { auth } from '../../auth.js';
 
 // Login
-export function renderLogin() {
+export function renderLogin(onLoginSuccess) {
     loadTemplate('tpl-login', app);
 
     const loginForm = document.getElementById('login-form');
@@ -18,7 +18,7 @@ export function renderLogin() {
 
             if (response.ok) {
                 auth.saveSession(data.token, email);
-                rendermenu();
+                onLoginSuccess();
             } else {
                 showToast(data.error || "Acceso denegado", 'danger');
             }

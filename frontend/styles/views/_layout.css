@@ -1,0 +1,106 @@
+#dashboard-page{ 
+    display: flex; 
+    height: 100vh; 
+}
+
+.content-area { 
+    flex: 1; 
+    padding: 40px; 
+    overflow-y: auto; 
+    box-sizing: border-box; 
+}
+
+header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 40px; 
+}
+
+header h1 { 
+    margin: 0; 
+    font-size: 32px; 
+    font-weight: 800; 
+}
+
+header p { 
+    color: var(--texto-claro); 
+    margin-top: 5px; 
+    margin-bottom: 0px; 
+}
+
+/* Sidebar */
+.sidebar { 
+    width: 280px; 
+    background: var(--primario-oscuro); 
+    color: white; 
+    padding: 30px 20px; 
+    display: flex; 
+    flex-direction: column; 
+    box-sizing: border-box; 
+}
+
+.sidebar-header { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    margin-bottom: 50px; 
+    padding-left: 10px; 
+}
+
+.nav-menu { flex: 1; }
+.nav-item { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    padding: 14px 18px; 
+    color: rgba(255,255,255,0.7); 
+    background: none; 
+    border: none; 
+    width: 100%; 
+    text-align: left; 
+    cursor: pointer; 
+    border-radius: var(--radius-sm); 
+    font-size: 15px; 
+    font-weight: 600; 
+    margin-bottom: 8px; 
+    transition: 0.3s; 
+}
+
+.nav-item:hover { 
+    background: rgba(255,255,255,0.1); 
+    color: white; 
+}
+
+.nav-item.active { 
+    background: var(--primario); 
+    color: white; 
+}
+
+.sidebar-footer { 
+    margin-top: auto; 
+    padding-top: 20px; 
+    border-top: 1px solid rgba(255,255,255,0.1); 
+}
+
+.user-info { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin-bottom: 15px; 
+    padding: 0 10px; 
+}
+.user-avatar { 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 10px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-weight: bold; 
+}
+
+.logoUsuario { 
+    width: 40px; 
+    height: 40px; 
+}

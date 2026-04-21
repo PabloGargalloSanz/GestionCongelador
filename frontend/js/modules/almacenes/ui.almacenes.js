@@ -89,7 +89,8 @@ export function openModalAlmacen(almacenExistente = null) {
                     ${isEdit ? `<button id="btn-eliminar-alm" class="btn-eliminar-modal"> Eliminar</button>` : ''}
                     
                     <div class="modal-botones-derecha">
-                        <button id="btn-guardar-alm" class="btn-guardar-almacen">${isEdit ? 'Guardar Cambios' : 'Crear'}</button>
+                        ${!isEdit ? `<button id="btn-cancelar" class="btn-cancelar-modal">Cancelar</button>` : ''}
+                        <button id="btn-guardar-alm" class="btn-guardar-modal">${isEdit ? 'Guardar Cambios' : 'Crear'}</button>
                     </div>
                 </div>
             </div>
@@ -154,6 +155,12 @@ export function openModalAlmacen(almacenExistente = null) {
             overlay.remove();
             resolve(null);
         });
+        
+        if(!isEdit){overlay.querySelector('#btn-cancelar').addEventListener('click', () => {
+            overlay.remove();
+            resolve(null);
+            });
+        }
 
         // Guardar / Crear
         overlay.querySelector('#btn-guardar-alm').addEventListener('click', () => {

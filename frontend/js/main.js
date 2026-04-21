@@ -18,7 +18,7 @@ window.addEventListener('unauthorized-access', () => {
 function rendermenu() {
     const savedEmail = auth.getUserEmail();
     if(!savedEmail){
-        renderLogin(rendermenu); // Le pasamos rendermenu para que sepa qué hacer al tener éxito
+        renderLogin(rendermenu); 
         return;
     } 
     
@@ -77,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (auth.isLoggedIn()) {
         rendermenu();
     } else {
-        // Al renderLogin le decimos: "Cuando acabes con éxito, llama a rendermenu"
         renderLogin(rendermenu); 
     }
 });

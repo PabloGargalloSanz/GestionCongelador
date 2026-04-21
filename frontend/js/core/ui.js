@@ -43,7 +43,7 @@ export function showConfirmModal(mensaje) {
                 <p class="modal-text">${mensaje}</p>
                 <div class="modal-botones">
                     <button id="modal-cancel-btn" class="btn-cancelar-modal">Cancelar</button>
-                    <button id="modal-confirm-btn" class="btn-eliminar-modal">Eliminar Lote</button>
+                    <button id="modal-confirm-btn" class="btn-eliminar-modal">Eliminar</button>
                 </div>
             </div>
         `;
