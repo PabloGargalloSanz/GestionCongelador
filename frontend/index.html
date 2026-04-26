@@ -5,6 +5,7 @@
         <title>FreezerManager</title>
         <meta name="TFG Pablo Gargallo">
         <link rel="icon" type="image" href="./img/nieve.png">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- biblioteca graficos -->
         <link rel="stylesheet" href="./styles/styles.css">
     </head>
     <body>
@@ -55,6 +56,9 @@
                         </button>
                         <button class="nav-item" data-view='reglas'>
                             Alimentos Imprescindibles
+                        </button>
+                        <button class="nav-item" data-view='estadisticas'>
+                            Estadísticas
                         </button>
                     </nav>
     
@@ -183,6 +187,38 @@
                 </tbody>
             </table>
         </template>
+
+        <!-- Vista Estadísticas -->
+        <template id="estadisticas-view">
+            <header>
+                <div>
+                    <h1>Estadísticas de Consumo</h1>
+                    <p>Analiza tus hábitos y el historial de tu inventario.</p>
+                </div>
+            </header>
+
+            <div class="filter-row-container mb-25" style="border-radius: 8px; border-bottom: 1px solid #e0e0e0;">
+                <div class="form-row align-end" style="padding: 10px;">
+                    <div class="form-col">
+                        <label class="form-label">Analizar periodo:</label>
+                        <select id="filtro-dias" class="filter-input">
+                            <option value="7">Última Semana (7 días)</option>
+                            <option value="30" selected>Último Mes (30 días)</option>
+                            <option value="90">Últimos 3 Meses</option>
+                            <option value="365">Último Año</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-25">
+                <h3 class="text-primary mb-15 text-center">Consumo por Categoría</h3>
+                <div style="max-width: 450px; margin: 0 auto;">
+                    <canvas id="graficoConsumo"></canvas>
+                </div>
+            </div>
+        </template>
+
         <div id="toast-container"></div>
 
         <script type="module" src="./js/main.js"></script>

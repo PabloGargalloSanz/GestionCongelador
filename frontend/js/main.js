@@ -8,6 +8,7 @@ import { renderLogin } from './modules/auth/view.auth.js';
 import { initDashboard } from './modules/almacenes/view.dashboard.js';
 import { initInventario } from './modules/inventario/view.inventario.js';
 import { renderReglas } from './modules/reglas/view.reglas.js';
+import { renderEstadisticas } from './modules/estadisticas/view.estadisticas.js';
 
 // Comprobar si token expira
 window.addEventListener('unauthorized-access', () => {
@@ -63,6 +64,9 @@ async function renderView(viewName) {
 
     } else if (viewName === 'reglas') {
         await renderReglas(mainContent);
+        
+    } else if (viewName === 'estadisticas') {
+        await renderEstadisticas(mainContent);
     }
 }
 
