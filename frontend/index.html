@@ -53,8 +53,8 @@
                         <button class="nav-item" data-view='inventario'>
                             Inventario
                         </button>
-                        <button class="nav-item" data-view='compras'>
-                            Compras
+                        <button class="nav-item" data-view='reglas'>
+                            Alimentos Imprescindibles
                         </button>
                     </nav>
     
@@ -94,17 +94,17 @@
             </div>        
         </template>
 
-        <!-- Vista Compras -->
-        <template id="compras-view">
+        <!-- Vista Alimentos imprescindibles -->
+        <template id="reglas-view">
             <header>
                 <div>
-                    <h1>Lista de la Compra</h1>
-                    <p>Define tu stock mínimo y la aplicación te avisará de lo que falta.</p>
+                    <h1>Alimentos Imprescindibles</h1>
+                    <p>Define tus reglas de stock mínimo y te avisaremos si falta algo en tu inventario.</p>
                 </div>
             </header>
 
             <div class="card mb-25">
-                <h3 class="text-primary mb-15">Añadir Alerta de Stock</h3>
+                <h3 class="text-primary mb-15">Añadir Regla de Stock</h3>
                 <div class="form-row align-end">
                     <div class="form-col">
                         <label class="form-label">Producto (Ej: Leche):</label>
@@ -123,7 +123,7 @@
                         </div>
                     </div>
                     <div class="form-col col-small">
-                        <button id="btn-add-regla" class="btn-guardar-modal w-100 mb-0">Añadir</button>
+                        <button id="btn-add-regla" class="btn-guardar-modal w-100 mb-0">Añadir Regla</button>
                     </div>
                 </div>
             </div>
@@ -132,14 +132,14 @@
                 <table class="inventario-table">
                     <thead>
                         <tr>
-                            <th>Producto</th>
-                            <th>Stock Mínimo</th>
+                            <th>Producto Imprescindible</th>
+                            <th>Mínimo Requerido</th>
                             <th>Stock Actual</th>
                             <th>Estado</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-compras-body">
+                    <tbody id="tabla-reglas-body">
                         </tbody>
                 </table>
             </div>

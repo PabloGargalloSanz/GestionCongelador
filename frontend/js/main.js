@@ -7,6 +7,7 @@ import { app, loadTemplate, showToast } from './core/ui.js';
 import { renderLogin } from './modules/auth/view.auth.js';
 import { initDashboard } from './modules/almacenes/view.dashboard.js';
 import { initInventario } from './modules/inventario/view.inventario.js';
+import { renderReglas } from './modules/reglas/view.reglas.js';
 
 // Comprobar si token expira
 window.addEventListener('unauthorized-access', () => {
@@ -60,8 +61,8 @@ async function renderView(viewName) {
     } else if (viewName === 'inventario') {
         await initInventario(mainContent);
 
-    } else if (viewName === 'recetas') {
-        loadTemplate('recetas-view', mainContent);
+    } else if (viewName === 'reglas') {
+        await renderReglas(mainContent);
     }
 }
 
