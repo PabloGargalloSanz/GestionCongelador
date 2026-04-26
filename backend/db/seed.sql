@@ -93,6 +93,17 @@ CREATE TABLE alertas_stock (
     unidad_medida VARCHAR(20) NOT NULL
 );
 
+CREATE TABLE historial_consumo (
+    id_consumo SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    alimento_nombre VARCHAR(100) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    cantidad INTEGER NOT NULL,
+    unidad_medida VARCHAR(20) NOT NULL,
+    fecha_consumo TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 -----
 /*VISTAS*/
 /*inventario usuario*/

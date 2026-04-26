@@ -24,7 +24,7 @@
 .toast.info { background: #1e293b; border-left: 4px solid #6366f1; }
 .toast.danger { background: #7f1d1d; border-left: 4px solid #ef4444; color: #fee2e2; }
 .toast.success { background: #2a6630; border-left: 4px solid #37883f; color: #e2fee4; }
-.toast.warning { background: #647327; border-left: 4px solid #888737; color: #e2fee4; }
+.toast.warning { background: #d0ae3f; border-left: 4px solid #b19434; color: #e2fee4; }
 
 @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }

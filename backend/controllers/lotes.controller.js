@@ -1,4 +1,5 @@
-import { crearLoteAlimentoService, patchLoteService, deleteLoteService } from '../services/lotes.service.js';
+import { crearLoteAlimentoService, patchLoteService, deleteLoteService, getLoteByIdService } from '../services/lotes.service.js';
+import { registrarConsumoService } from '../services/estadisticas.service.js';
 
 //añadir lote/alimento
 export const anadirAlimento = async (req, res, next) => {
@@ -56,11 +57,26 @@ export const modificacionAlimento = async(req, res, next) =>{
     const {cantidad, id_almacenamiento, posicion_cajon} = req.body;
 
     try{
+        const lotePrevio = await getLoteByIdService(id);
+        if (!lotePrevio) throw new Error("LOTE_NO_ENCONTRADO");
+
         if(!cantidad || !id_almacenamiento || !posicion_cajon){
             const err = new Error("Datos  incompletos para actualizar lote");
             err.status = 400;
             err.action = 'PATCH_INVENTARY_FAIL';    
             return next(err); 
+        }
+
+        // registro consumo
+        if (cantidad < lotePrevio.cantidad) {
+            const diferencia = lotePrevio.cantidad - cantidad;
+            await registrarConsumoService(
+                userId, 
+                lotePrevio.alimento_nombre, 
+                lotePrevio.alimento_tipo, 
+                diferencia, 
+                lotePrevio.unidad_medida
+            );
         }
 
         const loteEditado = await patchLoteService(userId, id, { 
@@ -94,8 +110,21 @@ export const modificacionAlimento = async(req, res, next) =>{
 //eliminar lote/alimento
 export const eliminarAlimento = async (req, res, next) => {
     const id = req.params.id;
+    const userId = req.userId;
 
     try {
+        const loteABorrar = await getLoteByIdService(id);
+        if (!loteABorrar) throw new Error("LOTE_NO_ENCONTRADO");
+
+        // registro consumo
+        await registrarConsumoService(
+            userId, 
+            loteABorrar.alimento_nombre, 
+            loteABorrar.alimento_tipo, 
+            loteABorrar.cantidad, 
+            loteABorrar.unidad_medida
+        );
+        
         await deleteLoteService(id);
 
         req.action = 'DELETE_INVENTARY_SUCCESS'; 

@@ -113,3 +113,28 @@ export const deleteLoteService = async (idLote) => {
         client.release();
     }
 };
+
+// Obtener lote por id 
+export const getLoteByIdService = async (idLote) => {
+    try {
+        const query = `
+            SELECT 
+                l.*, 
+                a.alimento_nombre, 
+                a.alimento_tipo
+            FROM lotes l
+            JOIN alimentos a ON l.id_alimento = a.id_alimento
+            WHERE l.id_lote = $1
+        `;
+        
+        const resultado = await pool.query(query, [idLote]);
+        
+        if (resultado.rows.length === 0) {
+            throw new Error("LOTE_ID_NO_ENCONTRADO"); 
+        }
+        
+        return resultado.rows[0];
+    } catch (error) {
+        throw error;
+    }
+};
