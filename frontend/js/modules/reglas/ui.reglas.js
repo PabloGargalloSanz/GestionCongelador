@@ -50,11 +50,11 @@ export function renderTablaReglas(reglas, inventarioActual, onEditRegla, onDelet
             <td>
                 <div class="alimento-nombre-cell">
                     <span class="status-dot ${colorClase}"></span>
-                    <span class="font-bold">${regla.producto}</span>
+                    <span>${regla.producto}</span>
                 </div>
             </td>
-            <td>Mínimo: ${regla.cantidad_minima} ${regla.unidad_medida}</td>
-            <td>Tienes: ${stockActual} ${regla.unidad_medida}</td>
+            <td>${regla.cantidad_minima} ${regla.unidad_medida}</td>
+            <td>${stockActual} ${regla.unidad_medida}</td>
             <td>${textoEstado}</td>
             <td>
                 <button class="lapiz-btn btn-edit-regla" data-id="${regla.id_alerta}" title="Editar regla">

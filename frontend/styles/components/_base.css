@@ -60,7 +60,6 @@ body {
 
 /* textos */
 .text-center { text-align: center; }
-.font-bold { font-weight: 700; }
 
 
 /* layout form */
@@ -95,4 +94,38 @@ body {
 
 #btn-add-regla {
     height: 38px; 
+}
+
+.card { 
+    background: var(--blanco); 
+    padding: 25px; 
+    border-radius: 20px; 
+    box-shadow: var(--shadow-sm); 
+    border: 1px solid var(--fondo-gris); 
+    transition: transform 0.3s,
+    box-shadow 0.3s; 
+}
+
+.card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: var(--shadow-md); 
+}
+
+.card-icon { 
+    background: var(--primario-claro); 
+    padding: 12px; 
+    border-radius: 14px; 
+    display: inline-flex; 
+    margin-bottom: 20px; 
+    color: var(--primario); 
+}
+
+
+.border-table {
+    border: 2px solid var(--fondo-gris); 
+    border-collapse: separate; 
+    border-spacing: 0; 
+    border-radius: 12px; 
+    overflow: hidden; 
+    box-shadow: var(--shadow-sm);
 }

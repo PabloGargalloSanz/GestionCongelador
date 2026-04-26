@@ -1,7 +1,6 @@
 .inventario-table { 
     width: 100%; 
-    table-layout: fixed; 
-    border-collapse: collapse; 
+    table-layout: fixed;  
     background: white; 
     border-radius: var(--radius-sm); 
     overflow: hidden; 
