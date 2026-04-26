@@ -8,6 +8,7 @@ import alimentosCajonRoutes from './alimentosCajon.routes.js';
 import authRoutes from './auth.routes.js';
 import lotes from './lotes.routes.js'
 import reglas from './reglas.routes.js'
+import estadisticas from './estadisticas.routes.js'
 
 const router = Router();
 
@@ -19,4 +20,6 @@ router.use(alimentosCajonRoutes);
 router.use(authRoutes);
 router.use(lotes);
 router.use(reglas);
+router.use(estadisticas);
+
 export default router;
