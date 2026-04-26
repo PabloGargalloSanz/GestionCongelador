@@ -15,10 +15,36 @@ export function renderTablaInventario(alimentos, listaAlmacenes, onEditLote, onE
         return;
     }
 
+    // ordenar por fecha de caducidad ascendente
+    alimentos.sort((a, b) => new Date(a.fecha_caducidad) - new Date(b.fecha_caducidad));
+
+    //calculo fecha de hoy sin h
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+
     alimentos.forEach((item, index) => {
+
+        // calculo dias para caducar
+        const caducidad = new Date(item.fecha_caducidad);
+        const diferenciaMilisegundos = caducidad.getTime() - hoy.getTime();
+        const diasRestantes = Math.ceil(diferenciaMilisegundos / (1000 * 3600 * 24));
+
+        // color caducidad
+        let colorClase = 'status-green'; 
+        if (diasRestantes <= 2) {
+            colorClase = 'status-red';
+        } else if (diasRestantes <= 7) {
+            colorClase = 'status-orange';
+        }
+
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${item.alimento}</td>
+            <td>
+                <div class="alimento-nombre-cell">
+                    <span class="status-dot ${colorClase}" title="Faltan ${diasRestantes} días"></span>
+                    <span>${item.alimento}</span>
+                </div>
+            </td>
             <td>${item.tipo}</td>
             <td>${item.cantidad} ${item.unidad_medida}</td>
             <td>${item.ubicacion}</td>
@@ -73,7 +99,7 @@ export function renderTablaInventario(alimentos, listaAlmacenes, onEditLote, onE
     });
 }
 
-//  Añadimos onEditLote como parámetro
+//  Añadimos onEditLote como parametro para editar la fila
 export function activarEdicionFila(tr, item, almacenes, onEditLote) {
     const htmlOriginal = tr.innerHTML;
     const fIntroduccion = item.fecha_introduccion ? new Date(item.fecha_introduccion).toLocaleDateString() : 'N/A';
@@ -303,7 +329,7 @@ export function openModalAñadirAlimento(tipos, almacenes) {
             resolve(null);
         });
 
-        // cargar cajones según almacén seleccionado
+        // cargar cajones segun almacen seleccionado
         const selectAlmacen = overlay.querySelector('#add-almacen');
         const selectCajon = overlay.querySelector('#add-cajon');
 

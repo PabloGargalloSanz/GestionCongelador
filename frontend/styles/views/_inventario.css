@@ -163,3 +163,35 @@
     width: 150px; 
     flex-shrink: 0; 
 }
+
+/* ------------ */
+/* colores caducidades  */
+/* ---------- */
+
+.alimento-nombre-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+}
+
+.status-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0; 
+}
+
+.status-red { 
+    background-color: #ef4444; 
+    box-shadow: 0 0 5px rgba(239, 68, 68, 0.5); 
+}
+
+.status-orange { 
+    background-color: #ff9950; 
+    box-shadow: 0 0 5px rgba(247, 126, 39, 0.5); 
+}
+
+.status-green { 
+    background-color: #22c55e; 
+}
