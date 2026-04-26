@@ -46,3 +46,53 @@ body {
     background-color: var(--bg-body);
     color: var(--texto-oscuro);
 }
+
+/* espacios y margenes */
+.mb-0 { margin-bottom: 0 !important; }
+.mb-15 { margin-bottom: 15px; }
+.mb-25 { margin-bottom: 25px; }
+.mt-15 { margin-top: 15px; }
+
+/* anchura */
+.w-100 { width: 100%; }
+.w-60 { width: 60%; }
+.w-40 { width: 40%; }
+
+/* textos */
+.text-center { text-align: center; }
+.font-bold { font-weight: 700; }
+
+
+/* layout form */
+.form-row { 
+    display: flex; 
+    gap: 15px; 
+    flex-wrap: wrap;
+}
+
+.form-col { 
+    flex: 1; 
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.col-small { 
+    flex: 0.3; 
+    min-width: 140px; 
+}
+
+.align-end { 
+    align-items: flex-end;
+}
+
+/* input misma linea */
+.input-group { 
+    display: flex; 
+    gap: 10px; 
+    width: 100%; 
+}
+
+#btn-add-regla {
+    height: 38px; 
+}

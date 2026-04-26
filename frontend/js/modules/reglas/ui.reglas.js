@@ -31,21 +31,21 @@ export function renderTablaReglas(reglas, inventarioActual, onEditRegla, onDelet
 
         // colores estado
         let colorClase = 'status-green';
-        let textoEstado = '<span class="text-success font-bold">Stock ideal</span>';
+        let textoEstado = '<span class="font-bold">Stock ideal</span>';
 
         if (stockActual < regla.cantidad_minima) {
             //por debajo del minimo
             colorClase = 'status-red';
-            textoEstado = `<span class="text-primary font-bold">Faltan ${regla.cantidad_minima - stockActual}</span>`;
+            textoEstado = `<span class="font-bold">Faltan ${regla.cantidad_minima - stockActual}</span>`;
             
         } else if (stockActual === regla.cantidad_minima || stockActual === regla.cantidad_minima + 1) {
             // limite o uno por encima del minimo
             colorClase = 'status-orange';
-            textoEstado = `<span class="text-warning font-bold">Al límite</span>`;
+            textoEstado = `<span class="font-bold">Al límite</span>`;
         }
 
         const tr = document.createElement('tr');
-        
+
         tr.innerHTML = `
             <td>
                 <div class="alimento-nombre-cell">
