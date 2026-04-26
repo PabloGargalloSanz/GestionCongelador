@@ -1,4 +1,4 @@
-import { getReglasUsuarioService, newReglaService, updateReglaService, deleteReglaService } from "../services/compras.service.js";
+import { getReglasUsuarioService, newReglaService, updateReglaService, deleteReglaService } from "../services/reglas.service.js";
 
 //obtener reglas usuario
 export const getReglasByUsuario = (req, res) => {

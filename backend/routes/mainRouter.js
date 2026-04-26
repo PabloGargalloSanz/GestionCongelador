@@ -7,6 +7,7 @@ import cajonesRoutes from './cajones.routes.js';
 import alimentosCajonRoutes from './alimentosCajon.routes.js';
 import authRoutes from './auth.routes.js';
 import lotes from './lotes.routes.js'
+import reglas from './reglas.routes.js'
 
 const router = Router();
 
@@ -17,5 +18,5 @@ router.use(cajonesRoutes);
 router.use(alimentosCajonRoutes);
 router.use(authRoutes);
 router.use(lotes);
-
+router.use(reglas);
 export default router;
