@@ -5,7 +5,7 @@ CREATE DATABASE gestion_congeladores;
 /* LIMPIEZA INICIAL  */
 DROP VIEW IF EXISTS vista_inventario_usuario CASCADE;
 DROP VIEW IF EXISTS vista_estado_cajones CASCADE;
-DROP TABLE IF EXISTS logs, recetas_favoritas, receta_alimentos, cajon_lotes, lotes, cajones, almacenamientos, recetas, alimentos, usuarios CASCADE;
+DROP TABLE IF EXISTS alertas_stock, logs, recetas_favoritas, receta_alimentos, cajon_lotes, lotes, cajones, almacenamientos, recetas, alimentos, usuarios CASCADE;
 
 
 
@@ -83,6 +83,14 @@ CREATE TABLE IF NOT EXISTS logs (
     detalles TEXT,
     status_codigo INTEGER,               
     fecha_creado TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE alertas_stock (
+    id_alerta SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    producto VARCHAR(100) NOT NULL,
+    cantidad_minima INTEGER NOT NULL,
+    unidad_medida VARCHAR(20) NOT NULL
 );
 
 -----

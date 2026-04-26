@@ -53,8 +53,8 @@
                         <button class="nav-item" data-view='inventario'>
                             Inventario
                         </button>
-                        <button class="nav-item" data-view='recetas'>
-                            Recetas
+                        <button class="nav-item" data-view='compras'>
+                            Compras
                         </button>
                     </nav>
     
@@ -94,14 +94,54 @@
             </div>        
         </template>
 
-        <!-- Vista Recetas -->
-        <template id="recetas-view">
+        <!-- Vista Compras -->
+        <template id="compras-view">
             <header>
-                <h1>Recetas</h1>
-                <p>Sugerencias</p>
+                <div>
+                    <h1>Lista de la Compra</h1>
+                    <p>Define tu stock mínimo y la aplicación te avisará de lo que falta.</p>
+                </div>
             </header>
-            <div class="card" >
-                
+
+            <div class="card mb-25">
+                <h3 class="text-primary mb-15">Añadir Alerta de Stock</h3>
+                <div class="form-row align-end">
+                    <div class="form-col">
+                        <label class="form-label">Producto (Ej: Leche):</label>
+                        <input type="text" id="regla-nombre" class="filter-input" placeholder="Nombre exacto">
+                    </div>
+                    <div class="form-col">
+                        <label class="form-label">Cantidad mínima:</label>
+                        <div class="input-group">
+                            <input type="number" id="regla-cantidad" class="filter-input w-60" min="1" placeholder="0">
+                            <select id="regla-unidad" class="filter-input w-40">
+                                <option value="ud">Ud</option>
+                                <option value="l">L</option>
+                                <option value="kg">Kg</option>
+                                <option value="g">g</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col col-small">
+                        <button id="btn-add-regla" class="btn-guardar-modal w-100 mb-0">Añadir</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <table class="inventario-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Stock Mínimo</th>
+                            <th>Stock Actual</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-compras-body">
+                        </tbody>
+                </table>
             </div>
         </template>
 
