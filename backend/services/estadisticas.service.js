@@ -35,3 +35,32 @@ export const getConsumoPorTipoService = async (userId, dias) => {
         throw error;
     }
 };
+
+// comparacion mes actual con año pasado
+export const getComparativaAnualService = async (userId) => {
+    try {
+        const query = `
+            SELECT 
+                tipo, 
+                EXTRACT(YEAR FROM fecha_consumo) as anio,
+                SUM(cantidad) as total_consumido,
+                unidad_medida
+            FROM historial_consumo
+            WHERE id_usuario = $1 
+              -- Mismo mes que el actual
+              AND EXTRACT(MONTH FROM fecha_consumo) = EXTRACT(MONTH FROM CURRENT_DATE)
+              -- Solo este año y el anterior
+              AND EXTRACT(YEAR FROM fecha_consumo) IN (
+                  EXTRACT(YEAR FROM CURRENT_DATE), 
+                  EXTRACT(YEAR FROM CURRENT_DATE) - 1
+              )
+            GROUP BY tipo, anio, unidad_medida
+            ORDER BY tipo, anio;
+        `;
+        
+        const result = await pool.query(query, [userId]);
+        return result.rows;
+    } catch (error) {
+        throw error;
+    }
+};

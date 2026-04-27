@@ -1,71 +1,94 @@
 import { loadTemplate, showToast } from '../../core/ui.js';
-import { getEstadisticasAPI } from './api.estadisticas.js';
+import { getEstadisticasAPI, getComparativaAnualAPI } from './api.estadisticas.js';
 
-let chartInstancia = null; 
+let doughnutChart = null;
+let barChart = null;
 
 export async function renderEstadisticas(appContainer) {
     loadTemplate('estadisticas-view', appContainer);
 
     const filtroDias = document.getElementById('filtro-dias');
-    const ctx = document.getElementById('graficoConsumo');
+    const canvasDoughnut = document.getElementById('graficoConsumo');
+    const canvasBar = document.getElementById('graficoComparativo');
 
-    if (!ctx) return;
-
-    //crear grafico
-    const actualizarGrafico = async (dias) => {
+    // grafico circular
+    const renderResumen = async (dias) => {
         const datos = await getEstadisticasAPI(dias);
+        
+        if (doughnutChart) doughnutChart.destroy();
+        if (datos.length === 0) return;
 
-        // eliminar grafico anterior
-        if (chartInstancia) {
-            chartInstancia.destroy();
-        }
-
-        if (datos.length === 0) {
-            showToast("No hay registros de consumo en este periodo", "info");
-            return;
-        }
-
-        //datos de db
-        const etiquetas = datos.map(item => `${item.tipo} (${item.unidad_medida})`);
-        const cantidades = datos.map(item => parseInt(item.total_consumido));
-
-        //grafico
-        chartInstancia = new Chart(ctx, {
-            type: 'doughnut', 
+        doughnutChart = new Chart(canvasDoughnut, {
+            type: 'doughnut',
             data: {
-                labels: etiquetas,
+                labels: datos.map(item => `${item.tipo} (${item.unidad_medida})`),
                 datasets: [{
-                    data: cantidades,
-
-                    backgroundColor: [
-                        '#DB5757',
-                        '#024fa2',
-                        '#49B253',
-                        '#f97316',
-                        '#8b5cf6',
-                        '#eab308'  
-                    ],
-                    borderWidth: 2,
-                    hoverOffset: 10 
+                    data: datos.map(item => parseInt(item.total_consumido)),
+                    backgroundColor: ['#DB5757', '#024fa2', '#49B253', '#f97316', '#8b5cf6'],
+                    borderWidth: 2
                 }]
             },
-            options: {
+            options: { 
                 responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { padding: 20, font: { family: 'Inter', size: 14 } }
-                    }
-                }
+                plugins: { legend: { position: 'bottom' } }
             }
         });
     };
 
-    // filtro dias
-    filtroDias.addEventListener('change', (e) => {
-        actualizarGrafico(e.target.value);
-    });
+    // grafico de barras
+    const renderComparativa = async () => {
+        const datos = await getComparativaAnualAPI();
+        
+        if (barChart) barChart.destroy();
+        if (datos.length === 0) return;
 
-    // defecto 30 dias
-    await actualizarGrafico(30);
+        //agrupamos por tipo y año
+        const tipos = [...new Set(datos.map(item => item.tipo))];
+        const anioActual = new Date().getFullYear();
+        const anioPasado = anioActual - 1;
+
+        const datasetPasado = tipos.map(t => {
+            const registro = datos.find(d => d.tipo === t && parseInt(d.anio) === anioPasado);
+            return registro ? parseInt(registro.total_consumido) : 0;
+        });
+
+        const datasetActual = tipos.map(t => {
+            const registro = datos.find(d => d.tipo === t && parseInt(d.anio) === anioActual);
+            return registro ? parseInt(registro.total_consumido) : 0;
+        });
+
+        barChart = new Chart(canvasBar, {
+            type: 'bar',
+            data: {
+                labels: tipos,
+                datasets: [
+                    {
+                        label: `Mes actual (${anioPasado})`,
+                        data: datasetPasado,
+                        backgroundColor: '#94a3b8',
+                        borderRadius: 5
+                    },
+                    {
+                        label: `Mes actual (${anioActual})`,
+                        data: datasetActual,
+                        backgroundColor: '#024fa2',
+                        borderRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { position: 'top' } }
+            }
+        });
+    };
+
+    filtroDias.addEventListener('change', (e) => renderResumen(e.target.value));
+
+    //lanzadas en paralelo para aumentar velocidad
+    await Promise.all([
+        renderResumen(filtroDias.value),
+        renderComparativa()
+    ]);
 }

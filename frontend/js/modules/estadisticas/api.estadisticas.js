@@ -17,3 +17,17 @@ export async function getEstadisticasAPI(dias = 30) {
         return [];
     }
 }
+
+// obtener comparativa anual
+export async function getComparativaAnualAPI() {
+    try {
+        const response = await apiFetch('/estadisticas/comparativa', {
+            method: 'GET',
+            headers: { 'X-accion': 'STATS_COMPARISON_CONSULTING' }
+        });
+        return response.json();
+    } catch (error) {
+        console.error("Error al obtener comparativa: ", error);
+        return [];
+    }
+}

@@ -1,0 +1,40 @@
+/* contenedor del grafico de circular */
+.chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* altura max grafico circular */
+.chart-donut {
+    max-height: 350px;
+}
+
+/* altura fija grafico barras*/
+.chart-bar {
+    height: 300px;
+    width: 100%;
+    position: relative; /* Chart.js funciona mejor cuando su padre tiene posición relativa */
+}
+
+/* graficos centrado */
+.mx-auto {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* control contenedor de tamaño horizontal */
+.max-w-900 {
+    max-width: 900px;
+    width: 100%;
+}
+
+/* grafico de barras */
+.chart-bar {
+    height: 300px;
+    width: 100%;
+    max-width: 750px;
+    position: relative;
+    margin: 0 auto;
+}
