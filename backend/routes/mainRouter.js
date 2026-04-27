@@ -9,6 +9,7 @@ import authRoutes from './auth.routes.js';
 import lotes from './lotes.routes.js'
 import reglas from './reglas.routes.js'
 import estadisticas from './estadisticas.routes.js'
+import menu from './menu.routes.js'
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.use(authRoutes);
 router.use(lotes);
 router.use(reglas);
 router.use(estadisticas);
+router.use(menu);
 
 export default router;

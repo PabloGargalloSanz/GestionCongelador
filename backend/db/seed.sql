@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     email VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(20) DEFAULT 'user',
-    puntuacion NUMERIC(10, 2) DEFAULT 0 
+    perfil_medico VARCHAR(50) DEFAULT 'estandar'
 );
 
 CREATE TABLE IF NOT EXISTS alimentos (
