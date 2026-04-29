@@ -5,15 +5,16 @@ CREATE DATABASE gestion_congeladores;
 /* LIMPIEZA INICIAL  */
 DROP VIEW IF EXISTS vista_inventario_usuario CASCADE;
 DROP VIEW IF EXISTS vista_estado_cajones CASCADE;
-DROP TABLE IF EXISTS alertas_stock, logs, recetas_favoritas, receta_alimentos, cajon_lotes, lotes, cajones, almacenamientos, recetas, alimentos, usuarios CASCADE;
+DROP TABLE IF EXISTS menus_usuario, historial_consumo, alertas_stock, logs, recetas_favoritas, receta_alimentos, cajon_lotes, lotes, cajones, almacenamientos, recetas, alimentos, usuarios CASCADE;
 
-
+CREATE TYPE estado_menu AS ENUM ('borrador', 'aceptado', 'rechazado');
+CREATE TYPE rol_usuario AS ENUM ('admin', 'user');
 
 CREATE TABLE IF NOT EXISTS usuarios (
     id_usuario SERIAL PRIMARY KEY,
     email VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(20) DEFAULT 'user',
+    role rol_usuario DEFAULT 'user',
     perfil_medico VARCHAR(50) DEFAULT 'estandar'
 );
 
@@ -104,10 +105,13 @@ CREATE TABLE historial_consumo (
 );
 
 CREATE TABLE menus_usuario (
+    id_menu SERIAL PRIMARY KEY,
     id_usuario INT REFERENCES usuarios(id_usuario),
     menu_json JSONB NOT NULL,
-    fecha_generacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id_usuario)
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    estado estado_menu DEFAULT 'borrador', 
+    fecha_generacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 

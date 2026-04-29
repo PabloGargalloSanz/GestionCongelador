@@ -101,3 +101,14 @@
     color: var(--texto-claro); 
     margin-top: 50px;
 }
+
+.menu-empty-state {
+    grid-column: 1 / -1; /* Ocupa todas las columnas disponibles */
+    text-align: center;
+    color: var(--texto-claro);
+    padding: 60px 20px;
+    font-size: 16px;
+    background-color: var(--blanco);
+    border-radius: var(--radius-sm);
+    border: 2px dashed var(--fondo-gris); /* Un borde punteado queda genial para estados vacíos */
+}

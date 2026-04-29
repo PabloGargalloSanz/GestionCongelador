@@ -1,21 +1,42 @@
 import pool from '../db/db.js';
 
+//obtener menu
 export const getMenuGuardadoService = async (userId) => {
-    const query = 'SELECT menu_json FROM menus_usuario WHERE id_usuario = $1';
+    const query = `
+        SELECT id_menu, menu_json, estado, fecha_inicio, fecha_fin 
+        FROM menus_usuario 
+        WHERE id_usuario = $1 
+        ORDER BY fecha_generacion DESC 
+        LIMIT 1
+    `;
     const result = await pool.query(query, [userId]);
-    return result.rows.length > 0 ? result.rows[0].menu_json : null;
+    return result.rows.length > 0 ? result.rows[0] : null;
 };
 
+// guardar menu (borrador)
 export const saveMenuService = async (userId, menuJson) => {
     const query = `
-        INSERT INTO menus_usuario (id_usuario, menu_json, fecha_generacion) 
-        VALUES ($1, $2, CURRENT_TIMESTAMP)
-        ON CONFLICT (id_usuario) 
-        DO UPDATE SET menu_json = EXCLUDED.menu_json, fecha_generacion = CURRENT_TIMESTAMP
+        INSERT INTO menus_usuario (id_usuario, menu_json, fecha_inicio, fecha_fin, estado)
+        VALUES ($1, $2, CURRENT_DATE, CURRENT_DATE + INTERVAL '7 days', 'borrador')
+        RETURNING id_menu, estado, fecha_inicio, fecha_fin
     `;
-    await pool.query(query, [userId, menuJson]);
+    const result = await pool.query(query, [userId, menuJson]);
+    return result.rows[0]; 
 };
 
+// aceptar o rechazar el menu
+export const updateEstadoMenuService = async (idMenu, userId, nuevoEstado) => {
+    const query = `
+        UPDATE menus_usuario 
+        SET estado = $1 
+        WHERE id_menu = $2 AND id_usuario = $3
+        RETURNING id_menu, estado
+    `;
+    const result = await pool.query(query, [nuevoEstado, idMenu, userId]);
+    return result.rows[0];
+};
+
+//generar menui
 export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', intento = 1) => {
     // pausar ejecucion en caso de datos no validos
     const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));

@@ -27,7 +27,12 @@ export async function initMenu(container) {
         btnGenerar.innerHTML = "Regenerar Menú";
     } else {
         
-        gridContainer.innerHTML = '<p class="text-center w-100" class="no_menu">Aún no tienes un menú para esta semana. Haz clic en "Generar Menú" para crear uno.</p>';
+        gridContainer.innerHTML = 
+            `<div class="menu-empty-state">
+                Aún no tienes un menú para esta semana.<br><br>
+                Haz clic en el botón <strong>"Generar Menú"</strong> para crear uno.
+            </div>`;
+            
         btnGenerar.innerHTML = " Generar Menú";
     }
 
