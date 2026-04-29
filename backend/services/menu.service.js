@@ -1,20 +1,34 @@
-const REGLAS_MEDICAS = {
-    estandar: "Dieta mediterránea. Alterna carnes y pescados, priorizando verduras, legumbres y cereales integrales.",
-    diabetico: "CRÍTICO: Evita azúcares y harinas refinadas. Prioriza proteínas magras, verduras fibrosas y carbohidratos complejos.",
-    hipertenso: "CRÍTICO: Limita sodio. Prohibida la sal añadida. Limita la carne roja y prioriza pescados y verduras."
+import pool from '../db/db.js';
+
+export const getMenuGuardadoService = async (userId) => {
+    const query = 'SELECT menu_json FROM menus_usuario WHERE id_usuario = $1';
+    const result = await pool.query(query, [userId]);
+    return result.rows.length > 0 ? result.rows[0].menu_json : null;
 };
 
-// pausar ejecucion en caso de datos no validos
-const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+export const saveMenuService = async (userId, menuJson) => {
+    const query = `
+        INSERT INTO menus_usuario (id_usuario, menu_json, fecha_generacion) 
+        VALUES ($1, $2, CURRENT_TIMESTAMP)
+        ON CONFLICT (id_usuario) 
+        DO UPDATE SET menu_json = EXCLUDED.menu_json, fecha_generacion = CURRENT_TIMESTAMP
+    `;
+    await pool.query(query, [userId, menuJson]);
+};
 
 export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', intento = 1) => {
+    // pausar ejecucion en caso de datos no validos
+    const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const MAX_INTENTOS = 3;
     const TIEMPO_ESPERA = 5 * 60 * 1000; // 5min
+    const REGLAS_MEDICAS = {
+        estandar: "Dieta mediterránea. Alterna carnes y pescados, priorizando verduras, legumbres y cereales integrales.",
+        diabetico: "CRÍTICO: Evita azúcares y harinas refinadas. Prioriza proteínas magras, verduras fibrosas y carbohidratos complejos.",
+        hipertenso: "CRÍTICO: Limita sodio. Prohibida la sal añadida. Limita la carne roja y prioriza pescados y verduras."
+    };
 
     try {
         const reglaAplicar = REGLAS_MEDICAS[perfilMedico] || REGLAS_MEDICAS.estandar;
-
-        console.log(`⏳ [INTENTO ${intento}/${MAX_INTENTOS}] Iniciando pipeline de IA...`);
 
         // nutricion
         const promptMenu = `
@@ -28,7 +42,8 @@ export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', in
             3. SIN PARÉNTESIS: Escribe el nombre del plato de forma natural. 
             4. VARIEDAD Y SENTIDO COMÚN: No repitas el mismo alimento más de dos veces por semana. Diseña recetas reales y comunes (evita mezclas raras como gambas con pera o palabras inventadas).
             5. LISTA DE LA COMPRA INTELIGENTE: Añade a la lista SOLO cosas de despensa (arroz, pasta, pan) o frescos (lechuga, tomate, huevos). ESTÁ PROHIBIDO añadir a la lista de la compra los alimentos que ya están en el INVENTARIO.
-            
+            6. CLAVES EXACTAS: Escribe los días EXACTAMENTE como en el ejemplo, SIN TILDES en las claves ("miercoles", "sabado").
+
             Devuelve SOLO este JSON:
             {
               "menu": {
@@ -113,7 +128,8 @@ export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', in
             }
         });
 
-        console.log("✅ Menú generado con éxito total.");
+        //debuj
+        console.log("Menú generado");
         return menuGenerado;
 
     } catch (error) {
@@ -128,3 +144,4 @@ export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', in
         }
     }
 };
+

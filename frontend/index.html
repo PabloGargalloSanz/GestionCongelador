@@ -60,6 +60,9 @@
                         <button class="nav-item" data-view='estadisticas'>
                             Estadísticas
                         </button>
+                        <button class="nav-item" data-view='menu'>
+                            Menú Semanal
+                        </button>
                     </nav>
     
                     <div class="sidebar-footer">
@@ -188,7 +191,7 @@
             </table>
         </template>
 
-        <!-- Vista Estadísticas -->
+        <!-- Vista Estadisticas -->
         <template id="estadisticas-view">
             <header>
                 <div>
@@ -229,6 +232,34 @@
             </div> 
         
         </template>
+
+        <!-- Vista Menu Semanal -->
+        <template id="menu-view">
+            <header>
+                <div>
+                    <h1>Menú Semanal Inteligente</h1>
+                    <p>Genera tu dieta optimizando el inventario del congelador.</p>
+                </div>
+                <button id="btn-generar-menu" class="add-btn">
+                    <span>✨</span> Generar Menú
+                </button>
+            </header>
+
+            <div id="alerta-domingo-previo" class="alerta-descongelar-hoy mb-25 hidden"></div>
+
+            <div id="loading-menu" class="card mb-25 text-center hidden">
+                <h3 class="mb-10" class="c_primario"> Analizando inventario...</h3>
+                <p>La Inteligencia Artificial está cruzando tus datos (puede tardar un minuto).</p>
+            </div>
+
+            <div id="menu-grid-container" class="menu-grid mb-25"></div>
+
+            <div id="lista-compra-container" class="card hidden">
+                <h3 class="mb-15" class="c_primario"> Lista de la Compra Sugerida</h3>
+                <ul id="lista-compra-ul" class="lista-compra-ul"></ul>
+            </div>
+        </template>
+
 
         <div id="toast-container"></div>
 

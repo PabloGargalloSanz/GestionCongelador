@@ -103,6 +103,13 @@ CREATE TABLE historial_consumo (
     fecha_consumo TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE menus_usuario (
+    id_usuario INT REFERENCES usuarios(id_usuario),
+    menu_json JSONB NOT NULL,
+    fecha_generacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id_usuario)
+);
+
 
 -----
 /*VISTAS*/
