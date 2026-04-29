@@ -21,16 +21,6 @@ export function renderMenu(datosIA) {
         const info = datosIA.menu[dia];
         if (!info) return;
 
-        let alertaHTML = '';
-        if (info.descongelar_hoy && info.descongelar_hoy !== "") {
-            alertaHTML = `
-                <div class="menu-alert-box">
-                    Descongelar hoy:
-
-                    <strong>${info.descongelar_hoy}</strong>
-                </div>
-            `;
-        }
 
         const card = document.createElement('div');
         card.className = 'menu-day-card';
@@ -40,16 +30,15 @@ export function renderMenu(datosIA) {
                 ${dia}
             </div>
             <div class="menu-day-body">
-                <div>
+                <div class="menu-meal-block">
                     <span class="menu-meal-label">Comida</span>
                     <p class="menu-meal-text">${info.comida}</p>
                 </div>
-                <div>
+                <div class="menu-meal-block">
                     <span class="menu-meal-label">Cena</span>
                     <p class="menu-meal-text">${info.cena_ligera}</p>
                 </div>
             </div>
-            ${alertaHTML}
         `;
         
         grid.appendChild(card);
