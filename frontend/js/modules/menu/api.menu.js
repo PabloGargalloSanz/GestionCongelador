@@ -26,9 +26,31 @@ export async function generarMenuAPI(perfilMedico = 'estandar') {
             const errorData = await response.json().catch(() => ({})); 
             return { ok: false, error: errorData.error || "Error al generar" };
         }
+
         const data = await response.json();
         return { ok: true, data };
+
     } catch (error) {
         return { ok: false, error: "Error de conexión con el servidor" };
+    }
+}
+
+export async function cambiarEstadoMenuAPI(idMenu, estado) {
+    try {
+        const response = await apiFetch(`/menu/${idMenu}/estado`, {
+            method: 'PATCH',
+            body: JSON.stringify({ estado })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            return { ok: false, error: errorData.error || "Error al cambiar estado" };
+        }
+
+        const data = await response.json();
+        return { ok: true, data };
+
+    } catch (error) {
+        return { ok: false, error: "Error de conexión" };
     }
 }

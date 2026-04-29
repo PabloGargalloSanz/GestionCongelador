@@ -103,12 +103,19 @@
 }
 
 .menu-empty-state {
-    grid-column: 1 / -1; /* Ocupa todas las columnas disponibles */
+    grid-column: 1 / -1;
     text-align: center;
     color: var(--texto-claro);
     padding: 60px 20px;
     font-size: 16px;
     background-color: var(--blanco);
     border-radius: var(--radius-sm);
-    border: 2px dashed var(--fondo-gris); /* Un borde punteado queda genial para estados vacíos */
+    border: 2px dashed var(--fondo-gris); 
+}
+
+/* botones */
+.menu-acciones {
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 25px; 
 }

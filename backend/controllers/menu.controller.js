@@ -11,7 +11,7 @@ export const obtenerMenuSemanas = async (req, res, next) => {
         const menuGuardado = await getMenuGuardadoService(userId);
 
         if (!menuGuardado) {
-            res.action = 'NO_MENU_DB'
+            req.action = 'NO_MENU_DB'
             return res.status(404).json({ existeMenu: false });
         }
 
@@ -41,7 +41,7 @@ export const generarMenuSemanas = async (req, res, next) => {
         const lotes = await getInventarioParaMenuService(userId);
 
         if (lotes.length === 0) {
-            res.action = 'EMPTY_INVENTARY'
+            req.action = 'EMPTY_INVENTARY'
             return res.status(400).json({ mensaje: "No hay alimentos en el inventario para generar un menú." });
         }
 
@@ -95,10 +95,11 @@ export const cambiarEstadoMenu = async (req, res, next) => {
         const menuActualizado = await updateEstadoMenuService(idMenu, userId, estado);
         
         if (!menuActualizado) {
-            res.action = 'MENU_NOT_FOUND'
+            req.action = 'MENU_NOT_FOUND'
             return res.status(404).json({ error: "Menú no encontrado o no autorizado." });
         }
-        res.action = `MENU_STATE_CHANGE_${estado}`
+        
+        req.action = `MENU_STATE_CHANGE_${estado}`
         res.status(200).json({ mensaje: `Menú ${estado} con éxito`, data: menuActualizado });
 
     } catch (error) {

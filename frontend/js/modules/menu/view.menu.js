@@ -1,5 +1,5 @@
 import { loadTemplate, showToast } from '../../core/ui.js';
-import { generarMenuAPI, obtenerMenuGuardadoAPI } from './api.menu.js';
+import { generarMenuAPI, obtenerMenuGuardadoAPI, cambiarEstadoMenuAPI } from './api.menu.js';
 import { renderMenu } from './ui.menu.js';
 
 export async function initMenu(container) {
@@ -9,8 +9,36 @@ export async function initMenu(container) {
     const loadingDiv = document.getElementById('loading-menu');
     const gridContainer = document.getElementById('menu-grid-container');
     const loadingText = loadingDiv.querySelector('h3');
+    
+    const accionesContainer = document.getElementById('menu-acciones-container');
+    const btnAceptar = document.getElementById('btn-aceptar-menu');
+    const btnRechazar = document.getElementById('btn-rechazar-menu');
+    
+    let currentMenuId = null; 
 
-    //obtener datos db
+    // gestion de botones
+    const actualizarBotones = (datosDB) => {
+        currentMenuId = datosDB.id_menu;
+        
+        if (datosDB.estado === 'borrador') {
+            // borrador - botoens de aceptar o cancelar
+            accionesContainer.classList.remove('hidden');
+            btnGenerar.classList.add('hidden');
+
+            btnRechazar.classList.remove('hidden');
+            btnAceptar.classList.remove('hidden');
+
+        } else {
+            // aceptado - no botoens
+            accionesContainer.classList.add('hidden');
+            btnGenerar.classList.remove('hidden');
+            btnGenerar.innerHTML = " Regenerar Menú";
+            btnRechazar.classList.add('hidden');
+            btnAceptar.classList.add('hidden');
+        }
+    };
+
+    // obtener menu al entrar
     btnGenerar.disabled = true;
     loadingText.textContent = "Buscando menú guardado...";
     loadingDiv.classList.remove('hidden');
@@ -21,50 +49,76 @@ export async function initMenu(container) {
     btnGenerar.disabled = false;
 
     if (resDB.ok && resDB.data && resDB.data.menu) {
-        
-        //randerizar menu
         renderMenu(resDB.data);
-        btnGenerar.innerHTML = "Regenerar Menú";
-    } else {
+        actualizarBotones(resDB.data);
         
-        gridContainer.innerHTML = 
-            `<div class="menu-empty-state">
+    } else {
+        gridContainer.innerHTML = `
+            <div class="menu-empty-state">
                 Aún no tienes un menú para esta semana.<br><br>
                 Haz clic en el botón <strong>"Generar Menú"</strong> para crear uno.
-            </div>`;
-            
-        btnGenerar.innerHTML = " Generar Menú";
+            </div>
+        `;
+        btnGenerar.innerHTML = "Generar Menú";
     }
 
-    //----------
-    //generar o regenerar menu
+    //crear / recargar
+    const generarNuevoMenu = async () => {
+        btnGenerar.disabled = true;
+        btnRechazar.disabled = true;
+        loadingText.textContent = "Analizando inventario con IA...";
+        loadingDiv.classList.remove('hidden');
+        gridContainer.innerHTML = ''; 
+        document.getElementById('lista-compra-container').classList.add('hidden');
+        document.getElementById('alerta-domingo-previo').classList.add('hidden');
+        accionesContainer.classList.add('hidden');
 
-    if (btnGenerar) {
-        btnGenerar.addEventListener('click', async () => {
+        const resAPI = await generarMenuAPI('estandar');
+
+        loadingDiv.classList.add('hidden');
+        btnGenerar.disabled = false;
+        btnRechazar.disabled = false;
+
+        if (resAPI.ok && resAPI.data.menu) {
+            showToast("Menú diseñado con éxito", "success");
+            renderMenu(resAPI.data);
+            actualizarBotones(resAPI.data);
             
-            btnGenerar.disabled = true;
-            loadingText.textContent = "Analizando inventario con IA...";
-            loadingDiv.classList.remove('hidden');
-            gridContainer.innerHTML = ''; 
-            document.getElementById('lista-compra-container').classList.add('hidden');
-            document.getElementById('alerta-domingo-previo').classList.add('hidden');
+        } else {
+            showToast(resAPI.error || "La IA tardó demasiado. Inténtalo de nuevo.", "danger");
+        }
+    };
 
-            const resAPI = await generarMenuAPI('estandar');
+    if (btnGenerar) btnGenerar.addEventListener('click', generarNuevoMenu);
 
-            loadingDiv.classList.add('hidden');
-            btnGenerar.disabled = false;
-
-            if (resAPI.ok && resAPI.data.menu) {
-                showToast("Menú diseñado y guardado con éxito", "success");
-                renderMenu(resAPI.data);
-
+    // aceptar o rechazar menu
+    if (btnAceptar) {
+        btnAceptar.addEventListener('click', async () => {
+            if (!currentMenuId) return;
+            const res = await cambiarEstadoMenuAPI(currentMenuId, 'aceptado');
+            if (res.ok) {
+                showToast("¡Menú guardado y aceptado!", "success");
+                accionesContainer.classList.add('hidden');
+                btnGenerar.classList.remove('hidden');
                 btnGenerar.innerHTML = "Regenerar Menú";
             } else {
-                showToast(resAPI.error || "La IA tardó demasiado. Inténtalo de nuevo.", "danger");
-
-                // si falla mostramos anterior
-                if (resDB.ok && resDB.data) renderMenu(resDB.data);
+                showToast(res.error, "danger");
             }
+        });
+    }
+
+    if (btnRechazar) {
+        btnRechazar.addEventListener('click', async () => {
+            if (!currentMenuId) return;
+            
+            await cambiarEstadoMenuAPI(currentMenuId, 'rechazado');
+            
+            // crear nuevo
+            showToast("Menú rechazado. Generando nueva propuesta...", "info");
+            btnRechazar.classList.add('hidden');
+            btnAceptar.classList.add('hidden');
+            generarNuevoMenu(); 
+        
         });
     }
 }

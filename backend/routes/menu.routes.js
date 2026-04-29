@@ -6,6 +6,6 @@ const router = Router();
 
 router.post('/menu/generar', verifyToken, generarMenuSemanas);
 router.get('/menu', verifyToken, obtenerMenuSemanas);
-router.patch('/:idMenu/estado', verifyToken, cambiarEstadoMenu);
+router.patch('/menu/:idMenu/estado', verifyToken, cambiarEstadoMenu);
 
 export default router;
