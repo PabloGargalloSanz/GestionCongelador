@@ -24,54 +24,35 @@ CREATE TABLE IF NOT EXISTS alimentos (
     alimento_tipo VARCHAR (50) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS recetas (
-    id_receta SERIAL PRIMARY KEY,
-    receta_nombre VARCHAR(50) NOT NULL,
-    descripcion TEXT
-);
 
 CREATE TABLE IF NOT EXISTS almacenamientos(
     id_almacenamiento SERIAL PRIMARY KEY,
-    id_usuario INT NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
+    id_usuario INTEGER NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     almacenamiento_nombre VARCHAR(50) NOT NULL,
     localizacion VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS cajones(
     id_cajon SERIAL PRIMARY KEY,
-    id_almacenamiento INT NOT NULL REFERENCES almacenamientos(id_almacenamiento) ON DELETE CASCADE,
-    posicion INT NOT NULL,
+    id_almacenamiento INTEGER NOT NULL REFERENCES almacenamientos(id_almacenamiento) ON DELETE CASCADE,
+    posicion INTEGER NOT NULL,
     tamano NUMERIC(10, 2) DEFAULT 1000 CHECK (tamano > 0)
 );
 
 CREATE TABLE IF NOT EXISTS lotes(
     id_lote SERIAL PRIMARY KEY,
-    id_alimento INT NOT NULL REFERENCES alimentos(id_alimento) ON DELETE CASCADE,
-    cantidad INT NOT NULL CHECK (cantidad > 0),
+    id_alimento INTEGER NOT NULL REFERENCES alimentos(id_alimento) ON DELETE CASCADE,
+    cantidad INTEGER NOT NULL CHECK (cantidad > 0),
     unidad_medida VARCHAR(20) NOT NULL,
-    alimento_tamano INT NOT NULL,
+    alimento_tamano INTEGER NOT NULL,
     fecha_caducidad DATE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS cajon_lotes(
     id_cajon_lote SERIAL PRIMARY KEY,
-    id_cajon INT NOT NULL REFERENCES cajones(id_cajon) ON DELETE CASCADE,
-    id_lote INT NOT NULL REFERENCES lotes(id_lote) ON DELETE CASCADE,
+    id_cajon INTEGER NOT NULL REFERENCES cajones(id_cajon) ON DELETE CASCADE,
+    id_lote INTEGER NOT NULL REFERENCES lotes(id_lote) ON DELETE CASCADE,
     fecha_introducido DATE DEFAULT CURRENT_DATE
-);
-
-CREATE TABLE IF NOT EXISTS receta_alimentos(
-    id_receta_alimento SERIAL PRIMARY KEY,
-    id_receta INT NOT NULL REFERENCES recetas(id_receta) ON DELETE CASCADE,
-    id_alimento INT NOT NULL REFERENCES alimentos(id_alimento) ON DELETE CASCADE,
-    cantidad INT NOT NULL CHECK (cantidad > 0),
-    unidad_medida VARCHAR(20) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS recetas_favoritas(
-    id_receta_favorita SERIAL PRIMARY KEY,
-    id_usuario INT NOT NULL REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
-    id_receta INT NOT NULL REFERENCES recetas(id_receta) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS logs (
@@ -86,7 +67,7 @@ CREATE TABLE IF NOT EXISTS logs (
     fecha_creado TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE TABLE alertas_stock (
+CREATE TABLE IF NOT EXISTS alertas_stock (
     id_alerta SERIAL PRIMARY KEY,
     id_usuario INTEGER REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     producto VARCHAR(100) NOT NULL,
@@ -94,7 +75,7 @@ CREATE TABLE alertas_stock (
     unidad_medida VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE historial_consumo (
+CREATE TABLE IF NOT EXISTS historial_consumo (
     id_consumo SERIAL PRIMARY KEY,
     id_usuario INTEGER REFERENCES usuarios(id_usuario) ON DELETE CASCADE,
     alimento_nombre VARCHAR(100) NOT NULL,
@@ -104,9 +85,9 @@ CREATE TABLE historial_consumo (
     fecha_consumo TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE menus_usuario (
+CREATE TABLE IF NOT EXISTS menus_usuario (
     id_menu SERIAL PRIMARY KEY,
-    id_usuario INT REFERENCES usuarios(id_usuario),
+    id_usuario INTEGER REFERENCES usuarios(id_usuario),
     menu_json JSONB NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE NOT NULL,
