@@ -48,6 +48,18 @@ export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', in
         hipertenso: "CRÍTICO: Limita sodio. Prohibida la sal añadida. Limita la carne roja y prioriza pescados y verduras."
     };
 
+    //pruebas modelos
+    const MODELOS = ['llama3.1', 'qwen2.5:7b', 'qwen2.5:14b', 'gemma2:9b' ];
+    //MODELOS[0]
+    //ollama run llama3.1
+    
+    //ollama pull qwen2.5:7b
+
+    //ollama pull qwen2.5:14b
+
+    //ollama pull gemma2:9b
+
+
     try {
         const reglaAplicar = REGLAS_MEDICAS[perfilMedico] || REGLAS_MEDICAS.estandar;
 
@@ -83,7 +95,7 @@ export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', in
         const resMenu = await fetch('http://localhost:11434/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'llama3.1', prompt: promptMenu, stream: false, format: 'json', keep_alive: "1m" })
+            body: JSON.stringify({ model: MODELOS[0], prompt: promptMenu, stream: false, format: 'json', keep_alive: "1m" })
         });
 
         const dataMenu = await resMenu.json();
@@ -123,7 +135,7 @@ export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', in
         const resIngr = await fetch('http://localhost:11434/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'llama3.1', prompt: promptIngredientes, stream: false, format: 'json', keep_alive: "1m" })
+            body: JSON.stringify({ model: MODELOS[0], prompt: promptIngredientes, stream: false, format: 'json', keep_alive: "1m" })
         });
 
         const dataIngr = await resIngr.json();
@@ -150,7 +162,7 @@ export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', in
         });
 
         //debuj
-        console.log("Menú generado");
+        console.log("Menú generado " + menuGenerado);
         return menuGenerado;
 
     } catch (error) {
