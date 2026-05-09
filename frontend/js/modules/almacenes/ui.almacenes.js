@@ -170,7 +170,7 @@ export function openModalAlmacen(almacenExistente = null) {
 
             let capacidades = [];
             if (!isEdit) {
-                const valoresCapacidad = { 'XS': 250, 'S': 500, 'M': 1000, 'L': 2000, 'XL': 4000 };
+                const valoresCapacidad = { 'XS': 150, 'S': 300, 'M': 1000, 'L': 2000, 'XL': 4000 };
                 
                 const inputsCapacidad = overlay.querySelectorAll('.input-capacidad-cajon');
                 inputsCapacidad.forEach(input => {

@@ -138,3 +138,32 @@ export const getLoteByIdService = async (idLote) => {
         throw error;
     }
 };
+
+// obtener inventario ordenado para la IA
+export const getInventarioParaMenuService = async (userId) => {
+    try {
+        const result = await pool.query(
+            `
+            SELECT 
+                a.alimento_nombre, 
+                a.alimento_tipo,
+                l.cantidad, 
+                l.unidad_medida, 
+                l.fecha_caducidad,
+                cl.fecha_introducido
+            FROM lotes l
+            JOIN alimentos a ON l.id_alimento = a.id_alimento
+            JOIN cajon_lotes cl ON l.id_lote = cl.id_lote
+            JOIN cajones c ON cl.id_cajon = c.id_cajon
+            JOIN almacenamientos alm ON c.id_almacenamiento = alm.id_almacenamiento
+            WHERE alm.id_usuario = $1
+            ORDER BY l.fecha_caducidad ASC, cl.fecha_introducido ASC;
+            `, 
+            [userId]);
+
+        return result.rows;
+
+    } catch (error) {
+        throw error;
+    }
+};

@@ -9,6 +9,7 @@ import { initDashboard } from './modules/almacenes/view.dashboard.js';
 import { initInventario } from './modules/inventario/view.inventario.js';
 import { renderReglas } from './modules/reglas/view.reglas.js';
 import { renderEstadisticas } from './modules/estadisticas/view.estadisticas.js';
+import { initMenu } from './modules/menu/view.menu.js';
 
 // Comprobar si token expira
 window.addEventListener('unauthorized-access', () => {
@@ -67,6 +68,9 @@ async function renderView(viewName) {
         
     } else if (viewName === 'estadisticas') {
         await renderEstadisticas(mainContent);
+
+    } else if (viewName === 'menu') {
+        await initMenu(mainContent);
     }
 }
 

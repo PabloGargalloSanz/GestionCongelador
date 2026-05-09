@@ -48,7 +48,7 @@ body {
 }
 
 /* espacios y margenes */
-.mb-0 { margin-bottom: 0 !important; }
+.mb-0 { margin-bottom: 0; }
 .mb-15 { margin-bottom: 15px; }
 .mb-25 { margin-bottom: 25px; }
 .mt-15 { margin-top: 15px; }
@@ -73,7 +73,7 @@ body {
 
 /* textos */
 .text-center { text-align: center; }
-
+.c_principal {color: var(--primario);}
 
 /* layout form */
 .form-row { 

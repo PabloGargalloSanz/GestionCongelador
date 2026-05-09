@@ -370,7 +370,7 @@ export function openModalAñadirAlimento(tipos, almacenes) {
             }
 
             // canversion de tamaño
-            const equivalenciasTamano = { 'XS': 5, 'S': 10, 'M': 20, 'L': 30, 'XL': 40 };
+            const equivalenciasTamano = { 'XS': 10, 'S': 50, 'M': 100, 'L': 200, 'XL': 500 };
             const volumenTamano = equivalenciasTamano[tamano.toUpperCase()] || 20;
 
             const nuevoLote = {
