@@ -1,0 +1,80 @@
+services:
+  #BASE DE DATOS
+  remote_db:
+    image: postgres:16-alpine
+    container_name: congeladores_db
+    restart: always
+
+    env_file:
+      - .env
+
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
+    ports:
+      - "5432:${DB_PORT:-5432}" 
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/src/db/seed.sql:/docker-entrypoint-initdb.d/seed.sql
+
+    networks:
+      - remote_network
+
+  #IA
+  ia_engine:
+    image: ollama/ollama
+    container_name: ia_engine
+    restart: always
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - remote_network
+
+  #BACKEND
+  congeladores_api:
+    build: ./backend
+    container_name: congeladores_api
+    restart: always
+    command: node src/app.js
+    env_file: .env
+    depends_on:
+      - congeladores_db
+      - ia_engine
+    networks:
+      - remote_network
+
+  #WORKER
+  remote_worker:
+    build: ./backend
+    container_name: remote_worker
+    restart: always
+    command: node src/jobs.js
+    env_file: .env
+    depends_on:
+      - congeladores_db
+    networks:
+      - remote_network
+
+  #FRONT
+  remote_frontend:
+    build: ./frontend
+    container_name: remote_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - congeladores_api
+    networks:
+      - remote_network
+
+#seguridad y discos duros virtuales
+networks:
+  remote_network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  ollama_models:
