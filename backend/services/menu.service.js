@@ -88,7 +88,7 @@ export const generarMenuIA = async (inventarioStr, intento = 1) => {
             }
         `;
 
-        const resMenu = await fetch('http://localhost:11434/api/generate', {
+        const resMenu = await fetch('http://congeladores_ia:11434/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ model: MODELOS[0], prompt: promptMenu, stream: false, format: 'json', keep_alive: "1m" })
@@ -128,7 +128,7 @@ export const generarMenuIA = async (inventarioStr, intento = 1) => {
             }
         `;
 
-        const resIngr = await fetch('http://localhost:11434/api/generate', {
+        const resIngr = await fetch('http://congeladores_ia:11434/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ model: MODELOS[0], prompt: promptIngredientes, stream: false, format: 'json', keep_alive: "1m" })
@@ -167,7 +167,7 @@ export const generarMenuIA = async (inventarioStr, intento = 1) => {
         if (intento < MAX_INTENTOS) {
             await esperar(TIEMPO_ESPERA);
 
-            return generarMenuIA(inventarioStr, perfilMedico, intento + 1); // reintento recursivo
+            return generarMenuIA(inventarioStr, intento + 1); // reintento recursivo
         } else {
             return;
         }
