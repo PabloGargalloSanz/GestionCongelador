@@ -37,16 +37,12 @@ export const updateEstadoMenuService = async (idMenu, userId, nuevoEstado) => {
 };
 
 //generar menui
-export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', intento = 1) => {
+export const generarMenuIA = async (inventarioStr, intento = 1) => {
     // pausar ejecucion en caso de datos no validos
     const esperar = (ms) => new Promise(resolve => setTimeout(resolve, ms));
     const MAX_INTENTOS = 3;
     const TIEMPO_ESPERA = 5 * 60 * 1000; // 5min
-    const REGLAS_MEDICAS = {
-        estandar: "Dieta mediterránea. Alterna carnes y pescados, priorizando verduras, legumbres y cereales integrales.",
-        diabetico: "CRÍTICO: Evita azúcares y harinas refinadas. Prioriza proteínas magras, verduras fibrosas y carbohidratos complejos.",
-        hipertenso: "CRÍTICO: Limita sodio. Prohibida la sal añadida. Limita la carne roja y prioriza pescados y verduras."
-    };
+    const REGLAS_MENU = "Dieta mediterránea. Alterna carnes y pescados, priorizando verduras, legumbres y cereales integrales.";
 
     //pruebas modelos
     const MODELOS = ['llama3.1', 'qwen2.5:7b', 'qwen2.5:14b', 'gemma2:9b' ];
@@ -61,7 +57,7 @@ export const generarMenuIA = async (inventarioStr, perfilMedico = 'estandar', in
 
 
     try {
-        const reglaAplicar = REGLAS_MEDICAS[perfilMedico] || REGLAS_MEDICAS.estandar;
+        const reglaAplicar = REGLAS_MENU;
 
         // nutricion
         const promptMenu = `
