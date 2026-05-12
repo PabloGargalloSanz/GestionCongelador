@@ -3,7 +3,7 @@ import cron from 'node-cron';
 import { generarMenuIA, saveMenuService } from './services/menu.service.js';
 import { getAllAlimentosUsuario } from './services/alimentos.service.js';
 
-
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 cron.schedule('0 6 * * 0', async () => {
     
@@ -27,10 +27,11 @@ cron.schedule('0 6 * * 0', async () => {
                     await saveMenuService(usuario.id, nuevoMenu);
                     console.log(`Menú guardado correctamente para ${usuario.nombre}`);
                 }
+                
+                await sleep(60000);
 
             } catch (error) {
                 console.error(`Fallo crítico al generar menú para ${usuario.nombre}:`, error.message);
-                throw new Error("ERROR_MENU_GENERATION"); 
             }
         }
 

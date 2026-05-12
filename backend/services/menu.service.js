@@ -45,7 +45,7 @@ export const generarMenuIA = async (inventarioStr, intento = 1) => {
     const REGLAS_MENU = "Dieta mediterránea. Alterna carnes y pescados, priorizando verduras, legumbres y cereales integrales.";
 
     //pruebas modelos
-    const MODELOS = ['llama3.1', 'qwen2.5:7b', 'qwen2.5:14b', 'gemma2:9b' ];
+    const MODELOS = ['phi-3', 'llama3.1', 'qwen2.5:7b', 'qwen2.5:14b', 'gemma2:9b' ];
     //MODELOS[0]
     //ollama run llama3.1
     
