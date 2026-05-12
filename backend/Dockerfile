@@ -2,11 +2,12 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-#copiar e instalar dependencias
-COPY package*.json ./
-RUN npm install --production
+RUN corepack enable && corepack prepare pnpm@9 --activate
 
-#copiar resto de codigo
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install --frozen-lockfile --prod
+
 COPY . .
 
 EXPOSE 3000
