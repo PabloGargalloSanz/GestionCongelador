@@ -15,7 +15,7 @@
 .chart-bar {
     height: 300px;
     width: 100%;
-    position: relative; /* Chart.js funciona mejor cuando su padre tiene posición relativa */
+    position: relative;
 }
 
 /* graficos centrado */

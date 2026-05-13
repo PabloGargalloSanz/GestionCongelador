@@ -30,6 +30,7 @@ export async function renderEstadisticas(appContainer) {
             },
             options: { 
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: { legend: { position: 'bottom' } }
             }
         });
@@ -78,6 +79,8 @@ export async function renderEstadisticas(appContainer) {
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
+                aspectRatio: 1,
                 scales: { y: { beginAtZero: true } },
                 plugins: { legend: { position: 'top' } }
             }
