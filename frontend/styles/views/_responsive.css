@@ -118,6 +118,20 @@
     #logout-btn {
         margin-bottom: 10px ; 
     }
+
+    td:last-child { 
+        display: flex ;
+        justify-content: center ;
+        align-items: center ;
+        gap: 10px ;
+        flex-wrap: wrap ;
+        min-height: 60px ; 
+    }
+
+    td:last-child button,
+    td:last-child .btn-icon {
+        margin: 0 ; 
+    }
 }
 
 /* -----------------------------------------
