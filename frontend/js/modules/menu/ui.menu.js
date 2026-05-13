@@ -1,21 +1,35 @@
 export function renderMenu(datosIA) {
     const grid = document.getElementById('menu-grid-container');
-    const alertaDomingo = document.getElementById('alerta-domingo-previo');
+    const alertaDia = document.getElementById('alerta-dia-previo');
     const containerLista = document.getElementById('lista-compra-container');
     const ulLista = document.getElementById('lista-compra-ul');
     
     grid.innerHTML = ""; 
     
-    //descongelar domingo
-    if (datosIA.descongelar_domingo_previo) {
-        alertaDomingo.innerHTML = ` Domingo</strong> Saca del congelador: <strong>${datosIA.descongelar_domingo_previo}</strong> para el lunes.`;
-        alertaDomingo.classList.remove('hidden');
+    const dias = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
+    const diasJS = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
 
+    const hoyIndex = new Date().getDay();
+    const diaActualStr = diasJS[hoyIndex];
+    const diaSiguienteStr = diasJS[(hoyIndex + 1) % dias.length];
+
+    //descongelar dia
+    let ingrediente = null;
+
+    if (diaActualStr === "domingo") {
+        ingrediente = datosIA.descongelar_domingo_previo;
     } else {
-        alertaDomingo.classList.add('hidden');
+        ingrediente = datosIA.menu[diaActualStr]?.descongelar_hoy;
     }
 
-    const dias = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
+    if (ingrediente && ingrediente !== "Nada" && ingrediente !== "") {
+        alertaDia.innerHTML = `<strong>Hoy ${diaActualStr}:</strong> Saca del congelador <strong>${ingrediente}</strong> para mañana.`;
+        alertaDia.classList.remove('hidden');
+    } else {
+        alertaDia.innerHTML = `<strong>Hoy ${diaActualStr}:</strong> No necesitas descongelar nada para mañana.`;
+        alertaDia.classList.remove('hidden');
+    }
+
 
     dias.forEach(dia => {
         const info = datosIA.menu[dia];

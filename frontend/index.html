@@ -245,7 +245,7 @@
         <template id="menu-view">
             <header>
                 <div>
-                    <h1>Menú Semanal Inteligente</h1>
+                    <h1>Menú Semanal</h1>
                     <p>Genera tu dieta optimizando el inventario del congelador.</p>
                 </div>
                 <button id="btn-generar-menu" class="add-btn">
@@ -253,11 +253,12 @@
                 </button>
             </header>
 
-            <div id="alerta-domingo-previo" class="alerta-descongelar-hoy mb-25 hidden"></div>
+            <div id="alerta-dia-previo" class="alerta-descongelar-hoy mb-25 hidden"></div>
 
             <div id="loading-menu" class="card mb-25 text-center hidden">
                 <h3 class="mb-10" class="c_primario"> Analizando inventario...</h3>
-                <p>La Inteligencia Artificial está cruzando tus datos (puede tardar un minuto).</p>
+                <p>La Inteligencia Artificial está cruzando tus datos (puede tardar varios minutos).</p>
+                <p>Puede cambiar de ventana.</p>
             </div>
 
             <div id="menu-grid-container" class="menu-grid mb-25"></div>

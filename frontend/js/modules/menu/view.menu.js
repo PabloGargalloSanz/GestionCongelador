@@ -70,7 +70,7 @@ export async function initMenu(container) {
         loadingDiv.classList.remove('hidden');
         gridContainer.innerHTML = ''; 
         document.getElementById('lista-compra-container').classList.add('hidden');
-        document.getElementById('alerta-domingo-previo').classList.add('hidden');
+        document.getElementById('alerta-dia-previo').classList.add('hidden');
         accionesContainer.classList.add('hidden');
 
         const resAPI = await generarMenuAPI('estandar');

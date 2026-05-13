@@ -91,11 +91,19 @@ export const generarMenuIA = async (inventarioStr, intento = 1) => {
         const resMenu = await fetch('http://congeladores_ia:11434/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: MODELOS[0], prompt: promptMenu, stream: false, format: 'json', keep_alive: "1m" })
+            body: JSON.stringify({ model: 'gemma2:9b', prompt: promptMenu, stream: false, format: 'json', keep_alive: "1m" })
         });
 
         const dataMenu = await resMenu.json();
-        const menuGenerado = JSON.parse(dataMenu.response.replace(/```json/g, '').replace(/```/g, '').trim());
+        //const menuGenerado = JSON.parse(dataMenu.response.replace(/```json/g, '').replace(/```/g, '').trim());
+
+        if (!dataMenu || !dataMenu.response) {
+        throw new Error(`Ollama no devolvió respuesta. Status: ${resMenu.status}`);
+    }
+
+        // Limpiamos la respuesta y parseamos
+        const limpio = dataMenu.response.replace(/```json/g, '').replace(/```/g, '').trim();
+        const menuGenerado = JSON.parse(limpio);
 
         // validacion de estructura
         if (!menuGenerado || !menuGenerado.menu) {
@@ -131,7 +139,7 @@ export const generarMenuIA = async (inventarioStr, intento = 1) => {
         const resIngr = await fetch('http://congeladores_ia:11434/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: MODELOS[0], prompt: promptIngredientes, stream: false, format: 'json', keep_alive: "1m" })
+            body: JSON.stringify({ model: 'gemma2:9b', prompt: promptIngredientes, stream: false, format: 'json', keep_alive: "1m" })
         });
 
         const dataIngr = await resIngr.json();
