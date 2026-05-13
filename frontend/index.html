@@ -4,9 +4,10 @@
         <meta charset="UTF-8">
         <title>FreezerManager</title>
         <meta name="TFG Pablo Gargallo">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" type="image" href="./img/nieve.png">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- biblioteca graficos -->
-        <link rel="stylesheet" href="./styles/styles.css">
+        <link rel="stylesheet" href="./styles/styles.css?v=2.01">
     </head>
     <body>
 
@@ -40,9 +41,16 @@
         <!-- dashboard -->
         <template id="tpl-menu">
             <section id="dashboard-page">
+
+                <!-- Novedad: BARRA SUPERIOR PARA MÓVILES -->
+                <div class="mobile-topbar">
+                    <h2 class="m-0 c_principal">FreezerManager</h2>
+                    <button id="menu-toggle-btn" class="hamburger-btn">☰</button>
+                </div>
     
                 <!-- BARRA LATERAL -->
-                <aside class="sidebar">
+                <aside class="sidebar" id="sidebar">
+                    <button id="close-sidebar-btn" class="close-sidebar-btn">&times;</button>
                     <div class="sidebar-header">
                         <h2 class="m-0">FreezerManager</h2>
                     </div>

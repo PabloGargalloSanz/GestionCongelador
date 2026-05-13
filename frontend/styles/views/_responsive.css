@@ -1,0 +1,149 @@
+
+.mobile-topbar, .close-sidebar-btn {
+    display: none;
+}
+
+/* -----------------------------------------
+   Pantallas hasta 1024px
+   ----------------------------------------- */
+@media (max-width: 1024px) {
+    
+    #dashboard-page {
+        flex-direction: column;
+        width: 100%; 
+        overflow-x: hidden;
+    }
+
+    /* TOPBAR MÓVIL */
+    .mobile-topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 25px;
+        background: var(--blanco);
+        border-bottom: 1px solid var(--fondo-gris);
+        box-shadow: var(--shadow-sm);
+        z-index: 1000;
+    }
+
+    .hamburger-btn {
+        background: none;
+        border: none;
+        font-size: 32px;
+        color: var(--primario);
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+    }
+
+    /* BARRA LATERAL */
+    #sidebar {
+        position: fixed !important;
+        top: 0;
+        left: -100%;
+        width: 280px;
+        height: 100vh;
+        z-index: 9999; 
+        transition: left 0.3s ease-in-out;
+        box-shadow: 10px 0 15px rgba(0,0,0,0.5);
+    }
+
+    #sidebar.open {
+        left: 0 !important; 
+    }
+
+    .close-sidebar-btn {
+        display: block;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 36px;
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .close-sidebar-btn:hover {
+        transform: scale(1.1);
+        color: var(--accent);
+    }
+
+    /* CONTENIDO PRINCIPAL */
+    .content-area {
+        padding: 20px;
+        flex: 1;
+    }
+
+    /* TABLAS RESPONSIVE (Scroll horizontal automático) */
+    .inventario-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /*FORMULARIOS Y FILTROS */
+    .filter-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* -----------------------------------------
+   Pantallas hasta 768px
+   ----------------------------------------- */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filtros-botones {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .add-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* -----------------------------------------
+   Pantallas hasta 480px
+   ----------------------------------------- */
+@media (max-width: 480px) {
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-card {
+        padding: 20px;
+        width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .modal-botones {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-cancelar-modal, .btn-guardar-modal, .btn-eliminar-modal {
+        width: 100%;
+        margin-right: 0;
+    }
+}

@@ -69,6 +69,8 @@ services:
       - "8081:80"
     depends_on:
       - congeladores_api
+    volumes:                                         
+      - ./frontend:/usr/share/nginx/html
     networks:
       - congeladores_network
 

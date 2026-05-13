@@ -27,6 +27,37 @@ function rendermenu() {
     
     loadTemplate('tpl-menu', app);
 
+    // LÓGICA DEL MENÚ HAMBURGUESA
+    // ==========================================
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('menu-toggle-btn');
+    const closeBtn = document.getElementById('close-sidebar-btn');
+
+    // Abrir menú
+    if (toggleBtn && sidebar) {
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.add('open');
+        });
+    }
+
+    // Cerrar menú con la "X"
+    if (closeBtn && sidebar) {
+        closeBtn.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+        });
+    }
+
+    // Extra UX: Cerrar el menú automáticamente cuando haces clic en una opción (Almacenes, Inventario, etc.)
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Solo quitamos la clase si estamos en modo móvil y la tiene puesta
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+    });
+
     const displayElement = document.getElementById('display-email');
     if(displayElement){
         displayElement.innerText = savedEmail;
