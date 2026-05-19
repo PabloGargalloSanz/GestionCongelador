@@ -1,10 +1,34 @@
 import {createUser, authenticateUser} from '../services/auth.service.js';
 import {generateToken} from '../utils/token.util.js';
 
+//Validacion contraseña
+const validatePassword = (password) => {
+    const passwordError = (mensaje) => {
+        const error = new Error(mensaje);
+        error.status = 400; 
+        error.action = 'REGISTER_FAIL_WEAK_PASSWORD';
+        return error;
+    };
+
+    if (!password || password.length < 8) return passwordError('La contraseña debe tener al menos 8 caracteres.');
+    if (!/[A-Z]/.test(password)) return passwordError('La contraseña debe incluir al menos una letra mayúscula.');
+    if (!/[a-z]/.test(password)) return passwordError('La contraseña debe incluir al menos una letra minúscula.');
+    if (!/\d/.test(password)) return passwordError('La contraseña debe incluir al menos un número.');
+    if (!/[\W_]/.test(password)) return passwordError('La contraseña debe incluir al menos un carácter especial (ej: @, #, !, -, _).');
+
+    return null;
+};
+
+
 //nuevo usuario
 export const register = async (req, res, next) => {
     const { email, password, role } = req.body;   
     
+    const errorValidacion = validatePassword(password);
+    if (errorValidacion) {
+        return next(errorValidacion); 
+    }
+
     /////////////////////////////////////////////////////
     //Quitar antes de finalizar
     /////////////////////////////////////////////////////
